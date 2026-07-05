@@ -19,6 +19,8 @@
         pageTitle = "Quản lý Nhân sự";
     } else if (currentHeaderURL.contains("/recommends")) {
         pageTitle = "Đề xuất Sách";
+    } else if (currentHeaderURL.contains("/AuditLogs")) {
+        pageTitle = "Audit Logs";
     }
 %>
 
@@ -74,7 +76,7 @@
             const year = now.getFullYear();
 
             // Cập nhật giao diện trực quan
-            clockElement.textContent = hours + ":" + minutes + ":" + seconds + "-" + day + "/" + month + "/" + year;      
+            clockElement.textContent = hours + ":" + minutes + ":" + seconds + " — " + day + "/" + month + "/" + year;      
         }
         updateLiveClock();
         setInterval(updateLiveClock, 1000);

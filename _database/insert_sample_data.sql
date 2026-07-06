@@ -27,16 +27,16 @@ INSERT INTO categories (category_id, name, description) VALUES
 
 -- 2. Dữ liệu Đầu sách (Không còn cột quantity vì đã chuyển xuống bản sao)
 INSERT INTO books (book_id, category_id, title, author, publisher, publish_year) VALUES
-(1, 1, 'Lập trình Java Web căn bản', 'Nguyễn Văn B', 'NXB Giáo Dục', 2024),
+(1, 1, 'Lập trình JWDa Web căn bản', 'Nguyễn Văn B', 'NXB Giáo Dục', 2024),
 (2, 1, 'Cấu trúc dữ liệu và Giải thuật', 'Trần Minh C', 'NXB Khoa Học', 2023),
 (3, 2, 'Số đỏ', 'Vũ Trọng Phụng', 'NXB Văn Học', 2020),
 (4, 3, 'Nghĩ giàu và Làm giàu', 'Napoleon Hill', 'NXB Trẻ', 2021);
 
 -- 3. Dữ liệu Bản sao sách cụ thể (Mỗi đầu sách có nhiều bản sao vật lý trên kệ)
 INSERT INTO book_copies (copy_id, book_id, barcode, status, location_shelf) VALUES
-(1, 1, 'JAV-001', 'Available', 'Kệ A1-01'),
-(2, 1, 'JAV-002', 'Borrowed', 'Kệ A1-01'), -- Đang được mượn bởi Hoàng (Record 1)
-(3, 1, 'JAV-003', 'Available', 'Kệ A1-02'),
+(1, 1, 'JWD-001', 'Available', 'Kệ A1-01'),
+(2, 1, 'JWD-002', 'Borrowed', 'Kệ A1-01'), -- Đang được mượn bởi Hoàng (Record 1)
+(3, 1, 'JWD-003', 'Available', 'Kệ A1-02'),
 (4, 2, 'DSA-001', 'Available', 'Kệ A2-01'),
 (5, 2, 'DSA-002', 'Available', 'Kệ A2-01'),
 (6, 3, 'SDO-001', 'Available', 'Kệ B1-01'), -- Đã trả bởi Hà (Record 2)
@@ -59,7 +59,7 @@ INSERT INTO borrow_records (borrow_record_id, reader_id, user_id) VALUES
 
 -- 7. Dữ liệu Chi tiết các cuốn sách được mượn (Lấy khóa ngoại copy_id và lưu ngày riêng biệt)
 INSERT INTO borrow_details (borrow_detail_id, borrow_record_id, copy_id, borrow_date, due_date, return_date, status) VALUES
-(1, 1, 2, '2026-06-20', '2026-06-27', NULL, 'Borrowing'),        -- Lượt 1: Hoàng mượn cuốn Java (copy_id=2), chưa trả
+(1, 1, 2, '2026-06-20', '2026-06-27', NULL, 'Borrowing'),        -- Lượt 1: Hoàng mượn cuốn JWDa (copy_id=2), chưa trả
 (2, 2, 6, '2026-06-10', '2026-06-17', '2026-06-20', 'Returned');    -- Lượt 2: Hà mượn cuốn Số đỏ (copy_id=6), trễ hạn 3 ngày
 
 -- 8. Dữ liệu Phí phạt (Phát sinh từ lượt mượn trễ hạn của Hà)
@@ -72,4 +72,4 @@ INSERT INTO book_recommends (book_recommend_id, reader_id, book_title, author, r
 
 -- 10. Dữ liệu Nhật ký đối soát mẫu
 INSERT INTO audit_logs (log_id, user_id, action, table_name, record_id, old_values, new_values) VALUES
-(1, 1, 'INSERT', 'books', 1, NULL, '{"title": "Lập trình Java Web căn bản", "author": "Nguyễn Văn B"}');
+(1, 1, 'INSERT', 'books', 1, NULL, '{"title": "Lập trình JWDa Web căn bản", "author": "Nguyễn Văn B"}');

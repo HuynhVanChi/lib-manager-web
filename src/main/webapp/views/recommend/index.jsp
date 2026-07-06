@@ -417,11 +417,11 @@
                     })
                     .catch(err => {
                         console.error("Lỗi tải gợi ý tổng quát:", err);
-                        generalGrid.innerHTML = `
-                            <div class="col-12 text-center text-danger py-4">
-                                <i class="fa-solid fa-circle-exclamation fs-3 mb-2"></i>
-                                <p class="small mb-0">Không thể tải dữ liệu: ${err.message || 'Lỗi kết nối'}</p>
-                            </div>`;
+                        generalGrid.innerHTML = 
+                            '<div class="col-12 text-center text-danger py-4">' +
+                                '<i class="fa-solid fa-circle-exclamation fs-3 mb-2"></i>' +
+                                '<p class="small mb-0">Không thể tải dữ liệu: ' + (err.message ? err.message : 'Lỗi kết nối') + '</p>' +
+                            '</div>';
                     });
             }
 
@@ -495,11 +495,11 @@
                     })
                     .catch(err => {
                         console.error("Lỗi tải gợi ý ngữ cảnh:", err);
-                        contextGrid.innerHTML = `
-                            <div class="col-12 text-center text-danger py-4">
-                                <i class="fa-solid fa-circle-exclamation fs-3 mb-2"></i>
-                                <p class="small mb-0">Không thể tải dữ liệu gợi ý: ${err.message || 'Lỗi kết nối'}</p>
-                            </div>`;
+                        contextGrid.innerHTML = 
+                            '<div class="col-12 text-center text-danger py-4">' +
+                                '<i class="fa-solid fa-circle-exclamation fs-3 mb-2"></i>' +
+                                '<p class="small mb-0">Không thể tải dữ liệu gợi ý: ' + (err.message ? err.message : 'Lỗi kết nối') + '</p>' +
+                            '</div>';
                     });
             }
 
@@ -521,47 +521,49 @@
                 // Xác định nhãn đặc biệt hiển thị thêm trên Card
                 let badgeHTML = "";
                 if (type === "popular" && book.borrowCount > 0) {
-                    badgeHTML = `<span class="badge-recommend bg-indigo-subtle text-indigo" style="background-color: #E0E7FF; color: #312E81;">
-                                    <i class="fa-solid fa-fire me-1"></i> ${book.borrowCount} lượt mượn
-                                 </span>`;
+                    badgeHTML = '<span class="badge-recommend bg-indigo-subtle text-indigo" style="background-color: #E0E7FF; color: #312E81;">' +
+                                    '<i class="fa-solid fa-fire me-1"></i> ' + book.borrowCount + ' lượt mượn' +
+                                 '</span>';
                 } else if (type === "content-based" && book.similarityScore > 0) {
                     // Hiển thị điểm tương đồng
-                    badgeHTML = `<span class="badge-recommend bg-success-subtle text-success" style="background-color: #DCFCE7; color: #16A34A;">
-                                    <i class="fa-solid fa-circle-check me-1"></i> Khớp: ${Math.round(book.similarityScore / 9 * 100)}%
-                                 </span>`;
+                    badgeHTML = '<span class="badge-recommend bg-success-subtle text-success" style="background-color: #DCFCE7; color: #16A34A;">' +
+                                    '<i class="fa-solid fa-circle-check me-1"></i> Khớp: ' + Math.round(book.similarityScore / 9 * 100) + '%' +
+                                 '</span>';
                 } else if (type === "recent" && book.lastBorrowDate) {
                     // Hiển thị ngày mượn gần đây
                     const dateParts = book.lastBorrowDate.split("-");
                     const formattedDate = dateParts.length === 3 ? dateParts[2] + "/" + dateParts[1] : book.lastBorrowDate;
-                    badgeHTML = `<span class="badge-recommend bg-teal-subtle text-teal" style="background-color: #CCFBF1; color: #0D9488;">
-                                    <i class="fa-regular fa-clock me-1"></i> Mượn: ${formattedDate}
-                                 </span>`;
+                    badgeHTML = '<span class="badge-recommend bg-teal-subtle text-teal" style="background-color: #CCFBF1; color: #0D9488;">' +
+                                    '<i class="fa-regular fa-clock me-1"></i> Mượn: ' + formattedDate +
+                                 '</span>';
                 } else {
                     // Mặc định hiển thị danh mục
-                    badgeHTML = `<span class="badge bg-light text-dark border font-weight-semibold" style="font-size: 0.7rem; border-radius: 6px;">
-                                    ${book.categoryName || 'Sách'}
-                                 </span>`;
+                    badgeHTML = '<span class="badge bg-light text-dark border font-weight-semibold" style="font-size: 0.7rem; border-radius: 6px;">' +
+                                    (book.categoryName ? book.categoryName : 'Sách') +
+                                 '</span>';
                 }
 
                 // Cắt bớt tiêu đề nếu quá dài để cân đối giao diện
                 const displayTitle = book.title.length > 40 ? book.title.substring(0, 37) + "..." : book.title;
+                const authorName = book.author ? book.author : 'Vô danh';
+                const publisherYear = book.publishYear ? book.publishYear : '-';
 
-                col.innerHTML = `
-                    <div class="card book-card shadow-sm h-100">
-                        <div class="book-cover" style="background: ${gradient};">
-                            <span class="small fw-semibold text-white-50"><i class="fa-solid fa-bookmark me-1"></i> LibraryOS</span>
-                            <div class="book-cover-title">${displayTitle}</div>
-                            <div class="book-cover-author">${book.author || 'Vô danh'}</div>
-                        </div>
-                        <div class="book-info">
-                            <div class="book-title" title="${book.title}">${book.title}</div>
-                            <div class="book-author" title="${book.author || 'Ẩn danh'}">${book.author || 'Tác giả ẩn danh'}</div>
-                            <div class="book-meta">
-                                ${badgeHTML}
-                                <span class="text-muted fw-medium" style="font-size: 0.725rem;">NXB: ${book.publishYear || '-'}</span>
-                            </div>
-                        </div>
-                    </div>`;
+                col.innerHTML = 
+                    '<div class="card book-card shadow-sm h-100">' +
+                        '<div class="book-cover" style="background: ' + gradient + ';">' +
+                            '<span class="small fw-semibold text-white-50"><i class="fa-solid fa-bookmark me-1"></i> LibraryOS</span>' +
+                            '<div class="book-cover-title">' + displayTitle + '</div>' +
+                            '<div class="book-cover-author">' + authorName + '</div>' +
+                        '</div>' +
+                        '<div class="book-info">' +
+                            '<div class="book-title" title="' + book.title + '">' + book.title + '</div>' +
+                            '<div class="book-author" title="' + authorName + '">' + authorName + '</div>' +
+                            '<div class="book-meta">' +
+                                badgeHTML +
+                                '<span class="text-muted fw-medium" style="font-size: 0.725rem;">NXB: ' + publisherYear + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
                 return col;
             }
 

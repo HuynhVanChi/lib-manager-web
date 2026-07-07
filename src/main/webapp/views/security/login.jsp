@@ -10,10 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --indigo-dark:   #312E81;
-            --indigo-mid:    #4338CA;
+            --indigo-dark:   #1E1B4B;
+            --indigo-mid:    #312E81;
+            --indigo-light:  #4338CA;
             --violet-light:  #A78BFA;
-            --pink-soft:     #F9A8D4;
             --bg-soft:       #F9FAFB;
         }
         * { font-family: 'Outfit', sans-serif; box-sizing: border-box; }
@@ -21,25 +21,74 @@
         body {
             margin: 0; padding: 0; min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #312E81 0%, #4C1D95 55%, #701a75 100%);
+            background: linear-gradient(180deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
             position: relative; overflow: hidden;
         }
 
         /* --- Blobs decoratifs --- */
         .blob {
             position: absolute; border-radius: 50%;
-            filter: blur(90px); opacity: 0.4; pointer-events: none;
+            filter: blur(90px); opacity: 0.35; pointer-events: none;
         }
-        .blob-1 { width: 380px; height: 380px; background: #A78BFA; top: -80px; left: -80px; }
-        .blob-2 { width: 300px; height: 300px; background: #F9A8D4; bottom: -60px; right: -60px; }
-        .blob-3 { width: 200px; height: 200px; background: #60A5FA; top: 40%; left: 60%; }
+        .blob-1 { width: 380px; height: 380px; background: #4338CA; top: -80px; left: -80px; }
+        .blob-2 { width: 300px; height: 300px; background: #A78BFA; bottom: -60px; right: -60px; }
+        .blob-3 { width: 200px; height: 200px; background: #1E1B4B; top: 40%; left: 60%; }
+
+        /* --- Bong bong bay --- */
+        .bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+        }
+        .bubbles li {
+            position: absolute;
+            list-style: none;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(1px);
+            bottom: -150px;
+            border-radius: 50%;
+            animation: bubble-float 7s infinite linear;
+        }
+        .bubbles li:nth-child(1) { left: 15%; width: 60px; height: 60px; animation-delay: 0s; }
+        .bubbles li:nth-child(2) { left: 5%; width: 20px; height: 20px; animation-delay: 3s; animation-duration: 10s; }
+        .bubbles li:nth-child(3) { left: 75%; width: 25px; height: 25px; animation-delay: 5s; }
+        .bubbles li:nth-child(4) { left: 45%; width: 50px; height: 50px; animation-delay: 1s; animation-duration: 16s; }
+        .bubbles li:nth-child(5) { left: 60%; width: 30px; height: 30px; animation-delay: 0s; }
+        .bubbles li:nth-child(6) { left: 80%; width: 90px; height: 90px; animation-delay: 4s; }
+        .bubbles li:nth-child(7) { left: 30%; width: 110px; height: 110px; animation-delay: 8s; }
+        .bubbles li:nth-child(8) { left: 55%; width: 20px; height: 20px; animation-delay: 12s; animation-duration: 35s; }
+        .bubbles li:nth-child(9) { left: 22%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 25s; }
+        .bubbles li:nth-child(10) { left: 90%; width: 100px; height: 100px; animation-delay: 9s; }
+
+        @keyframes bubble-float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 50%;
+            }
+            100% {
+                transform: translateY(-1100px) rotate(360deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
 
         /* --- Card --- */
         .login-card {
             position: relative; z-index: 10;
-            background: rgba(255,255,255,0.08);
+            background: rgba(30, 27, 75, 0.4);
             backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 24px; padding: 44px 40px;
             width: 100%; max-width: 420px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.35);
@@ -52,11 +101,12 @@
 
         /* --- Logo --- */
         .logo-ring {
-            width: 60px; height: 60px; border-radius: 50%;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.2);
+            width: 60px; height: 60px; border-radius: 12px;
+            background: linear-gradient(180deg, #3e2791 0%, #4338CA 60%);
+            color: #fff; margin-bottom: 14px;
             display: inline-flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; color: #fff; margin-bottom: 14px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
         }
 
         /* --- Input --- */
@@ -89,15 +139,15 @@
         /* --- Submit button --- */
         .btn-login {
             width: 100%; padding: 13px;
-            background: linear-gradient(135deg, #A78BFA 0%, #F9A8D4 100%);
+            background: linear-gradient(135deg, #4338CA 0%, #A78BFA 100%);
             border: none; border-radius: 12px;
             font-weight: 600; font-size: 1rem; color: #fff;
             cursor: pointer; transition: all .25s ease;
-            box-shadow: 0 4px 15px rgba(167,139,250,0.4);
+            box-shadow: 0 4px 15px rgba(67, 56, 202, 0.4);
         }
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(167,139,250,0.5);
+            box-shadow: 0 8px 20px rgba(67, 56, 202, 0.6);
         }
 
         /* --- Error alert --- */
@@ -114,6 +164,19 @@
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>
+
+    <ul class="bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
 
     <div class="login-card">
         <!-- Logo -->

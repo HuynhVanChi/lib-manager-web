@@ -363,6 +363,95 @@ public class TaiKhoanDAO {
     }
 
     /**
+     * Lấy danh sách tài khoản đã bị xóa mềm (deleted_at IS NOT NULL).
+     *
+     * @return danh sách các tài khoản đã bị xóa mềm
+     */
+    public List<TaiKhoan> getDeleted() {
+        List<TaiKhoan> list = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE deleted_at IS NOT NULL ORDER BY deleted_at DESC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            
+            while (rs.next()) {
+                list.add(mapResultSetToTaiKhoan(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * Tìm một tài khoản theo user_id kể cả khi đã bị xóa mềm.
+     *
+     * @param userId ID cần tìm
+     * @return TaiKhoan nếu tìm thấy, null nếu không có
+     */
+    public TaiKhoan getByIdAny(int userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToTaiKhoan(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Khôi phục tài khoản đã bị xóa mềm: set deleted_at = NULL và deleted_by = NULL.
+     *
+     * @param userId ID của tài khoản cần khôi phục
+     * @param actorId ID của người thực hiện hành động khôi phục
+     * @return true nếu khôi phục thành công, ngược lại false
+     */
+    public boolean restore(int userId, int actorId) {
+        String sql = "UPDATE users SET deleted_at = NULL, deleted_by = NULL WHERE user_id = ? AND deleted_at IS NOT NULL";
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                // Lấy thông tin tài khoản trước khi khôi phục (để ghi audit log)
+                TaiKhoan tk = getByIdAny(userId);
+                if (tk == null) {
+                    throw new SQLException("Không tìm thấy tài khoản cần khôi phục.");
+                }
+
+                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setInt(1, userId);
+                    int affectedRows = pstmt.executeUpdate();
+                    if (affectedRows == 0) {
+                        throw new SQLException("Khôi phục tài khoản thất bại.");
+                    }
+                }
+
+                // Ghi nhận Audit Log hành động khôi phục
+                AuditLogger.log(conn, actorId, AuditLogger.ActionType.RESTORE, "users", userId, null, tk);
+
+                conn.commit();
+                return true;
+            } catch (Exception e) {
+                conn.rollback();
+                e.printStackTrace();
+                return false;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Ánh xạ ResultSet thành đối tượng TaiKhoan.
      */
     private TaiKhoan mapResultSetToTaiKhoan(ResultSet rs) throws SQLException {

@@ -1,6 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="security.TaiKhoan" %>
 
 <%
+    // Lấy thông tin người dùng từ session
+    TaiKhoan currentUser = null;
+    HttpSession currentSession = request.getSession(false);
+    if (currentSession != null) {
+        currentUser = (TaiKhoan) currentSession.getAttribute("currentUser");
+    }
+    String userFullName = (currentUser != null) ? currentUser.getFullName() : "Khách";
+    String userRole = (currentUser != null) ? currentUser.getRole() : "Guest";
+
+    // Lấy chữ cái đầu của tên chính (tên cuối cùng)
+    String firstLetter = "";
+    if (userFullName != null && !userFullName.trim().isEmpty()) {
+        String[] parts = userFullName.trim().split("\\s+");
+        if (parts.length > 0) {
+            String namePart = parts[parts.length - 1];
+            if (!namePart.isEmpty()) {
+                firstLetter = namePart.substring(0, 1).toUpperCase();
+            }
+        }
+    }
+    if (firstLetter.isEmpty()) {
+        firstLetter = "U";
+    }
+
     // Lấy URI gốc từ trình duyệt trước khi Servlet forward sang JSP
     String currentHeaderURL = (String) request.getAttribute("javax.servlet.forward.request_uri");
     if (currentHeaderURL == null) {
@@ -48,16 +73,20 @@
     <!-- Cột phải chứa thông tin người dùng và Đăng xuất (Khóa co giãn flex-shrink để giữ form tròn) -->
     <div class="header-right d-flex align-items-center">
         
-        <div class="d-flex align-items-center pe-3 me-3 border-end border-2 header-user" style="flex-shrink: 0;">
-            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
-                 style="width: 45px; height: 45px; margin-right: 10px; flex-shrink: 0;">
-                <i class="fa-solid fa-user-shield fs-5"></i>
+        <a href="${pageContext.request.contextPath}/accounts?action=detail&userId=<%= (currentUser != null) ? currentUser.getUserId() : "" %>" 
+           class="d-flex align-items-center pe-3 me-3 border-end border-2 header-user text-decoration-none" 
+           style="flex-shrink: 0; cursor: pointer; transition: opacity 0.2s;"
+           onmouseover="this.style.opacity='0.85'" 
+           onmouseout="this.style.opacity='1'">
+            <div class="text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm fw-bold" 
+                 style="width: 45px; height: 45px; margin-right: 12px; flex-shrink: 0; background-color: #2e3894; font-size: 1.2rem; user-select: none;">
+                <%= firstLetter %>
             </div>
             <div class="d-flex flex-column lh-sm" style="flex-shrink: 0;">
-                <span class="fw-semibold text-dark small">Nguyễn Văn A</span>
-                <span class="text-muted fw-medium" style="font-size: 0.75rem;">Admin</span>
+                <span class="fw-bold text-dark" style="font-size: 0.95rem; font-weight: 600;"><%= userFullName %></span>
+                <span class="text-muted fw-medium" style="font-size: 0.75rem; color: #718096 !important; margin-top: 1px;"><%= userRole %></span>
             </div>
-        </div>
+        </a>
 
         <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-danger btn-sm border-0 rounded-3 px-3 py-2 d-flex align-items-center fw-medium gap-2 text-decoration-none" style="flex-shrink: 0;">
             <i class="fa-solid fa-right-from-bracket"></i>

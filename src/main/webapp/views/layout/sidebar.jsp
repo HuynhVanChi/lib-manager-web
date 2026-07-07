@@ -86,10 +86,18 @@
             <i class="fa-solid fa-lightbulb" style="width: 32px; font-size: 1.15rem;"></i> Đề xuất sách
         </a>
 
+        <% 
+            String userRole = (session != null) ? (String) session.getAttribute("role") : null;
+            if (userRole == null) {
+                userRole = "Admin"; // Fallback để test local
+            }
+            if ("Admin".equals(userRole)) {
+        %>
         <a href="${pageContext.request.contextPath}/AuditLogs" 
            class="nav-link text-dark fw-medium d-flex align-items-center mb-1 rounded py-2 px-3 menu-link <%= currentURL.contains("/AuditLogs") ? "active" : "" %>">
             <i class="fa-solid fa-clock-rotate-left" style="width: 32px; font-size: 1.15rem;"></i> Audit Logs
         </a>
+        <% } %>
 
     </div>
 </div>

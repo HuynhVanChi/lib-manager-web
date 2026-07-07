@@ -12,54 +12,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <style>
-        :root {
-            --primary:       #312E81;
-            --primary-light: #4338CA;
-            --primary-soft:  #EEF2FF;
-            --secondary:     #A78BFA;
-            --bg-page:       #F9FAFB;
-            --text-dark:     #111827;
-            --text-muted:    #6B7280;
-            --border:        #E5E7EB;
-            --radius:        10px;
-        }
-
-        body { background-color: var(--bg-page); font-family: 'Inter', sans-serif; }
-
-        /* ── Override Bootstrap primary ── */
-        .btn-primary  { background-color: var(--primary); border-color: var(--primary); }
-        .btn-primary:hover { background-color: var(--primary-light); border-color: var(--primary-light); }
-        .text-primary { color: var(--primary) !important; }
-        .bg-primary   { background-color: var(--primary) !important; }
-
-        /* ── Breadcrumb ── */
-        .breadcrumb { font-size: .82rem; margin: 0; }
-        .breadcrumb-item a { color: var(--text-muted); text-decoration: none; }
-        .breadcrumb-item a:hover { color: var(--primary); }
-        .breadcrumb-item.active { color: var(--primary); font-weight: 600; }
-        .breadcrumb-item + .breadcrumb-item::before { color: var(--text-muted); }
-
-        /* ── Card chung ── */
-        .detail-card {
-            border: none;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
-            margin-bottom: 20px;
-        }
-        .detail-card-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            font-size: .8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .7px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         /* ── Hero banner độc giả ── */
         .reader-hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -104,14 +58,8 @@
         }
         .reader-hero-email { color: rgba(255,255,255,.75); font-size: .85rem; margin-top: 3px; }
 
-        /* ── Badges trạng thái ── */
-        .badge-status {
-            font-size: .72rem; font-weight: 600;
-            padding: 4px 12px; border-radius: 20px; letter-spacing: .3px;
-        }
-        .badge-active    { background: rgba(255,255,255,.2); color: #fff; border: 1px solid rgba(255,255,255,.3); }
-        .badge-suspended { background: #FEF9C3; color: #854D0E; }
-        .badge-expired   { background: #F3F4F6; color: #4B5563; }
+        /* ── Badges trạng thái ghi đè trong Hero banner ── */
+        .reader-hero .badge-active { background: rgba(255,255,255,.2); color: #fff; border: 1px solid rgba(255,255,255,.3); }
 
         /* ── Info pills bên trong hero ── */
         .hero-pill {
@@ -183,70 +131,16 @@
         .info-value { font-size: .9rem; font-weight: 500; color: var(--text-dark); }
         .info-value.empty { color: var(--text-muted); font-style: italic; font-weight: 400; }
 
-        /* ── Bảng lịch sử mượn ── */
-        .history-table { border-collapse: separate; border-spacing: 0; width: 100%; }
-        .history-table thead th {
-            background-color: var(--primary-soft);
-            color: var(--primary);
-            font-weight: 600;
-            font-size: .78rem;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            padding: 11px 16px;
-            border: none;
-            white-space: nowrap;
-        }
-        .history-table thead th:first-child { border-radius: 8px 0 0 8px; }
-        .history-table thead th:last-child  { border-radius: 0 8px 8px 0; }
-        .history-table tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background-color .12s;
-        }
-        .history-table tbody tr:last-child { border-bottom: none; }
-        .history-table tbody tr:hover { background-color: #F5F3FF; }
-        .history-table tbody td {
-            padding: 12px 16px;
-            font-size: .85rem;
-            color: var(--text-dark);
-            vertical-align: middle;
-        }
-
         /* ── Badge trạng thái mượn ── */
         .borrow-badge {
             font-size: .7rem; font-weight: 600;
             padding: 3px 9px; border-radius: 20px;
+            display: inline-block;
         }
         .borrow-borrowing { background: #DBEAFE; color: #1D4ED8; }
         .borrow-returned  { background: #DCFCE7; color: #15803D; }
         .borrow-overdue   { background: #FEE2E2; color: #DC2626; }
         .borrow-lost      { background: #F3F4F6; color: #4B5563; }
-
-        /* ── Empty state ── */
-        .empty-state {
-            padding: 48px 20px; text-align: center; color: var(--text-muted);
-        }
-        .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .3; }
-
-        /* ── Action buttons ── */
-        .btn-edit {
-            background-color: var(--primary); border-color: var(--primary);
-            color: #fff; border-radius: 8px;
-            padding: 9px 22px; font-weight: 600; font-size: .875rem;
-            transition: all .2s; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 7px;
-        }
-        .btn-edit:hover {
-            background-color: var(--primary-light); color: #fff;
-            box-shadow: 0 4px 12px rgba(49,46,129,.3); transform: translateY(-1px);
-        }
-        .btn-back {
-            border: 1.5px solid var(--border); border-radius: 8px;
-            padding: 9px 20px; font-size: .875rem;
-            color: var(--text-dark); background: #fff;
-            transition: all .2s; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 7px;
-        }
-        .btn-back:hover { background: var(--bg-page); border-color: #9CA3AF; color: var(--text-dark); }
 
         /* ── Overdue date highlight ── */
         .date-overdue { color: #DC2626; font-weight: 600; }
@@ -286,12 +180,12 @@
                 <div class="d-flex gap-2">
                     <a href="${pageContext.request.contextPath}/readers/edit?id=${reader.readerId}"
                        id="btn-edit-reader"
-                       class="btn-edit">
+                       class="btn-edit hover-lift">
                         <i class="fa-solid fa-user-pen"></i> Chỉnh sửa
                     </a>
                     <a href="${pageContext.request.contextPath}/readers"
                        id="btn-back"
-                       class="btn-back">
+                       class="btn-back hover-lift">
                         <i class="fa-solid fa-arrow-left"></i> Quay lại
                     </a>
                 </div>
@@ -489,7 +383,7 @@
                     <c:choose>
                         <c:when test="${not empty borrowHistory}">
                             <div class="table-responsive">
-                                <table class="history-table">
+                                <table class="table-custom">
                                     <thead>
                                         <tr>
                                             <th>#</th>

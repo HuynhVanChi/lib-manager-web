@@ -12,145 +12,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <style>
-        :root {
-            --primary:       #312E81;
-            --primary-light: #4338CA;
-            --primary-soft:  #EEF2FF;
-            --secondary:     #A78BFA;
-            --bg-page:       #F9FAFB;
-            --text-dark:     #111827;
-            --text-muted:    #6B7280;
-            --border:        #E5E7EB;
-            --radius:        10px;
-        }
-
-        body { background-color: var(--bg-page); font-family: 'Inter', sans-serif; }
-
-        /* ── Override Bootstrap primary ── */
-        .btn-primary { background-color: var(--primary); border-color: var(--primary); }
-        .btn-primary:hover { background-color: var(--primary-light); border-color: var(--primary-light); }
-        .btn-outline-primary { color: var(--primary); border-color: var(--primary); }
-        .btn-outline-primary:hover { background-color: var(--primary); border-color: var(--primary); }
-        .text-primary { color: var(--primary) !important; }
-        .bg-primary { background-color: var(--primary) !important; }
-
-        /* ── Card ── */
-        .card-main {
-            border: none;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
-        }
-
-        /* ── Toolbar: search + filter ── */
-        .toolbar { gap: 10px; }
-        .search-input {
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 14px 8px 38px;
-            font-size: .9rem;
-            transition: border-color .2s, box-shadow .2s;
-            background: #fff;
-            min-width: 260px;
-            height: 40px;
-            box-sizing: border-box;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(49,46,129,.1);
-        }
-        .search-wrapper { position: relative; }
-        .search-icon {
-            position: absolute;
-            left: 11px; top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: .85rem;
-            pointer-events: none;
-        }
-        .filter-select {
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: .9rem;
-            background: #fff;
-            transition: border-color .2s;
-            cursor: pointer;
-            height: 40px;
-            box-sizing: border-box;
-        }
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(49,46,129,.1);
-        }
-        .toolbar .btn {
-            height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-        }
-
-        /* ── Table ── */
-        .reader-table { border-collapse: separate; border-spacing: 0; width: 100%; }
-        .reader-table thead th {
-            background-color: var(--primary-soft);
-            color: var(--primary);
-            font-weight: 600;
-            font-size: .8rem;
-            text-transform: uppercase;
-            letter-spacing: .6px;
-            padding: 12px 16px;
-            border: none;
-            white-space: nowrap;
-        }
-        .reader-table thead th:first-child { border-radius: 8px 0 0 8px; }
-        .reader-table thead th:last-child  { border-radius: 0 8px 8px 0; }
-
-        .reader-table tbody tr {
-            transition: background-color .15s ease;
-            border-bottom: 1px solid var(--border);
-        }
-        .reader-table tbody tr:last-child { border-bottom: none; }
-        .reader-table tbody tr:hover { background-color: #F5F3FF; }
-        .reader-table tbody td {
-            padding: 13px 16px;
-            font-size: .875rem;
-            color: var(--text-dark);
-            vertical-align: middle;
-        }
-
-        .reader-name { font-weight: 600; color: var(--text-dark); }
-        .reader-email { color: var(--text-muted); font-size: .82rem; }
-
-        /* ── Badges trạng thái ── */
-        .badge-status {
-            font-size: .72rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 20px;
-            letter-spacing: .3px;
-        }
-        .badge-active   { background-color: #DCFCE7; color: #15803D; }
-        .badge-suspended{ background-color: #FEF9C3; color: #854D0E; }
-        .badge-expired  { background-color: #F3F4F6; color: #4B5563; }
-
-        /* ── Action buttons ── */
-        .btn-action {
-            width: 32px; height: 32px;
-            display: inline-flex; align-items: center; justify-content: center;
-            border-radius: 7px;
-            border: 1px solid var(--border);
-            background: #fff;
-            color: var(--text-muted);
-            font-size: .8rem;
-            text-decoration: none;
-            transition: all .15s ease;
-        }
-        .btn-action:hover { background: var(--primary-soft); color: var(--primary); border-color: var(--secondary); }
-        .btn-action.danger:hover { background: #FEE2E2; color: #DC2626; border-color: #FECACA; }
 
         /* ── Empty state ── */
         .empty-state { padding: 60px 20px; text-align: center; color: var(--text-muted); }
@@ -180,11 +43,7 @@
             to   { transform: translateX(0);    opacity: 1; }
         }
 
-        /* ── Modal xác nhận xóa ── */
-        .modal-content { border: none; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
-        .modal-header  { border-bottom: 1px solid var(--border); padding: 20px 24px; }
-        .modal-body    { padding: 20px 24px; }
-        .modal-footer  { border-top: 1px solid var(--border); padding: 16px 24px; }
+
 
         /* ── Expiry date color ── */
         .text-expired { color: #DC2626; font-weight: 500; }
@@ -214,7 +73,7 @@
                 </div>
                 <a href="${pageContext.request.contextPath}/readers/add"
                    id="btn-add-reader"
-                   class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm">
+                   class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
                     <i class="fa-solid fa-user-plus"></i>
                     <span>Thêm độc giả</span>
                 </a>
@@ -247,7 +106,7 @@
                             <option value="Expired"   ${statusFilter == 'Expired'   ? 'selected' : ''}>Hết hạn thẻ</option>
                         </select>
 
-                        <button type="submit" id="btn-search" class="btn btn-primary px-3 py-2 rounded-3 fw-medium">
+                        <button type="submit" id="btn-search" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow">
                             <i class="fa-solid fa-filter me-1"></i> Lọc
                         </button>
 
@@ -277,7 +136,7 @@
                     <c:choose>
                         <%-- Có dữ liệu --%>
                         <c:when test="${not empty readers}">
-                            <table class="reader-table">
+                            <table class="table-custom">
                                 <thead>
                                     <tr>
                                         <th style="width:50px">#</th>
@@ -410,7 +269,7 @@
                                 </p>
                                 <c:if test="${empty search and empty statusFilter}">
                                     <a href="${pageContext.request.contextPath}/readers/add"
-                                       class="btn btn-primary rounded-3 px-4 fw-medium">
+                                       class="btn btn-primary rounded-3 px-4 fw-medium hover-lift">
                                         <i class="fa-solid fa-user-plus me-2"></i>Thêm độc giả đầu tiên
                                     </a>
                                 </c:if>
@@ -457,14 +316,14 @@
             <div class="modal-footer">
                 <button type="button"
                         id="btn-cancel-delete"
-                        class="btn btn-outline-secondary rounded-3 px-4 fw-medium"
+                        class="btn btn-cancel hover-lift"
                         data-bs-dismiss="modal">
                     Hủy
                 </button>
                 <form id="delete-form" method="post" action="" class="m-0">
                     <button type="submit"
                             id="btn-confirm-delete"
-                            class="btn btn-danger rounded-3 px-4 fw-semibold">
+                            class="btn btn-danger hover-lift">
                         <i class="fa-solid fa-trash-can me-1"></i> Xác nhận xóa
                     </button>
                 </form>

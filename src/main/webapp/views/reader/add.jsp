@@ -12,37 +12,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <style>
-        :root {
-            --primary:       #312E81;
-            --primary-light: #4338CA;
-            --primary-soft:  #EEF2FF;
-            --secondary:     #A78BFA;
-            --bg-page:       #F9FAFB;
-            --text-dark:     #111827;
-            --text-muted:    #6B7280;
-            --border:        #E5E7EB;
-            --border-focus:  #312E81;
-            --error:         #DC2626;
-            --error-bg:      #FEF2F2;
-            --error-border:  #FECACA;
-            --radius:        10px;
-        }
-
-        body { background-color: var(--bg-page); font-family: 'Inter', sans-serif; }
-
-        /* ── Override Bootstrap primary ── */
-        .btn-primary  { background-color: var(--primary); border-color: var(--primary); }
-        .btn-primary:hover { background-color: var(--primary-light); border-color: var(--primary-light); }
-        .text-primary { color: var(--primary) !important; }
-
-        /* ── Breadcrumb ── */
-        .breadcrumb { font-size: .82rem; margin: 0; }
-        .breadcrumb-item a { color: var(--text-muted); text-decoration: none; }
-        .breadcrumb-item a:hover { color: var(--primary); }
-        .breadcrumb-item.active { color: var(--primary); font-weight: 600; }
-        .breadcrumb-item + .breadcrumb-item::before { color: var(--text-muted); }
-
         /* ── Card form ── */
         .form-card {
             border: none;
@@ -124,38 +95,6 @@
             font-size: .875rem;
             color: var(--error);
             margin-bottom: 20px;
-        }
-
-        /* ── Action buttons ── */
-        .btn-save {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: #fff;
-            border-radius: 8px;
-            padding: 10px 28px;
-            font-weight: 600;
-            font-size: .9rem;
-            transition: all .2s;
-        }
-        .btn-save:hover {
-            background-color: var(--primary-light);
-            border-color: var(--primary-light);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(49,46,129,.3);
-            transform: translateY(-1px);
-        }
-        .btn-cancel {
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 24px;
-            font-size: .9rem;
-            color: var(--text-dark);
-            background: #fff;
-            transition: all .2s;
-        }
-        .btn-cancel:hover {
-            background: var(--bg-page);
-            border-color: #9CA3AF;
         }
     </style>
 </head>
@@ -349,12 +288,12 @@
 
                         <%-- ── FOOTER: Nút hành động ── --%>
                         <div class="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
-                            <button type="submit" id="btn-save" class="btn btn-save">
+                            <button type="submit" id="btn-save" class="btn btn-save hover-lift">
                                 <i class="fa-solid fa-floppy-disk me-2"></i>Lưu độc giả
                             </button>
                             <a href="${pageContext.request.contextPath}/readers"
                                id="btn-cancel"
-                               class="btn btn-cancel text-decoration-none">
+                               class="btn btn-cancel text-decoration-none hover-lift">
                                 <i class="fa-solid fa-arrow-left me-2"></i>Hủy
                             </a>
                             <span class="text-muted ms-auto" style="font-size:.78rem;">

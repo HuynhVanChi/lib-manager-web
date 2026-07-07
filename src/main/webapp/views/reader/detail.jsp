@@ -14,93 +14,7 @@
 
     <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <style>
-        /* ── Hero banner độc giả ── */
-        .reader-hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: var(--radius);
-            padding: 28px 28px 24px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        .reader-hero::after {
-            content: '';
-            position: absolute;
-            right: -30px; top: -30px;
-            width: 180px; height: 180px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.06);
-        }
-        .reader-hero::before {
-            content: '';
-            position: absolute;
-            right: 60px; bottom: -50px;
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.04);
-        }
-        .reader-avatar {
-            width: 64px; height: 64px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem;
-            color: #fff;
-            flex-shrink: 0;
-            border: 2px solid rgba(255,255,255,.3);
-        }
-        .reader-hero-name {
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: #fff;
-            margin: 0;
-            line-height: 1.3;
-        }
-        .reader-hero-email { color: rgba(255,255,255,.75); font-size: .85rem; margin-top: 3px; }
-
-        /* ── Badges trạng thái ghi đè trong Hero banner ── */
-        .reader-hero .badge-active { background: rgba(255,255,255,.2); color: #fff; border: 1px solid rgba(255,255,255,.3); }
-
-        /* ── Info pills bên trong hero ── */
-        .hero-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,.12);
-            border-radius: 20px; padding: 4px 12px;
-            font-size: .78rem; color: rgba(255,255,255,.85);
-        }
-        .hero-pill i { font-size: .7rem; }
-
-        /* ── Stat cards ── */
-        .stat-card {
-            border: none;
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            display: flex; flex-direction: column;
-            gap: 6px;
-            box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.04);
-            transition: transform .15s ease, box-shadow .15s ease;
-        }
-        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.1); }
-        .stat-card .stat-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-        .stat-card .stat-label {
-            font-size: .75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            opacity: .75;
-        }
-        .stat-card .stat-icon {
-            width: 36px; height: 36px;
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: .95rem;
-            margin-bottom: 4px;
-        }
-
+        /* ── Stat cards colors ── */
         .stat-total    { background: var(--primary-soft); color: var(--primary); }
         .stat-total    .stat-icon { background: rgba(49,46,129,.12); color: var(--primary); }
 
@@ -112,35 +26,6 @@
 
         .stat-fines    { background: #FFFBEB; color: #92400E; }
         .stat-fines    .stat-icon { background: rgba(146,64,14,.12); color: #92400E; }
-
-        /* ── Info grid trong card thông tin ── */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-        .info-row {
-            display: flex; flex-direction: column;
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-        }
-        .info-row:nth-child(even)  { border-right: none; }
-        .info-row:nth-last-child(-n+2) { border-bottom: none; }
-        .info-label {
-            font-size: .72rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: .5px;
-            color: var(--text-muted); margin-bottom: 4px;
-        }
-        .info-value { font-size: .9rem; font-weight: 500; color: var(--text-dark); }
-        .info-value.empty { color: var(--text-muted); font-style: italic; font-weight: 400; }
-
-        /* ── Badge trạng thái mượn ── */
-        .borrow-badge {
-            font-size: .7rem; font-weight: 600;
-            padding: 3px 9px; border-radius: 20px;
-            display: inline-block;
-        }
-        .borrow-borrowing { background: #DBEAFE; color: #1D4ED8; }
-        .borrow-returned  { background: #DCFCE7; color: #15803D; }
-        .borrow-overdue   { background: #FEE2E2; color: #DC2626; }
-        .borrow-lost      { background: #F3F4F6; color: #4B5563; }
 
         /* ── Overdue date highlight ── */
         .date-overdue { color: #DC2626; font-weight: 600; }
@@ -194,16 +79,16 @@
             <%-- ════════════════════════════════════════ --%>
             <%-- HERO BANNER — Thông tin nhanh độc giả   --%>
             <%-- ════════════════════════════════════════ --%>
-            <div class="reader-hero">
+            <div class="details-hero">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="reader-avatar">
+                    <div class="details-avatar">
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <div>
-                        <h2 class="reader-hero-name">
+                        <h2 class="details-hero-name">
                             <c:out value="${reader.fullName}"/>
                         </h2>
-                        <div class="reader-hero-email">
+                        <div class="details-hero-email">
                             <i class="fa-solid fa-envelope me-1" style="font-size:.75rem;"></i>
                             <c:out value="${reader.email}"/>
                         </div>
@@ -232,22 +117,22 @@
 
                 <%-- Thông tin nhanh dạng pill --%>
                 <div class="d-flex gap-2 flex-wrap">
-                    <span class="hero-pill">
+                    <span class="details-hero-pill">
                         <i class="fa-solid fa-hashtag"></i> ID: ${reader.readerId}
                     </span>
                     <c:if test="${not empty reader.phone}">
-                        <span class="hero-pill">
+                        <span class="details-hero-pill">
                             <i class="fa-solid fa-phone"></i>
                             <c:out value="${reader.phone}"/>
                         </span>
                     </c:if>
                     <c:if test="${reader.membershipExpiredAt != null}">
-                        <span class="hero-pill">
+                        <span class="details-hero-pill">
                             <i class="fa-solid fa-id-card"></i>
                             Hạn thẻ: <fmt:formatDate value="${reader.membershipExpiredAt}" pattern="dd/MM/yyyy"/>
                         </span>
                     </c:if>
-                    <span class="hero-pill">
+                    <span class="details-hero-pill">
                         <i class="fa-regular fa-calendar-plus"></i>
                         Tạo: <fmt:formatDate value="${reader.createdAt}" pattern="dd/MM/yyyy"/>
                     </span>
@@ -432,27 +317,27 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${h.borrowStatus == 'Borrowing'}">
-                                                            <span class="borrow-badge borrow-borrowing">
+                                                            <span class="badge-status badge-info-custom">
                                                                 <i class="fa-solid fa-book-open me-1" style="font-size:.6rem;"></i>Đang mượn
                                                             </span>
                                                         </c:when>
                                                         <c:when test="${h.borrowStatus == 'Returned'}">
-                                                            <span class="borrow-badge borrow-returned">
+                                                            <span class="badge-status badge-active">
                                                                 <i class="fa-solid fa-check me-1" style="font-size:.6rem;"></i>Đã trả
                                                             </span>
                                                         </c:when>
                                                         <c:when test="${h.borrowStatus == 'Overdue'}">
-                                                            <span class="borrow-badge borrow-overdue">
+                                                            <span class="badge-status badge-danger-custom">
                                                                 <i class="fa-solid fa-triangle-exclamation me-1" style="font-size:.6rem;"></i>Quá hạn
                                                             </span>
                                                         </c:when>
                                                         <c:when test="${h.borrowStatus == 'Lost'}">
-                                                            <span class="borrow-badge borrow-lost">
+                                                            <span class="badge-status badge-expired">
                                                                 <i class="fa-solid fa-circle-xmark me-1" style="font-size:.6rem;"></i>Báo mất
                                                             </span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <span class="borrow-badge borrow-lost">
+                                                            <span class="badge-status badge-expired">
                                                                 <c:out value="${h.borrowStatus}"/>
                                                             </span>
                                                         </c:otherwise>

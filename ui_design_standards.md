@@ -313,11 +313,160 @@ setTimeout(closeToast, 4000);
 
 ---
 
-## 11. Những điều Lưu ý (Checklist cho Lập trình viên)
+## 11. Hệ thống Thanh điều hướng (Premium Sidebar)
+Thanh điều hướng bên trái được thiết kế cố định sát mép trái (`position: fixed`) theo dải màu Gradient chuyển tiếp dọc từ màu tối đậm (`#1E1B4B`) sang màu tím sáng hover (`var(--primary-light)` - `#4338CA`) với độ tương phản văn bản cao, hiệu ứng hover nhấc nhẹ 3D tỏa bóng, vạch chỉ vị trí active màu tím Lavender (`var(--secondary)`), và **2 họa tiết hình tròn mờ đặt lệch ở góc dưới nền** để tạo chiều sâu thẩm mỹ ở vùng chân trang. Nội dung chính của trang (`<main>`) đứng cạnh sidebar sẽ tự động được đẩy lùi `260px` sang phải để tránh đè lấp nhờ quy tắc chọn `.sidebar-custom + main` toàn cục.
+
+### Cấu trúc mã HTML mẫu cho Sidebar:
+```html
+<div class="d-flex flex-column vh-100 sticky-top shadow-lg sidebar-scroll sidebar-custom">
+    <!-- Tiêu đề & Logo -->
+    <div class="p-4 d-flex align-items-center mb-1 logo-area">
+        <i class="fa-solid fa-book-open-reader fs-3 me-3"></i>
+        <span class="fs-4 fw-bold">LibraryOS</span>
+    </div>
+    
+    <!-- Danh sách Menu -->
+    <div class="nav flex-column px-3 mb-auto">
+        <a href="/dashboard" class="nav-link d-flex align-items-center mb-1 rounded py-2 px-3 menu-link active">
+            <i class="fa-solid fa-chart-pie" style="width: 32px; font-size: 1.15rem;"></i> Dashboard
+        </a>
+        <!-- Các liên kết khác... -->
+    </div>
+</div>
+```
+
+---
+
+## 12. Thẻ Thông kê Nhanh (Quick Stats Cards)
+Mẫu thẻ hiển thị các số liệu thống kê nhanh (Quick Stats) được chuẩn hóa về cấu trúc khung, đổ bóng, bo góc và hiệu ứng chuyển động rê chuột trong `style.css`. Tông màu nền và màu biểu tượng không được gộp vào tệp CSS chung để đảm bảo tính tùy biến màu sắc linh hoạt theo nghiệp vụ của từng tính năng.
+
+### Cấu trúc mã HTML mẫu cho Thẻ Thống kê:
+```html
+<div class="stat-card [class-mau-tuy-bien] h-100">
+    <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+        <span class="stat-label">[Nhãn Tiêu Đề]</span>
+        <!-- Hộp biểu tượng nhỏ gọn -->
+        <div class="stat-icon m-0">
+            <i class="fa-solid fa-[icon-name]"></i>
+        </div>
+    </div>
+    <!-- Số liệu chính -->
+    <div class="stat-value">[Giá trị số]</div>
+</div>
+```
+
+### Cách áp dụng Lớp Màu tùy biến cục bộ (Inline/Style Block của JSP):
+```css
+/* Chỉ cấu hình thuộc tính màu sắc nền và chữ */
+.stat-total    { background: var(--primary-soft); color: var(--primary); }
+.stat-total    .stat-icon { background: rgba(49,46,129,.12); color: var(--primary); }
+
+.stat-active   { background: #F0FDF4; color: #15803D; }
+.stat-active   .stat-icon { background: rgba(21,128,61,.12); color: #15803D; }
+```
+
+---
+
+---
+
+## 13. Biểu mẫu Nhập liệu chuẩn hóa (Standardized Forms)
+Toàn bộ hệ thống Form (Card form, input text, select option, validation state error, field-error feedback, form-hint và section-divider) đều đã được tập trung hóa trong `style.css` để bảo đảm độ đồng bộ trải nghiệm nhập dữ liệu cao cấp.
+
+### Cấu trúc mã HTML mẫu cho Biểu mẫu Form:
+```html
+<div class="card form-card">
+    <!-- Header của card form có dải màu Gradient -->
+    <div class="card-header form-card-header text-white d-flex align-items-center justify-content-between">
+        <div>
+            <h5 class="mb-0 fw-bold">[Tiêu Đề Biểu Mẫu]</h5>
+            <!-- Meta badge hiển thị ID/Ngày tạo nếu là form Edit -->
+            <div class="header-meta-badge">
+                <i class="fa-solid fa-hashtag"></i> ID: 123
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <!-- Division Section -->
+        <div class="section-divider">Thông tin cơ bản</div>
+        
+        <div class="mb-3">
+            <label class="form-label">Họ và tên <span class="required-mark">*</span></label>
+            <input type="text" class="form-control" placeholder="Nhập tên..." required>
+            <!-- Lớp lỗi invalid (nếu backend phát hiện lỗi) -->
+            <input type="text" class="form-control is-invalid">
+            <div class="field-error">
+                <i class="fa-solid fa-circle-exclamation"></i> Tên không hợp lệ
+            </div>
+            <!-- Lớp hiển thị chú thích nhỏ -->
+            <div class="form-hint">Nhập đầy đủ cả họ và tên đệm.</div>
+        </div>
+    </div>
+</div>
+```
+
+---
+
+## 14. Trang Chi tiết thông tin chuẩn hóa (Standardized Details Pages)
+Trang chi tiết đối tượng (như chi tiết độc giả, chi tiết sách...) được đồng bộ thông qua các thành phần: Banner Hero đầu trang, Lưới thông tin Metadata (`.info-grid`) và Danh sách Metadata hàng ngang (`.info-list`).
+
+### Cấu trúc mã HTML mẫu cho Banner Hero của trang Chi tiết:
+```html
+<div class="details-hero">
+    <div class="d-flex align-items-center gap-3 mb-3">
+        <!-- Avatar đại diện hình tròn -->
+        <div class="details-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div>
+            <h2 class="details-hero-name">[Tên Đối Tượng]</h2>
+            <div class="details-hero-email">[Thông tin phụ / Email]</div>
+        </div>
+        <!-- Trạng thái nổi trong Hero -->
+        <div class="ms-auto">
+            <span class="badge-status badge-active">Hoạt động</span>
+        </div>
+    </div>
+    <!-- Các pill thông tin nhanh -->
+    <div class="d-flex gap-2 flex-wrap">
+        <span class="details-hero-pill"><i class="fa-solid fa-hashtag"></i> ID: 123</span>
+    </div>
+</div>
+```
+
+### Cấu trúc Lưới 2 Cột hiển thị Metadata (.info-grid):
+Dành cho thông tin chi tiết nằm trong khối thẻ `.card` có viền ngăn giữa các ô thông tin:
+```html
+<div class="info-grid">
+    <div class="info-row">
+        <span class="info-label">Mã độc giả</span>
+        <span class="info-value">1001</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">Số điện thoại</span>
+        <!-- Lớp empty nếu không có dữ liệu để in nghiêng mờ -->
+        <span class="info-value empty">Chưa cung cấp</span>
+    </div>
+</div>
+```
+
+### Cấu trúc Danh sách hàng dọc (.info-list):
+Dành cho thông tin dạng dòng (nhãn bên trái, giá trị bên phải):
+```html
+<div class="info-list">
+    <div class="info-list-row">
+        <span class="info-list-label">Ngày tạo thẻ</span>
+        <span class="info-list-value">01/01/2026</span>
+    </div>
+</div>
+```
+
+---
+
+## 15. Những điều Lưu ý (Checklist cho Lập trình viên)
 
 *   [x] **NÊN:** Luôn nhúng `style.css` dưới cùng trong khối `<head>` sau Bootstrap.
 *   [x] **NÊN:** Kết hợp các class cơ bản và class chuyển động (VD: `class="btn btn-cancel hover-lift"`).
-*   [x] **NÊN:** Sử dụng lưới `.meta-grid` cho các thông tin chung thay vì tự chia dòng bảng thủ công.
+*   [x] **NÊN:** Sử dụng lưới `.meta-grid` hoặc `.info-grid` cho các thông tin chung thay vì tự chia dòng bảng thủ công.
 *   [x] **NÊN:** Sử dụng tiền tố `${pageContext.request.contextPath}` trước liên kết dẫn tới `/assets/css/style.css`.
 *   [ ] **KHÔNG NÊN:** Viết cứng mã màu hexa vào các thẻ style cục bộ. Hãy sử dụng các biến màu CSS có sẵn (Design Tokens).
 *   [ ] **KHÔNG NÊN:** Sử dụng class chuyển động `.hover-lift` cho các nút lọc dữ liệu ở toolbar để tránh làm dịch chuyển dòng tìm kiếm gây khó chịu cho người dùng. Hãy dùng `.hover-glow`.

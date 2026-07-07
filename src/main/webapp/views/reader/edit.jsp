@@ -13,121 +13,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
-    <style>
-        /* ── Card form ── */
-        .form-card {
-            border: none;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
-            max-width: 1000px;
-        }
-        .form-card-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: var(--radius) var(--radius) 0 0;
-            padding: 24px 28px;
-        }
 
-        /* ── Reader info badge (hiển thị ID và ngày tạo) ── */
-        .reader-meta-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,.15);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: .75rem;
-            color: rgba(255,255,255,.85);
-            margin-top: 8px;
-        }
-
-        /* ── Form fields ── */
-        .form-label {
-            font-size: .83rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 6px;
-        }
-        .required-mark { color: var(--error); margin-left: 3px; }
-
-        .form-control, .form-select {
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: .9rem;
-            transition: border-color .2s, box-shadow .2s;
-            background-color: #fff;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(49,46,129,.1);
-            outline: none;
-        }
-
-        /* ── Trạng thái lỗi ── */
-        .form-control.is-invalid, .form-select.is-invalid {
-            border-color: var(--error);
-            background-image: none;
-        }
-        .form-control.is-invalid:focus, .form-select.is-invalid:focus {
-            box-shadow: 0 0 0 3px rgba(220,38,38,.12);
-        }
-        .field-error {
-            font-size: .78rem;
-            color: var(--error);
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* ── Input hint ── */
-        .form-hint {
-            font-size: .75rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* ── Section divider ── */
-        .section-divider {
-            font-size: .75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .8px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-            margin-bottom: 20px;
-        }
-
-        /* ── Global error banner ── */
-        .global-error {
-            background: var(--error-bg);
-            border: 1.5px solid var(--error-border);
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: .875rem;
-            color: var(--error);
-            margin-bottom: 20px;
-        }
-
-        /* ── Change indicator: highlight field đang thay đổi ── */
-        .form-control.changed, .form-select.changed {
-            border-color: var(--secondary);
-            background-color: #FEFCE8;
-        }
-
-        /* ── Detail link ── */
-        .btn-detail-link {
-            font-size: .82rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: color .15s;
-        }
-        .btn-detail-link:hover { color: var(--primary); }
-    </style>
 </head>
 
 <body class="m-0 p-0">
@@ -178,7 +64,7 @@
                             <h5 class="text-white fw-bold mb-0">
                                 <c:out value="${reader.fullName}"/>
                             </h5>
-                            <div class="reader-meta-badge">
+                            <div class="header-meta-badge">
                                 <i class="fa-solid fa-hashtag" style="font-size:.7rem;"></i>
                                 ID: ${reader.readerId}
                                 &nbsp;·&nbsp;

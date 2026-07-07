@@ -421,3 +421,382 @@ body {
         opacity: 1;
     }
 }
+
+/* ── 12. SIDEBAR CHUẨN HÓA (Premium Dark Sidebar) ── */
+.sidebar-custom {
+    background: linear-gradient(180deg, #1E1B4B 0%, var(--primary-light) 100%) !important;
+    width: 260px;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden !important; /* Khóa cứng cuộn dọc và cuộn ngang, ẩn toàn bộ phần họa tiết tràn */
+    border-right: none !important;
+    position: fixed !important;  /* Nằm cố định trên màn hình, không bị trôi khi cuộn trang */
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    z-index: 1000 !important;
+}
+
+/* Đẩy nội dung main sang bên phải 260px khi có sidebar xuất hiện */
+.sidebar-custom + main {
+    margin-left: 260px !important;
+    width: calc(100% - 260px) !important;
+}
+.sidebar-custom::after {
+    content: '';
+    position: absolute;
+    right: -50px;
+    bottom: -50px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    pointer-events: none; /* Không cản trở click chuột */
+    z-index: 0;
+}
+.sidebar-custom::before {
+    content: '';
+    position: absolute;
+    left: -40px;
+    bottom: 100px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Biểu tượng Logo ở Header */
+.sidebar-custom .logo-area i,
+.sidebar-custom .logo-area span {
+    color: #ffffff !important;
+}
+
+/* Các liên kết menu ở trạng thái bình thường */
+.sidebar-custom .menu-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    padding: 12px 18px !important; /* Tăng độ cao khung hover giúp dễ click */
+    margin-bottom: 10px !important; /* Khoảng cách xa nhau thoáng hơn giữa các tab */
+}
+.sidebar-custom .menu-link i {
+    color: rgba(255, 255, 255, 0.45) !important;
+    transition: color 0.2s ease;
+}
+
+/* Hiệu ứng hover nổi lên, glow bóng và sáng chữ */
+.sidebar-custom .menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+.sidebar-custom .menu-link:hover i {
+    color: #ffffff !important;
+}
+
+/* Trạng thái Tab đang active */
+.sidebar-custom .menu-link.active {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+.sidebar-custom .menu-link.active i {
+    color: var(--secondary) !important; /* Icon đổi sang màu tím lavender sáng */
+}
+/* Vạch định vị màu tím Lavender bên trái */
+.sidebar-custom .menu-link.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 15%;
+    height: 70%;
+    width: 4px;
+    background-color: var(--secondary) !important;
+    border-radius: 0 4px 4px 0;
+}
+
+/* ── 13. STAT CARDS CHUẨN HÓA (Quick Stats Layout) ── */
+.stat-card {
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.04);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,.1);
+}
+.stat-card .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+.stat-card .stat-label {
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    opacity: .75;
+}
+.stat-card .stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .95rem;
+    margin-bottom: 4px;
+}
+
+/* ── 14. FORM CHUẨN HÓA (Standardized Forms) ── */
+.form-card {
+    border: none !important;
+    border-radius: var(--radius) !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05) !important;
+    max-width: 1000px;
+    background: #fff;
+    overflow: hidden;
+}
+.form-card-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%) !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
+    padding: 24px 28px !important;
+}
+.form-label {
+    font-size: .83rem !important;
+    font-weight: 600 !important;
+    color: var(--text-dark) !important;
+    margin-bottom: 6px !important;
+}
+.required-mark {
+    color: var(--error) !important;
+    margin-left: 3px !important;
+}
+.form-control, .form-select {
+    border: 1.5px solid var(--border) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: .9rem !important;
+    transition: border-color .2s, box-shadow .2s !important;
+    background-color: #fff !important;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--border-focus) !important;
+    box-shadow: 0 0 0 3px rgba(49,46,129,.1) !important;
+    outline: none !important;
+}
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: var(--error) !important;
+    background-image: none !important;
+}
+.form-control.is-invalid:focus, .form-select.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(220,38,38,.12) !important;
+}
+.field-error {
+    font-size: .78rem !important;
+    color: var(--error) !important;
+    margin-top: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+.form-hint {
+    font-size: .75rem !important;
+    color: var(--text-muted) !important;
+    margin-top: 4px !important;
+}
+.section-divider {
+    font-size: .75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .8px !important;
+    color: var(--text-muted) !important;
+    border-bottom: 1px solid var(--border) !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 20px !important;
+}
+.global-error {
+    background: var(--error-bg) !important;
+    border: 1.5px solid var(--error-border) !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: .875rem !important;
+    color: var(--error) !important;
+    margin-bottom: 20px !important;
+}
+.header-meta-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: rgba(255,255,255,.15) !important;
+    border-radius: 20px !important;
+    padding: 4px 12px !important;
+    font-size: .75rem !important;
+    color: rgba(255,255,255,.85) !important;
+    margin-top: 8px !important;
+}
+
+/* ── 15. CHI TIẾT TRANG CHUẨN HÓA (Details Page Components) ── */
+.details-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%) !important;
+    border-radius: var(--radius) !important;
+    padding: 28px 28px 24px !important;
+    margin-bottom: 20px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+.details-hero::after {
+    content: '' !important;
+    position: absolute !important;
+    right: -30px !important;
+    top: -30px !important;
+    width: 180px !important;
+    height: 180px !important;
+    border-radius: 50% !important;
+    background: rgba(255,255,255,.06) !important;
+}
+.details-hero::before {
+    content: '' !important;
+    position: absolute !important;
+    right: 60px !important;
+    bottom: -50px !important;
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50% !important;
+    background: rgba(255,255,255,.04) !important;
+}
+.details-avatar {
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 50% !important;
+    background: rgba(255,255,255,.2) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.6rem !important;
+    color: #fff !important;
+    flex-shrink: 0 !important;
+    border: 2px solid rgba(255,255,255,.3) !important;
+}
+.details-hero-name {
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+}
+.details-hero-email {
+    color: rgba(255,255,255,.75) !important;
+    font-size: .85rem !important;
+    margin-top: 3px !important;
+}
+.details-hero-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: rgba(255,255,255,.12) !important;
+    border-radius: 20px !important;
+    padding: 4px 12px !important;
+    font-size: .78rem !important;
+    color: rgba(255,255,255,.85) !important;
+}
+.details-hero-pill i {
+    font-size: .7rem !important;
+}
+
+/* Danh sách Metadata dạng hàng ngang (Label trái, Value phải) */
+.info-list {
+    display: flex !important;
+    flex-direction: column !important;
+}
+.info-list-row {
+    padding: 10px 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: .875rem !important;
+}
+.info-list-row:last-child {
+    border-bottom: none !important;
+}
+.info-list-label {
+    color: var(--text-muted) !important;
+    font-weight: 500 !important;
+}
+.info-list-value {
+    color: var(--text-dark) !important;
+    font-weight: 600 !important;
+}
+
+/* Lưới Metadata hai cột thông tin dạng ô Grid (Thẻ chi tiết) */
+.info-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
+}
+.info-row {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 14px 20px !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-right: 1px solid var(--border) !important;
+}
+.info-row:nth-child(even) {
+    border-right: none !important;
+}
+.info-row:nth-last-child(-n+2) {
+    border-bottom: none !important;
+}
+.info-label {
+    font-size: .72rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .5px !important;
+    color: var(--text-muted) !important;
+    margin-bottom: 4px !important;
+}
+.info-value {
+    font-size: .9rem !important;
+    font-weight: 500 !important;
+    color: var(--text-dark) !important;
+}
+.info-value.empty {
+    color: var(--text-muted) !important;
+    font-style: italic !important;
+    font-weight: 400 !important;
+}
+
+/* Các lớp phụ trợ bổ sung */
+.form-control.changed, .form-select.changed {
+    border-color: var(--secondary) !important;
+    background-color: #FEFCE8 !important;
+}
+.btn-detail-link {
+    font-size: .82rem !important;
+    color: var(--text-muted) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    transition: color .15s !important;
+}
+.btn-detail-link:hover {
+    color: var(--primary) !important;
+}
+
+/* Badge active đè trong Hero banner */
+.details-hero .badge-active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}

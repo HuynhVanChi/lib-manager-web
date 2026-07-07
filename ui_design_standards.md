@@ -54,11 +54,12 @@ Tất cả các nút bấm được tách biệt giữa **Kiểu dáng nút** (B
 ### Lớp kiểu dáng nút cơ sở (Base Classes)
 *   `.btn-primary`, `.btn-save`, `.btn-edit`: Định dạng nút dạng đặc (Solid) màu tím Indigo, chữ trắng, bo góc 8px.
 *   `.btn-danger`: Định dạng nút dạng đặc (Solid) màu đỏ nguy hiểm (cảnh báo, xóa), chữ trắng, bo góc 8px.
+*   `.btn-slate`: Định dạng nút dạng đặc (Solid) màu xám Slate (lưu trữ, thùng rác, lịch sử), chữ trắng, bo góc 8px.
 *   `.btn-back`, `.btn-cancel`: Định dạng nút viền mảnh (Outline), chữ và viền màu tím Indigo, nền trắng.
 *   `.btn-action`: Nút tác vụ dạng icon hình vuông (32x32px) cuối mỗi dòng bảng dữ liệu.
 
 ### Lớp hiệu ứng chuyển động tương tác (Motion Classes)
-*   `.hover-lift`: Khi di chuột vào nút, nút sẽ **nhấc lên 3D** (`translateY(-1px)`) và **tỏa bóng bóng mờ** (màu tím đối với nút thường, màu đỏ đối với nút `.btn-danger`). Thích hợp cho các nút hành động lưu trữ, tạo mới, quay lại, xóa.
+*   `.hover-lift`: Khi di chuột vào nút, nút sẽ **nhấc lên 3D** (`translateY(-1px)`) và **tỏa bóng bóng mờ** (màu tím đối với nút thường, màu đỏ đối với nút `.btn-danger`, màu xám Slate đối với nút `.btn-slate`). Thích hợp cho các nút hành động lưu trữ, tạo mới, quay lại, xóa, khôi phục, thùng rác.
 *   `.hover-glow`: Khi di chuột vào nút, nút sẽ **tỏa bóng mờ** tại chỗ, **không dịch chuyển** (không có `translateY`). Thích hợp cho các nút lọc tác vụ tĩnh trên thanh công cụ tìm kiếm.
 
 ### Ví dụ áp dụng thực tế:
@@ -75,6 +76,13 @@ Tất cả các nút bấm được tách biệt giữa **Kiểu dáng nút** (B
 <a href="..." class="btn-edit hover-lift">
     <i class="fa-solid fa-user-pen me-2"></i> Chỉnh sửa
 </a>
+```
+
+#### Nút Thùng rác / Lưu trữ (Xám Slate + Nâng nổi 3D + Đổ bóng xám):
+```html
+<button type="button" class="btn btn-slate hover-lift">
+    <i class="fa-solid fa-trash-can me-2"></i> Thùng rác
+</button>
 ```
 
 #### Nút Xác nhận xóa (Nguy hiểm + Nâng nổi 3D + Đổ bóng đỏ):
@@ -263,7 +271,49 @@ Mọi hộp thoại xác nhận cảnh báo (đặc biệt là xác nhận xóa)
 
 ---
 
-## 10. Những điều Lưu ý (Checklist cho Lập trình viên)
+## 10. Hệ thống Thông báo nổi (Flash Toasts)
+Toàn bộ thông báo nổi phản hồi kết quả (Thành công, Thất bại) đều được tập trung hóa thiết kế trong `style.css` với hiệu ứng trượt nhẹ từ phải sang trái (`slideIn`).
+
+### Cấu trúc mã HTML mẫu cho Flash Toast:
+```html
+<c:if test="${not empty flashMessage}">
+    <div class="flash-toast ${flashType}" id="flash-toast" role="alert">
+        <span class="toast-icon">
+            <c:choose>
+                <c:when test="${flashType == 'success'}">
+                    <i class="fa-solid fa-circle-check"></i>
+                </c:when>
+                <c:otherwise>
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </c:otherwise>
+            </c:choose>
+        </span>
+        <div class="toast-body small fw-medium m-0">
+            <c:out value="${flashMessage}"/>
+        </div>
+        <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
+    </div>
+</c:if>
+```
+
+### Hàm Javascript đóng tự động và thủ công:
+```javascript
+function closeToast() {
+    const toast = document.getElementById('flash-toast');
+    if (toast) {
+        toast.style.transition = 'opacity .3s ease';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }
+}
+
+// Tự động ẩn sau 4 giây
+setTimeout(closeToast, 4000);
+```
+
+---
+
+## 11. Những điều Lưu ý (Checklist cho Lập trình viên)
 
 *   [x] **NÊN:** Luôn nhúng `style.css` dưới cùng trong khối `<head>` sau Bootstrap.
 *   [x] **NÊN:** Kết hợp các class cơ bản và class chuyển động (VD: `class="btn btn-cancel hover-lift"`).

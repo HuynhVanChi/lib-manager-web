@@ -106,8 +106,10 @@ public class ReaderServlet extends HttpServlet {
         String statusFilter = request.getParameter("status");
 
         List<Reader> readers = dao.findAll(search, statusFilter);
+        List<Reader> deletedReaders = dao.findDeleted();
 
         request.setAttribute("readers", readers);
+        request.setAttribute("deletedReaders", deletedReaders);
         request.setAttribute("search", search);
         request.setAttribute("statusFilter", statusFilter);
 

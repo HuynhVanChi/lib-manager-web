@@ -59,7 +59,7 @@
                             <option value="">Tất cả hành động</option>
                             <option value="INSERT"  ${actionFilter == 'INSERT'  ? 'selected' : ''}>INSERT (Thêm mới)</option>
                             <option value="UPDATE"  ${actionFilter == 'UPDATE'  ? 'selected' : ''}>UPDATE (Chỉnh sửa)</option>
-                            <option value="DELETE"  ${actionFilter == 'DELETE'  ? 'selected' : ''}>DELETE (Xóa mềm)</option>
+                            <option value="DELETE"  ${actionFilter == 'DELETE'  ? 'selected' : ''}>DELETE (Xóa)</option>
                             <option value="RESTORE" ${actionFilter == 'RESTORE' ? 'selected' : ''}>RESTORE (Khôi phục)</option>
                         </select>
 
@@ -133,7 +133,7 @@
                                                         <span class="badge-status badge-info-custom">Chỉnh sửa</span>
                                                     </c:when>
                                                     <c:when test="${log.action == 'DELETE'}">
-                                                        <span class="badge-status badge-danger-custom">Xóa mềm</span>
+                                                        <span class="badge-status badge-danger-custom">Xóa</span>
                                                     </c:when>
                                                     <c:when test="${log.action == 'RESTORE'}">
                                                         <span class="badge-status badge-restore-custom">Khôi phục</span>

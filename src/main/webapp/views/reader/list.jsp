@@ -15,35 +15,6 @@
     <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <style>
 
-        /* ── Empty state ── */
-        .empty-state { padding: 60px 20px; text-align: center; color: var(--text-muted); }
-        .empty-state .icon { font-size: 3rem; margin-bottom: 16px; opacity: .35; }
-
-        /* ── Flash Toast ── */
-        .flash-toast {
-            position: fixed; top: 80px; right: 24px; z-index: 1080;
-            min-width: 320px; max-width: 420px;
-            border-radius: 10px;
-            padding: 14px 18px;
-            display: flex; align-items: flex-start; gap: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,.12);
-            animation: slideIn .3s ease;
-        }
-        .flash-toast.success { background: #F0FDF4; border: 1.5px solid #86EFAC; color: #15803D; }
-        .flash-toast.error   { background: #FEF2F2; border: 1.5px solid #FCA5A5; color: #DC2626; }
-        .flash-toast .toast-icon { font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
-        .flash-toast .toast-close {
-            margin-left: auto; cursor: pointer; opacity: .6;
-            background: none; border: none; font-size: .9rem; line-height: 1;
-            color: inherit; flex-shrink: 0;
-        }
-        .flash-toast .toast-close:hover { opacity: 1; }
-        @keyframes slideIn {
-            from { transform: translateX(30px); opacity: 0; }
-            to   { transform: translateX(0);    opacity: 1; }
-        }
-
-
 
         /* ── Expiry date color ── */
         .text-expired { color: #DC2626; font-weight: 500; }
@@ -71,12 +42,22 @@
                         Danh sách tất cả độc giả đang hoạt động trong hệ thống
                     </p>
                 </div>
-                <a href="${pageContext.request.contextPath}/readers/add"
-                   id="btn-add-reader"
-                   class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <span>Thêm độc giả</span>
-                </a>
+                <div class="d-flex gap-2">
+                    <button type="button"
+                            id="btn-open-archive"
+                            class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                            data-bs-toggle="modal"
+                            data-bs-target="#archiveModal">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Thùng rác</span>
+                    </button>
+                    <a href="${pageContext.request.contextPath}/readers/add"
+                       id="btn-add-reader"
+                       class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Thêm độc giả</span>
+                    </a>
+                </div>
             </div>
 
             <%-- ── CARD CHÍNH ── --%>
@@ -327,6 +308,70 @@
                         <i class="fa-solid fa-trash-can me-1"></i> Xác nhận xóa
                     </button>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%-- ── MODAL DANH SÁCH ĐỘC GIẢ ĐÃ XÓA (Thùng rác) ── --%>
+<div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 36px; height: 36px;">
+                        <i class="fa-solid fa-trash-can text-secondary"></i>
+                    </div>
+                    <h6 class="modal-title fw-bold m-0" id="archiveModalLabel">Thùng rác độc giả</h6>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body p-0">
+                <c:choose>
+                    <c:when test="${not empty deletedReaders}">
+                        <div class="table-responsive">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">ID</th>
+                                        <th>Họ và tên</th>
+                                        <th>Email</th>
+                                        <th>Số điện thoại</th>
+                                        <th class="text-center">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="delReader" items="${deletedReaders}">
+                                        <tr>
+                                            <td><c:out value="${delReader.readerId}"/></td>
+                                            <td><span class="fw-semibold text-dark"><c:out value="${delReader.fullName}"/></span></td>
+                                            <td><c:out value="${delReader.email}"/></td>
+                                            <td><c:out value="${delReader.phone != null ? delReader.phone : '—'}"/></td>
+                                            <td class="text-center">
+                                                <form method="post" action="${pageContext.request.contextPath}/readers/restore" class="m-0 d-inline">
+                                                    <input type="hidden" name="readerId" value="${delReader.readerId}"/>
+                                                    <button type="submit" class="btn-action hover-lift" title="Khôi phục độc giả" style="color: #15803D !important; border-color: #86EFAC !important;">
+                                                        <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="text-center py-5 text-muted">
+                            <i class="fa-regular fa-folder-open fs-2 mb-2 opacity-50"></i>
+                            <p class="small m-0">Thùng rác trống. Không có độc giả nào đã xóa.</p>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>

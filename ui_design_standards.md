@@ -316,13 +316,22 @@ setTimeout(closeToast, 4000);
 ## 11. Hệ thống Thanh điều hướng (Premium Sidebar)
 Thanh điều hướng bên trái được thiết kế cố định sát mép trái (`position: fixed`) theo dải màu Gradient chuyển tiếp dọc từ màu tối đậm (`#1E1B4B`) sang màu tím sáng hover (`var(--primary-light)` - `#4338CA`) với độ tương phản văn bản cao, hiệu ứng hover nhấc nhẹ 3D tỏa bóng, vạch chỉ vị trí active màu tím Lavender (`var(--secondary)`), và **2 họa tiết hình tròn mờ đặt lệch ở góc dưới nền** để tạo chiều sâu thẩm mỹ ở vùng chân trang. Nội dung chính của trang (`<main>`) đứng cạnh sidebar sẽ tự động được đẩy lùi `260px` sang phải để tránh đè lấp nhờ quy tắc chọn `.sidebar-custom + main` toàn cục.
 
+> [!TIP]
+> **Cấu trúc Flexbox cân đối thị giác:** Cụm tiêu đề ở đầu sidebar sử dụng kỹ thuật bọc trong container `.logo-inner` có `width: 100%`, áp dụng `display: flex`, `padding-left: 20px` (để lệch nhẹ sang phải giúp cả khối cân bằng) và `gap: 12px` để điều hướng khoảng cách chuẩn chỉnh giữa Hộp Icon và chữ `LibraryOS`.
+> 
+> **Hiệu ứng đổ bóng cho Icon:** Để tăng độ nổi bật trên nền gradient tím tối, Icon cuốn sách mở sử dụng màu trắng `#ffffff` nguyên bản kết hợp hiệu ứng đổ bóng mờ nhẹ `text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25)` mang lại chiều sâu sắc nét.
+
 ### Cấu trúc mã HTML mẫu cho Sidebar:
 ```html
 <div class="d-flex flex-column vh-100 sticky-top shadow-lg sidebar-scroll sidebar-custom">
-    <!-- Tiêu đề & Logo -->
-    <div class="p-4 d-flex align-items-center mb-1 logo-area">
-        <i class="fa-solid fa-book-open-reader fs-3 me-3"></i>
-        <span class="fs-4 fw-bold">LibraryOS</span>
+    <!-- Tiêu đề & Logo (Khung ngoài 100%, khung trong dùng flex để tùy biến padding/gap) -->
+    <div class="logo-area">
+        <div class="logo-inner">
+            <div class="logo-icon-box">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <span class="logo-text">LibraryOS</span>
+        </div>
     </div>
     
     <!-- Danh sách Menu -->
@@ -468,5 +477,8 @@ Dành cho thông tin dạng dòng (nhãn bên trái, giá trị bên phải):
 *   [x] **NÊN:** Kết hợp các class cơ bản và class chuyển động (VD: `class="btn btn-cancel hover-lift"`).
 *   [x] **NÊN:** Sử dụng lưới `.meta-grid` hoặc `.info-grid` cho các thông tin chung thay vì tự chia dòng bảng thủ công.
 *   [x] **NÊN:** Sử dụng tiền tố `${pageContext.request.contextPath}` trước liên kết dẫn tới `/assets/css/style.css`.
+*   [x] **NÊN:** Sử dụng tệp `header.jsp` tiêu chuẩn để hiển thị tiêu đề động góc trái. Tiêu đề động tự động nhận diện URL gốc từ attribute `javax.servlet.forward.request_uri` (để tránh lỗi forward của Servlet) và ánh xạ sang tên module tương ứng.
+*   [x] **NÊN:** Đặt tên tiêu đề trong phần thân trang (`main container`) khác biệt so với tiêu đề Header để tránh lặp nội dung. Ví dụ: ở trang danh sách nên dùng từ *Danh sách độc giả*, *Danh sách nhật ký hệ thống*... ở trang chi tiết dùng *Hồ sơ độc giả*, trang thêm/sửa dùng *Thêm độc giả mới*, *Chỉnh sửa thông tin độc giả*...
+*   [x] **NÊN:** Đảm bảo thêm thuộc tính `flex-shrink: 0;` cho tất cả khối thông tin tài khoản người dùng và nút Đăng xuất ở góc phải Header để tránh bị bóp méo hình ảnh (avatar tròn bị biến dạng thành hình oval) khi màn hình co giãn.
 *   [ ] **KHÔNG NÊN:** Viết cứng mã màu hexa vào các thẻ style cục bộ. Hãy sử dụng các biến màu CSS có sẵn (Design Tokens).
 *   [ ] **KHÔNG NÊN:** Sử dụng class chuyển động `.hover-lift` cho các nút lọc dữ liệu ở toolbar để tránh làm dịch chuyển dòng tìm kiếm gây khó chịu cho người dùng. Hãy dùng `.hover-glow`.

@@ -37,7 +37,7 @@
             <%-- ── TIÊU ĐỀ TRANG ── --%>
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h1 class="fw-bold m-0 text-dark" style="font-size:1.6rem;">Quản lý Độc giả</h1>
+                    <h1 class="fw-bold m-0 text-dark" style="font-size:1.6rem;">Danh sách Độc giả</h1>
                     <p class="text-muted mb-0 mt-1" style="font-size:.85rem;">
                         Danh sách tất cả độc giả đang hoạt động trong hệ thống
                     </p>

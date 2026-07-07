@@ -29,7 +29,7 @@
 
             <%-- ── TIÊU ĐỀ TRANG ── --%>
             <div class="mb-4">
-                <h1 class="fw-bold m-0 text-dark" style="font-size:1.6rem;">Nhật ký Hệ thống (Audit Logs)</h1>
+                <h1 class="fw-bold m-0 text-dark" style="font-size:1.6rem;">Danh sách nhật ký hệ thống</h1>
                 <p class="text-muted mb-0 mt-1" style="font-size:.85rem;">
                     Giám sát lịch sử thay đổi dữ liệu của toàn bộ thư viện (Chỉ dành cho Admin)
                 </p>

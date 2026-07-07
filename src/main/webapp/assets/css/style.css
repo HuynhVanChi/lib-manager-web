@@ -461,15 +461,49 @@ body {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.08);
     pointer-events: none;
     z-index: 0;
 }
 
-/* Biểu tượng Logo ở Header */
-.sidebar-custom .logo-area i,
-.sidebar-custom .logo-area span {
+/* Biểu tượng Logo ở Sidebar Header */
+.sidebar-custom .logo-area {
+    height: 70px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    margin-bottom: 15px !important;
+}
+.sidebar-custom .logo-inner {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding-left: 20px !important; /* Lệch nhẹ để cả cụm cân đối thị giác, tùy chỉnh dễ dàng */
+    gap: 12px !important; /* Khoảng cách giữa Hộp Logo và Chữ */
+}
+.sidebar-custom .logo-icon-box {
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 8px !important;
+    background: linear-gradient(180deg, #3e2791 0%, var(--primary-light) 60%) !important;
+    color: var(--primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3) !important;
+    flex-shrink: 0 !important;
+}
+.sidebar-custom .logo-icon-box i {
     color: #ffffff !important;
+    font-size: 1.5rem !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25) !important;
+}
+.sidebar-custom .logo-text {
+    color: #ffffff !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px !important;
 }
 
 /* Các liên kết menu ở trạng thái bình thường */

@@ -25,10 +25,14 @@
 <!-- Sidebar dùng class sidebar-custom để áp dụng theme tối đồng bộ -->
 <div class="d-flex flex-column vh-100 sticky-top shadow-lg sidebar-scroll sidebar-custom">
     
-    <!-- Tiêu đề & Logo -->
-    <div class="p-4 d-flex align-items-center mb-1 logo-area">
-        <i class="fa-solid fa-book-open-reader fs-3 me-3"></i>
-        <span class="fs-4 fw-bold" style="letter-spacing: 0.2px;">LibraryOS</span>
+    <!-- Tiêu đề & Logo (Khung ngoài 100%, khung trong dùng flex để tùy biến padding/gap) -->
+    <div class="logo-area">
+        <div class="logo-inner">
+            <div class="logo-icon-box">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <span class="logo-text">LibraryOS</span>
+        </div>
     </div>
 
     <!-- Danh sách Menu (Dùng nav flex-column) -->

@@ -1,3 +1,4 @@
 target
 src/main/resources
 .design_notes
+target/classes/reader/index.class

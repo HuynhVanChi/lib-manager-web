@@ -25,17 +25,33 @@ public class CategoryServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         
+        String query = request.getParameter("query");
+        if (query != null) {
+            query = query.trim();
+        }
+        
         String showTrash = request.getParameter("trash");
         if ("true".equals(showTrash)) {
-            List<Category> deletedList = categoryDAO.findAllDeleted();
+            List<Category> deletedList;
+            if (query != null && !query.isEmpty()) {
+                deletedList = categoryDAO.searchDeleted(query);
+            } else {
+                deletedList = categoryDAO.findAllDeleted();
+            }
             request.setAttribute("deletedCategories", deletedList);
             request.setAttribute("isTrashView", true);
         } else {
-            List<Category> activeList = categoryDAO.findAllActive();
+            List<Category> activeList;
+            if (query != null && !query.isEmpty()) {
+                activeList = categoryDAO.searchActive(query);
+            } else {
+                activeList = categoryDAO.findAllActive();
+            }
             request.setAttribute("activeCategories", activeList);
             request.setAttribute("isTrashView", false);
         }
         
+        request.setAttribute("searchQuery", query);
         request.getRequestDispatcher("/views/categories/categories.jsp").forward(request, response);
     }
 

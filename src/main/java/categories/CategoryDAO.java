@@ -228,4 +228,68 @@ public class CategoryDAO {
         }
         return list;
     }
+
+    /**
+     * Tìm kiếm danh mục đang hoạt động theo tên hoặc mô tả.
+     */
+    public List<Category> searchActive(String query) {
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT * FROM categories WHERE deleted_at IS NULL AND (name LIKE ? OR description LIKE ?) ORDER BY category_id DESC";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            String likeQuery = "%" + query + "%";
+            pstmt.setString(1, likeQuery);
+            pstmt.setString(2, likeQuery);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Category c = new Category();
+                    c.setCategoryId(rs.getInt("category_id"));
+                    c.setName(rs.getString("name"));
+                    c.setDescription(rs.getString("description"));
+                    c.setCreatedAt(rs.getTimestamp("created_at"));
+                    c.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    list.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * Tìm kiếm danh mục đã xóa mềm theo tên hoặc mô tả.
+     */
+    public List<Category> searchDeleted(String query) {
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT * FROM categories WHERE deleted_at IS NOT NULL AND (name LIKE ? OR description LIKE ?) ORDER BY deleted_at DESC";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            String likeQuery = "%" + query + "%";
+            pstmt.setString(1, likeQuery);
+            pstmt.setString(2, likeQuery);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Category c = new Category();
+                    c.setCategoryId(rs.getInt("category_id"));
+                    c.setName(rs.getString("name"));
+                    c.setDescription(rs.getString("description"));
+                    c.setCreatedAt(rs.getTimestamp("created_at"));
+                    c.setDeletedAt(rs.getTimestamp("deleted_at"));
+                    c.setDeletedBy(rs.getInt("deleted_by"));
+                    list.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
+

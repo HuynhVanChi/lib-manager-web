@@ -14,6 +14,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Project CSS -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -22,56 +24,10 @@
             font-family: 'Inter', sans-serif;
             background-color: #F9FAFB;
         }
-        /* Custom Indigo branding matching Colors.md */
-        .bg-indigo-brand {
-            background-color: #312E81 !important;
-        }
-        .text-indigo-brand {
-            color: #312E81 !important;
-        }
-        .btn-indigo-brand {
-            background-color: #312E81;
-            color: #ffffff;
-            border: none;
-            transition: all 0.2s ease-in-out;
-        }
-        .btn-indigo-brand:hover {
-            background-color: #1e1b4b;
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .btn-outline-indigo-brand {
-            border: 2px solid #312E81;
-            color: #312E81;
-            background-color: transparent;
-            font-weight: 600;
-        }
-        .btn-outline-indigo-brand:hover {
-            background-color: #312E81;
-            color: #ffffff;
-        }
-        .table-premium th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            color: #4b5563;
-            background-color: #f3f4f6;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        .table-premium td {
-            font-size: 0.875rem;
-            color: #1f2937;
-        }
         .badge-soft-purple {
             background-color: rgba(167, 139, 250, 0.15);
             color: #6d28d9;
             font-weight: 500;
-        }
-        .card-custom {
-            border: none;
-            border-radius: 12px;
         }
     </style>
 </head>
@@ -121,15 +77,15 @@
                     <div class="d-flex gap-2">
                         <c:choose>
                             <c:when test="${isTrashView}">
-                                <a href="${pageContext.request.contextPath}/categories" class="btn btn-outline-secondary rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium">
+                                <a href="${pageContext.request.contextPath}/categories" class="btn btn-outline-secondary rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium hover-lift">
                                     <i class="fa-solid fa-arrow-left"></i> Quay lại Danh sách
                                 </a>
                             </c:when>
                             <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/categories?trash=true" class="btn btn-outline-danger rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium border-0 shadow-sm bg-white text-danger">
+                                <a href="${pageContext.request.contextPath}/categories?trash=true" class="btn btn-outline-danger rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium border-0 shadow-sm bg-white text-danger hover-lift">
                                     <i class="fa-solid fa-trash-can"></i> Thùng rác
                                 </a>
-                                <button class="btn btn-indigo-brand rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                                <button class="btn btn-primary rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium hover-lift" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                                     <i class="fa-solid fa-plus"></i> Thêm danh mục
                                 </button>
                             </c:otherwise>
@@ -137,102 +93,163 @@
                     </div>
                 </div>
 
-                <!-- Bảng trắng (Card) chứa nội dung chính -->
-                <div class="card card-custom shadow-sm">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle table-premium m-0">
-                                <thead>
-                                    <tr>
-                                        <th class="ps-4 py-3" style="width: 80px;">Mã</th>
-                                        <th style="width: 250px;">Tên Danh Mục</th>
-                                        <th>Mô Tả Chi Tiết</th>
+                <!-- Khối chính (card-main) chứa cả bộ lọc và bảng dữ liệu -->
+                <div class="card-main bg-white">
+                    
+                    <%-- ── TOOLBAR: Tìm kiếm ── --%>
+                    <div class="p-3 border-bottom">
+                        <form method="get" action="${pageContext.request.contextPath}/categories"
+                              class="d-flex align-items-center toolbar flex-wrap">
+                            
+                            <%-- Input tìm kiếm --%>
+                            <div class="search-wrapper">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text"
+                                       id="search-input"
+                                       name="query"
+                                       class="search-input"
+                                       placeholder="Tìm theo tên danh mục, mô tả..."
+                                       value="<c:out value='${searchQuery}'/>">
+                            </div>
+
+                            <%-- Nút Lọc tĩnh --%>
+                            <button type="submit" id="btn-search" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow">
+                                <i class="fa-solid fa-filter me-1"></i> Lọc
+                            </button>
+
+                            <%-- Nút Xóa lọc --%>
+                            <c:if test="${not empty searchQuery}">
+                                <a href="${pageContext.request.contextPath}/categories${isTrashView ? '?trash=true' : ''}"
+                                   id="btn-clear-filter"
+                                   class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none ms-2">
+                                    <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
+                                </a>
+                            </c:if>
+
+                            <%-- Thùng rác indicator ẩn --%>
+                            <c:if test="${isTrashView}">
+                                <input type="hidden" name="trash" value="true">
+                            </c:if>
+                            
+                            <%-- Tổng kết quả --%>
+                            <span class="text-muted ms-auto" style="font-size:.82rem;">
+                                <c:choose>
+                                    <c:when test="${isTrashView}">
                                         <c:choose>
-                                            <c:when test="${isTrashView}">
-                                                <th style="width: 200px;">Ngày Xóa</th>
-                                                <th class="text-end pe-4" style="width: 150px;">Thao tác</th>
+                                            <c:when test="${not empty deletedCategories}">
+                                                Hiển thị <strong>${deletedCategories.size()}</strong> danh mục đã xóa
                                             </c:when>
-                                            <c:otherwise>
-                                                <th style="width: 200px;">Ngày Tạo</th>
-                                                <th class="text-end pe-4" style="width: 180px;">Thao tác</th>
-                                            </c:otherwise>
+                                            <c:otherwise>Không có kết quả</c:otherwise>
                                         </c:choose>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:choose>
+                                            <c:when test="${not empty activeCategories}">
+                                                Hiển thị <strong>${activeCategories.size()}</strong> danh mục
+                                            </c:when>
+                                            <c:otherwise>Không có kết quả</c:otherwise>
+                                        </c:choose>
+                                    </c:otherwise>
+                                </c:choose>
+                            </span>
+                        </form>
+                    </div>
+
+                    <%-- ── BẢNG DANH SÁCH ── --%>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4" style="width: 80px;">Mã</th>
+                                    <th style="width: 250px;">Tên Danh Mục</th>
+                                    <th>Mô Tả Chi Tiết</th>
                                     <c:choose>
                                         <c:when test="${isTrashView}">
-                                            <!-- Hiển thị Thùng rác -->
-                                            <c:choose>
-                                                <c:when test="${empty deletedCategories}">
-                                                    <tr>
-                                                        <td colspan="5" class="text-center py-5 text-muted">
-                                                            <i class="fa-regular fa-trash-can fs-2 mb-3 d-block text-secondary"></i>
-                                                            Thùng rác trống.
-                                                        </td>
-                                                    </tr>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:forEach var="cat" items="${deletedCategories}">
-                                                        <tr>
-                                                            <td class="ps-4 fw-semibold text-secondary">#${cat.categoryId}</td>
-                                                            <td><span class="fw-bold text-indigo-brand">${cat.name}</span></td>
-                                                            <td class="text-muted text-truncate" style="max-width: 350px;">${cat.description}</td>
-                                                            <td>${cat.deletedAt}</td>
-                                                            <td class="text-end pe-4">
-                                                                <button class="btn btn-outline-success btn-sm rounded-3 px-3 py-1.5 fw-medium btn-restore-trigger" 
-                                                                        data-id="${cat.categoryId}" data-name="${cat.name}">
-                                                                    <i class="fa-solid fa-rotate-left me-1"></i> Khôi phục
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
+                                            <th style="width: 200px;">Ngày Xóa</th>
+                                            <th style="width: 140px; text-align: center;">Hành động</th>
                                         </c:when>
                                         <c:otherwise>
-                                            <!-- Hiển thị Danh mục hoạt động -->
-                                            <c:choose>
-                                                <c:when test="${empty activeCategories}">
-                                                    <tr>
-                                                        <td colspan="5" class="text-center py-5 text-muted">
-                                                            <i class="fa-regular fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
-                                                            Chưa có danh mục nào. Hãy bấm "Thêm danh mục" để khởi tạo!
-                                                        </td>
-                                                    </tr>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:forEach var="cat" items="${activeCategories}">
-                                                        <tr>
-                                                            <td class="ps-4 fw-semibold text-secondary">#${cat.categoryId}</td>
-                                                            <td>
-                                                                <span class="badge badge-soft-purple rounded-pill px-3 py-1.5 fs-7">${cat.name}</span>
-                                                            </td>
-                                                            <td class="text-muted" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                                ${cat.description != null && !cat.description.isEmpty() ? cat.description : "Không có mô tả"}
-                                                            </td>
-                                                            <td>${cat.createdAt}</td>
-                                                            <td class="text-end pe-4">
-                                                                <div class="d-flex justify-content-end gap-2">
-                                                                    <button class="btn btn-outline-indigo-brand btn-sm rounded-3 px-2 py-1.5 btn-edit-trigger" 
-                                                                            data-id="${cat.categoryId}" data-name="${cat.name}" data-desc="${cat.description}">
-                                                                        <i class="fa-solid fa-pen-to-square"></i> Sửa
-                                                                    </button>
-                                                                    <button class="btn btn-outline-danger btn-sm rounded-3 px-2 py-1.5 btn-delete-trigger" 
-                                                                            data-id="${cat.categoryId}" data-name="${cat.name}">
-                                                                        <i class="fa-solid fa-trash-can"></i> Xóa
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
+                                            <th style="width: 200px;">Ngày Tạo</th>
+                                            <th style="width: 140px; text-align: center;">Hành động</th>
                                         </c:otherwise>
                                     </c:choose>
-                                </tbody>
-                            </table>
-                        </div>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${isTrashView}">
+                                        <!-- Hiển thị Thùng rác -->
+                                        <c:choose>
+                                            <c:when test="${empty deletedCategories}">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-5 text-muted">
+                                                        <i class="fa-regular fa-trash-can fs-2 mb-3 d-block text-secondary"></i>
+                                                        Thùng rác trống.
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="cat" items="${deletedCategories}">
+                                                    <tr>
+                                                        <td class="ps-4 fw-semibold text-secondary">#${cat.categoryId}</td>
+                                                        <td><span class="fw-bold text-indigo-brand">${cat.name}</span></td>
+                                                        <td class="text-muted text-truncate" style="max-width: 350px;">${cat.description}</td>
+                                                        <td>${cat.deletedAt}</td>
+                                                        <td>
+                                                            <div class="d-flex gap-1 justify-content-center">
+                                                                <button class="btn-action btn-restore-trigger" 
+                                                                        data-id="${cat.categoryId}" data-name="${cat.name}" title="Khôi phục">
+                                                                    <i class="fa-solid fa-rotate-left"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <!-- Hiển thị Danh mục hoạt động -->
+                                        <c:choose>
+                                            <c:when test="${empty activeCategories}">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-5 text-muted">
+                                                        <i class="fa-regular fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
+                                                        Chưa có danh mục nào. Hãy bấm "Thêm danh mục" để khởi tạo!
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="cat" items="${activeCategories}">
+                                                    <tr>
+                                                        <td class="ps-4 fw-semibold text-secondary">#${cat.categoryId}</td>
+                                                        <td>
+                                                            <span class="badge-status badge-restore-custom px-3 py-1.5 fs-7">${cat.name}</span>
+                                                        </td>
+                                                        <td class="text-muted" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                            ${cat.description != null && !cat.description.isEmpty() ? cat.description : "Không có mô tả"}
+                                                        </td>
+                                                        <td>${cat.createdAt}</td>
+                                                        <td>
+                                                            <div class="d-flex gap-1 justify-content-center">
+                                                                <button class="btn-action btn-edit-trigger" 
+                                                                        data-id="${cat.categoryId}" data-name="${cat.name}" data-desc="${cat.description}" title="Sửa">
+                                                                    <i class="fa-solid fa-pen"></i>
+                                                                </button>
+                                                                <button class="btn-action danger btn-delete-trigger" 
+                                                                        data-id="${cat.categoryId}" data-name="${cat.name}" title="Xóa">
+                                                                    <i class="fa-solid fa-trash-can"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

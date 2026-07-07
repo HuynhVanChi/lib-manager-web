@@ -14,6 +14,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Project CSS -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -22,77 +24,24 @@
             font-family: 'Inter', sans-serif;
             background-color: #F9FAFB;
         }
-        /* Custom Indigo branding matching Colors.md */
-        .bg-indigo-brand {
-            background-color: #312E81 !important;
-        }
-        .text-indigo-brand {
-            color: #312E81 !important;
-        }
-        .btn-indigo-brand {
-            background-color: #312E81;
-            color: #ffffff;
-            border: none;
-            transition: all 0.2s ease-in-out;
-        }
-        .btn-indigo-brand:hover {
-            background-color: #1e1b4b;
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .btn-outline-indigo-brand {
-            border: 2px solid #312E81;
-            color: #312E81;
-            background-color: transparent;
-            font-weight: 600;
-        }
-        .btn-outline-indigo-brand:hover {
-            background-color: #312E81;
-            color: #ffffff;
-        }
         
-        /* Stats card styles */
-        .stat-card {
-            border: none;
-            border-radius: 12px;
-            transition: all 0.2s ease-in-out;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
+        /* ── Stat cards colors ── */
+        .stat-total-books { background: var(--primary-soft); color: var(--primary); }
+        .stat-total-books .stat-icon { background: rgba(49,46,129,.12); color: var(--primary); }
 
-        .table-premium th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            color: #4b5563;
-            background-color: #f3f4f6;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        .table-premium td {
-            font-size: 0.875rem;
-            color: #1f2937;
-        }
+        .stat-total-copies { background: #EEF2FF; color: #4338CA; }
+        .stat-total-copies .stat-icon { background: rgba(67,56,202,.12); color: #4338CA; }
+
+        .stat-available-copies { background: #F0FDF4; color: #15803D; }
+        .stat-available-copies .stat-icon { background: rgba(21,128,61,.12); color: #15803D; }
+
+        .stat-damaged-copies { background: #FEF2F2; color: #DC2626; }
+        .stat-damaged-copies .stat-icon { background: rgba(220,38,38,.12); color: #DC2626; }
+        
         .badge-soft-purple {
             background-color: rgba(167, 139, 250, 0.15);
             color: #6d28d9;
             font-weight: 500;
-        }
-        .card-custom {
-            border: none;
-            border-radius: 12px;
         }
         
         /* Modal custom scroll */
@@ -138,201 +87,205 @@
                     }
                 %>
 
+                <%-- ── TIÊU ĐỀ TRANG ── --%>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="fw-bold m-0 text-dark" style="font-size:1.6rem;">Danh sách đầu sách</h1>
+                        <p class="text-muted mb-0 mt-1" style="font-size:.85rem;">
+                            Quản lý danh sách đầu sách trong hệ thống
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="${pageContext.request.contextPath}/books?action=add"
+                           id="btn-add-book"
+                           class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Thêm đầu sách</span>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- ======================================================= -->
                 <!-- 4 SUMMARY CARDS THỐNG KÊ NHANH                          -->
                 <!-- ======================================================= -->
                 <div class="row g-3 mb-4">
                     <!-- Thẻ 1: Tổng đầu sách -->
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="card stat-card shadow-sm h-100">
-                            <div class="card-body d-flex align-items-center p-3">
-                                <div class="icon-box bg-primary bg-opacity-10 text-primary me-3">
-                                    <i class="fa-solid fa-book-bookmark"></i>
-                                </div>
-                                <div>
-                                    <span class="text-muted small fw-medium">Tổng đầu sách</span>
-                                    <h4 class="fw-bold m-0 text-dark mt-1">${totalBooks}</h4>
-                                </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card stat-total-books h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Tổng đầu sách</span>
+                                <div class="stat-icon m-0"><i class="fa-solid fa-book-bookmark"></i></div>
                             </div>
+                            <div class="stat-value">${totalBooks}</div>
                         </div>
                     </div>
 
                     <!-- Thẻ 2: Tổng số cuốn sách -->
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="card stat-card shadow-sm h-100">
-                            <div class="card-body d-flex align-items-center p-3">
-                                <div class="icon-box bg-indigo-brand bg-opacity-10 text-indigo-brand me-3">
-                                    <i class="fa-solid fa-copy"></i>
-                                </div>
-                                <div>
-                                    <span class="text-muted small fw-medium">Tổng số cuốn sách</span>
-                                    <h4 class="fw-bold m-0 text-dark mt-1">${totalCopies}</h4>
-                                </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card stat-total-copies h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Tổng số cuốn sách</span>
+                                <div class="stat-icon m-0"><i class="fa-solid fa-copy"></i></div>
                             </div>
+                            <div class="stat-value">${totalCopies}</div>
                         </div>
                     </div>
 
                     <!-- Thẻ 3: Cuốn sách khả dụng -->
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="card stat-card shadow-sm h-100">
-                            <div class="card-body d-flex align-items-center p-3">
-                                <div class="icon-box bg-success bg-opacity-10 text-success me-3">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </div>
-                                <div>
-                                    <span class="text-muted small fw-medium">Sách khả dụng (trong kho)</span>
-                                    <h4 class="fw-bold m-0 text-dark mt-1">${availableCopies}</h4>
-                                </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card stat-available-copies h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Sách khả dụng (trong kho)</span>
+                                <div class="stat-icon m-0"><i class="fa-solid fa-circle-check"></i></div>
                             </div>
+                            <div class="stat-value">${availableCopies}</div>
                         </div>
                     </div>
 
                     <!-- Thẻ 4: Sách hỏng/mất -->
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="card stat-card shadow-sm h-100">
-                            <div class="card-body d-flex align-items-center p-3">
-                                <div class="icon-box bg-danger bg-opacity-10 text-danger me-3">
-                                    <i class="fa-solid fa-circle-exclamation"></i>
-                                </div>
-                                <div>
-                                    <span class="text-muted small fw-medium">Sách đang hỏng/Mất</span>
-                                    <h4 class="fw-bold m-0 text-dark mt-1">${damagedOrLostCopies}</h4>
-                                </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card stat-damaged-copies h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Sách đang hỏng/Mất</span>
+                                <div class="stat-icon m-0"><i class="fa-solid fa-circle-exclamation"></i></div>
                             </div>
+                            <div class="stat-value">${damagedOrLostCopies}</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ======================================================= -->
-                <!-- BỘ LỌC TÌM KIẾM VÀ NÚT THÊM MỚI                          -->
+                <!-- KHỐI CHÍNH (CARD-MAIN): BỘ LỌC VÀ BẢNG HIỂN THỊ DỮ LIỆU -->
                 <!-- ======================================================= -->
-                <div class="card card-custom shadow-sm mb-4">
-                    <div class="card-body p-3">
-                        <form action="${pageContext.request.contextPath}/books" method="get" class="row g-2 align-items-center">
+                <div class="card-main bg-white">
+                    
+                    <%-- ── TOOLBAR: Tìm kiếm + Lọc ── --%>
+                    <div class="p-3 border-bottom">
+                        <form action="${pageContext.request.contextPath}/books" method="get" class="d-flex align-items-center toolbar flex-wrap">
                             
-                            <!-- Nhập từ khóa -->
-                            <div class="col-12 col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 text-muted rounded-start-3">
-                                        <i class="fa-solid fa-magnifying-glass"></i>
-                                    </span>
-                                    <input type="text" class="form-control border-start-0 rounded-end-3" name="query" value="${selectedQuery}" placeholder="Tìm theo tiêu đề, tác giả, NXB...">
-                                </div>
+                            <%-- Input tìm kiếm --%>
+                            <div class="search-wrapper">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" class="search-input" name="query" value="<c:out value='${selectedQuery}'/>" placeholder="Tìm theo tiêu đề, tác giả, NXB...">
                             </div>
 
-                            <!-- Lọc theo Danh mục -->
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <select class="form-select rounded-3" name="categoryId">
-                                    <option value="">-- Tất cả danh mục --</option>
-                                    <c:forEach var="cat" items="${categoriesList}">
-                                        <option value="${cat.categoryId}" ${cat.categoryId == selectedCategoryId ? 'selected' : ''}>${cat.name}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
+                            <%-- Lọc theo Danh mục --%>
+                            <select class="filter-select" name="categoryId">
+                                <option value="">-- Tất cả danh mục --</option>
+                                <c:forEach var="cat" items="${categoriesList}">
+                                    <option value="${cat.categoryId}" ${cat.categoryId == selectedCategoryId ? 'selected' : ''}>${cat.name}</option>
+                                </c:forEach>
+                            </select>
 
-                            <!-- Nút hành động tìm kiếm -->
-                            <div class="col-12 col-sm-6 col-md-5 d-flex justify-content-md-end gap-2 mt-md-0 mt-2">
-                                <button type="submit" class="btn btn-outline-indigo-brand rounded-3 px-3">
-                                    Tìm kiếm
-                                </button>
-                                <a href="${pageContext.request.contextPath}/books?clearFilters=true" class="btn btn-light rounded-3 px-3">
-                                    Làm mới
+                            <button type="submit" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow">
+                                <i class="fa-solid fa-filter me-1"></i> Lọc
+                            </button>
+
+                            <%-- Nút xóa bộ lọc --%>
+                            <c:if test="${not empty selectedQuery or not empty selectedCategoryId}">
+                                <a href="${pageContext.request.contextPath}/books?clearFilters=true" class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none ms-2">
+                                    <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
                                 </a>
-                                <a href="${pageContext.request.contextPath}/books?action=add" class="btn btn-indigo-brand rounded-3 d-flex align-items-center gap-2 px-3 ms-auto">
-                                    <i class="fa-solid fa-plus"></i> Thêm đầu sách
-                                </a>
-                            </div>
+                            </c:if>
+
+                            <%-- Tổng kết quả --%>
+                            <span class="text-muted ms-auto" style="font-size:.82rem;">
+                                <c:choose>
+                                    <c:when test="${not empty booksList}">
+                                        Hiển thị <strong>${booksList.size()}</strong> đầu sách
+                                    </c:when>
+                                    <c:otherwise>Không có kết quả</c:otherwise>
+                                </c:choose>
+                            </span>
                         </form>
                     </div>
-                </div>
 
-                <!-- ======================================================= -->
-                <!-- BẢNG HIỂN THỊ ĐẦU SÁCH (BOOKS TABLE)                    -->
-                <!-- ======================================================= -->
-                <div class="card card-custom shadow-sm">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle table-premium m-0">
-                                <thead>
-                                    <tr>
-                                        <th class="ps-4 py-3" style="width: 80px;">Mã</th>
-                                        <th>Thông tin sách / Tác giả</th>
-                                        <th style="width: 200px;">Danh mục</th>
-                                        <th style="width: 200px;">NXB & Năm</th>
-                                        <th style="width: 180px;">Số lượng cuốn</th>
-                                        <th class="text-end pe-4" style="width: 320px;">Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:choose>
-                                        <c:when test="${empty booksList}">
+                    <%-- ── BẢNG DANH SÁCH ── --%>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4" style="width: 80px;">Mã</th>
+                                    <th>Thông tin sách / Tác giả</th>
+                                    <th style="width: 180px;">Danh mục</th>
+                                    <th style="width: 180px;">NXB & Năm</th>
+                                    <th style="width: 160px;">Số lượng cuốn</th>
+                                    <th style="width: 160px; text-align: center;">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${empty booksList}">
+                                        <tr>
+                                            <td colspan="6" class="text-center py-5 text-muted">
+                                                <i class="fa-regular fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
+                                                Không tìm thấy đầu sách nào khớp với điều kiện lọc.
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="book" items="${booksList}">
                                             <tr>
-                                                <td colspan="6" class="text-center py-5 text-muted">
-                                                    <i class="fa-regular fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
-                                                    Không tìm thấy đầu sách nào khớp với điều kiện lọc.
+                                                <!-- ID đầu sách -->
+                                                <td class="ps-4 fw-semibold text-secondary">#${book.bookId}</td>
+                                                <!-- Tiêu đề & Tác giả -->
+                                                <td>
+                                                    <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="fw-bold text-indigo-brand fs-6 text-decoration-none hover-underline" style="cursor: pointer;">
+                                                        ${book.title}
+                                                    </a>
+                                                    <div class="text-muted small mt-0.5"><i class="fa-regular fa-user me-1"></i>${book.author}</div>
+                                                </td>
+                                                <!-- Danh mục -->
+                                                <td>
+                                                    <span class="badge-status badge-restore-custom px-3 py-1.5 fs-7">${book.categoryName}</span>
+                                                </td>
+                                                <!-- Nhà xuất bản & Năm -->
+                                                <td class="text-muted">
+                                                    <div>${book.publisher}</div>
+                                                    <div class="small">${book.publishYear != 0 ? book.publishYear : "N/A"}</div>
+                                                </td>
+                                                <!-- Số cuốn sách khả dụng / Tổng số cuốn -->
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${book.totalCopies == 0}">
+                                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-1.5 fw-medium">Chưa nhập cuốn nào</span>
+                                                        </c:when>
+                                                        <c:when test="${book.availableCopies == 0}">
+                                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-3 py-1.5 fw-medium">Hết sách</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-1.5 fw-medium">Còn ${book.availableCopies}/${book.totalCopies} cuốn</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <!-- Thao tác hành động -->
+                                                <td>
+                                                    <div class="d-flex gap-1 justify-content-center">
+                                                        <%-- Bản sao --%>
+                                                        <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}" class="btn-action" title="Bản sao">
+                                                            <i class="fa-solid fa-list-check"></i>
+                                                        </a>
+                                                        <%-- Xem chi tiết --%>
+                                                        <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn-action" title="Xem chi tiết">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </a>
+                                                        <%-- Sửa --%>
+                                                        <a href="${pageContext.request.contextPath}/books?action=edit&id=${book.bookId}" class="btn-action" title="Sửa">
+                                                            <i class="fa-solid fa-pen"></i>
+                                                        </a>
+                                                        <%-- Xóa --%>
+                                                        <button class="btn-action danger btn-delete-book" 
+                                                                data-id="${book.bookId}" data-title="${book.title}" title="Xóa">
+                                                            <i class="fa-solid fa-trash-can"></i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:forEach var="book" items="${booksList}">
-                                                <tr>
-                                                    <!-- ID đầu sách -->
-                                                    <td class="ps-4 fw-semibold text-secondary">#${book.bookId}</td>
-                                                    <!-- Tiêu đề & Tác giả -->
-                                                    <td>
-                                                        <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="fw-bold text-indigo-brand fs-6 text-decoration-none hover-underline" style="cursor: pointer;">
-                                                            ${book.title}
-                                                        </a>
-                                                        <div class="text-muted small mt-0.5"><i class="fa-regular fa-user me-1"></i>${book.author}</div>
-                                                    </td>
-                                                    <!-- Danh mục -->
-                                                    <td>
-                                                        <span class="badge badge-soft-purple rounded-pill px-3 py-1.5 fs-7">${book.categoryName}</span>
-                                                    </td>
-                                                    <!-- Nhà xuất bản & Năm -->
-                                                    <td class="text-muted">
-                                                        <div>${book.publisher}</div>
-                                                        <div class="small">${book.publishYear != 0 ? book.publishYear : "N/A"}</div>
-                                                    </td>
-                                                    <!-- Số cuốn sách khả dụng / Tổng số cuốn -->
-                                                    <td>
-                                                        <c:choose>
-                                                            <c:when test="${book.totalCopies == 0}">
-                                                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-1.5 fw-medium">Chưa nhập cuốn nào</span>
-                                                            </c:when>
-                                                            <c:when test="${book.availableCopies == 0}">
-                                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-3 py-1.5 fw-medium">Hết sách</span>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-1.5 fw-medium">Còn ${book.availableCopies}/${book.totalCopies} cuốn</span>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </td>
-                                                    <!-- Thao tác hành động -->
-                                                    <td class="text-end pe-4">
-                                                        <div class="d-flex justify-content-end gap-1.5">
-                                                            <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn btn-outline-info btn-sm rounded-3 px-2 py-1.5" title="Xem chi tiết">
-                                                                <i class="fa-solid fa-eye"></i> Chi tiết
-                                                            </a>
-                                                            <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}" class="btn btn-outline-success btn-sm rounded-3 px-2.5 py-1.5">
-                                                                <i class="fa-solid fa-list-check me-1"></i> Bản sao
-                                                            </a>
-                                                            <a href="${pageContext.request.contextPath}/books?action=edit&id=${book.bookId}" class="btn btn-outline-indigo-brand btn-sm rounded-3 px-2 py-1.5">
-                                                                <i class="fa-solid fa-pen"></i> Sửa
-                                                            </a>
-                                                            <button class="btn btn-outline-danger btn-sm rounded-3 px-2 py-1.5 btn-delete-book" 
-                                                                    data-id="${book.bookId}" data-title="${book.title}">
-                                                                <i class="fa-solid fa-trash-can"></i> Xóa
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tbody>
-                            </table>
-                        </div>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

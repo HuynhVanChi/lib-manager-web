@@ -261,6 +261,13 @@ body {
 .badge-expired         { background-color: #E5E7EB; color: #4B5563; } /* Suspended / Expired */
 .badge-suspended       { background-color: #FEF9C3; color: #854D0E; } /* Suspended (Reader specific) */
 
+/* Bí danh màu sắc chuẩn (Semantic Colors) */
+.badge-success         { background-color: #DCFCE7; color: #15803D; }
+.badge-info            { background-color: #DBEAFE; color: #1D4ED8; }
+.badge-warning         { background-color: #FEF9C3; color: #854D0E; }
+.badge-danger          { background-color: #FEE2E2; color: #DC2626; }
+.badge-secondary       { background-color: #E5E7EB; color: #4B5563; }
+
 /* Empty State */
 .empty-state {
     padding: 60px 20px;

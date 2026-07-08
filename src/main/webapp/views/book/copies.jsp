@@ -75,9 +75,19 @@
                             <span class="text-white-50 fs-7">| Tác giả: <strong class="text-white">${book.author}</strong></span>
                         </div>
                     </div>
-                    <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn-back hover-lift">
-                        <i class="fa-solid fa-arrow-left"></i> Quay lại chi tiết
-                    </a>
+                    <div class="d-flex gap-2">
+                        <button type="button"
+                                id="btn-open-archive"
+                                class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                                data-bs-toggle="modal"
+                                data-bs-target="#archiveCopyModal">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Thùng rác</span>
+                        </button>
+                        <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn-back hover-lift">
+                            <i class="fa-solid fa-arrow-left"></i> Quay lại chi tiết
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Thống kê nhanh bản sao của đầu sách này -->
@@ -324,23 +334,110 @@
 
     </div>
 
-    <!-- Modal phụ: Xác nhận xóa Bản sao -->
-    <div class="modal fade" id="deleteCopyModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
-            <div class="modal-content border-0 shadow rounded-3 overflow-hidden">
-                <form action="${pageContext.request.contextPath}/books?action=deleteCopy" method="post">
+    <!-- Modal phụ: Xác nhận xóa cuốn sách -->
+    <div class="modal fade" id="deleteCopyModal" tabindex="-1" aria-labelledby="deleteCopyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:40px;height:40px;background:#FEE2E2;flex-shrink:0;">
+                            <i class="fa-solid fa-triangle-exclamation" style="color:#DC2626;"></i>
+                        </div>
+                        <h6 class="modal-title fw-bold m-0" id="deleteCopyModalLabel">Xác nhận xóa cuốn sách</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <form action="${pageContext.request.contextPath}/books?action=deleteCopy" method="post" class="m-0">
                     <input type="hidden" id="deleteCopyId" name="copyId">
-                    <div class="modal-body p-4 text-center">
-                        <i class="fa-solid fa-circle-exclamation text-danger fs-1 mb-3"></i>
-                        <h5 class="fw-bold mb-2 text-dark">Xóa cuốn sách</h5>
-                        <p class="text-muted small mb-4">Bạn có chắc chắn muốn xóa cuốn sách có mã vạch <span class="fw-bold text-dark" id="deleteCopyBarcode"></span> ra khỏi kho thư viện?</p>
-                        
-                        <div class="d-flex gap-2 justify-content-center">
-                            <button type="button" class="btn btn-secondary px-4 py-2 rounded-3 flex-grow-1" data-bs-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-danger px-4 py-2 rounded-3 flex-grow-1 hover-lift">Đồng ý xóa</button>
+                    <div class="modal-body">
+                        <p class="mb-1" style="font-size:.9rem;">Bạn có chắc chắn muốn xóa cuốn sách có mã vạch:</p>
+                        <p class="fw-bold mb-3" id="deleteCopyBarcode" style="font-size:1rem; color:var(--primary);">—</p>
+                        <div class="rounded-3 p-3" style="background:#FEF2F2;border:1px solid #FECACA;font-size:.82rem;color:#991B1B;">
+                            <i class="fa-solid fa-info-circle me-1"></i>
+                            Hành động này sẽ ẩn cuốn sách khỏi danh sách hoạt động nhưng <strong>không xóa vĩnh viễn</strong> dữ liệu lịch sử.
+                            Cuốn sách đang được mượn <strong>sẽ không thể xóa</strong>.
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger hover-lift">
+                            <i class="fa-solid fa-trash-can me-1"></i> Xác nhận xóa
+                        </button>
+                    </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Thùng rác Cuốn sách -->
+    <div class="modal fade" id="archiveCopyModal" tabindex="-1" aria-labelledby="archiveCopyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow rounded-3">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:40px;height:40px;background:#F1F5F9;flex-shrink:0;">
+                            <i class="fa-solid fa-trash-can" style="color:#64748B;"></i>
+                        </div>
+                        <h6 class="modal-title fw-bold m-0" id="archiveCopyModalLabel">Thùng rác Cuốn sách</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">
+                        <i class="fa-solid fa-info-circle me-1"></i>
+                        Dưới đây là danh sách các cuốn sách vật lý đã bị xóa mềm của đầu sách này. Bạn có thể khôi phục lại chúng vào kho.
+                    </p>
+                    
+                    <div class="table-responsive rounded-3 border" style="max-height: 290px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0" style="font-size:.85rem;">
+                            <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
+                                <tr>
+                                    <th class="ps-3" style="width: 80px;">ID</th>
+                                    <th>Mã vạch</th>
+                                    <th>Giá nhập</th>
+                                    <th>Vị trí kệ sách</th>
+                                    <th class="text-center" style="width: 120px;">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${empty deletedCopiesList}">
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                Thùng rác hiện đang trống.
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="c" items="${deletedCopiesList}">
+                                            <tr>
+                                                <td class="ps-3 fw-semibold text-secondary">#${c.copyId}</td>
+                                                <td class="font-monospace fw-bold text-dark">${c.barcode}</td>
+                                                <td class="fw-semibold text-dark">
+                                                    <fmt:formatNumber value="${c.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
+                                                </td>
+                                                <td>${empty c.locationShelf ? 'Chưa xếp kệ' : c.locationShelf}</td>
+                                                <td class="text-center">
+                                                    <form action="${pageContext.request.contextPath}/books?action=restoreCopy" method="post" class="d-inline m-0">
+                                                        <input type="hidden" name="copyId" value="${c.copyId}">
+                                                        <button type="submit" class="btn-action hover-lift" title="Khôi phục cuốn sách" style="color: #15803D !important; border-color: #86EFAC !important;">
+                                                            <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Đóng</button>
+                </div>
             </div>
         </div>
     </div>

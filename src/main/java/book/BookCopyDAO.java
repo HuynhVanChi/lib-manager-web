@@ -236,4 +236,80 @@ public class BookCopyDAO {
         // Nếu chưa có cuốn sách nào trong DB bắt đầu bằng prefix đó, bắt đầu từ 001
         return String.format("%s-001", bookPrefix);
     }
+
+    /**
+     * Tìm danh sách các cuốn sách đã bị xóa mềm của đầu sách.
+     */
+    public List<BookCopy> findDeletedCopiesByBookId(int bookId) {
+        List<BookCopy> list = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM book_copies WHERE book_id = ? AND deleted_at IS NOT NULL ORDER BY copy_id ASC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, bookId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    BookCopy copy = new BookCopy();
+                    copy.setCopyId(rs.getInt("copy_id"));
+                    copy.setBookId(rs.getInt("book_id"));
+                    copy.setBarcode(rs.getString("barcode"));
+                    copy.setLocationShelf(rs.getString("location_shelf"));
+                    copy.setStatus(rs.getString("status"));
+                    copy.setCreatedAt(rs.getTimestamp("created_at"));
+                    copy.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    copy.setPrice(rs.getBigDecimal("price"));
+                    copy.setDeletedAt(rs.getTimestamp("deleted_at"));
+                    copy.setDeletedBy(rs.getInt("deleted_by"));
+                    list.add(copy);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * Tìm cuốn sách đã xóa theo ID.
+     */
+    public BookCopy findDeletedById(int copyId) {
+        String sql = "SELECT * FROM book_copies WHERE copy_id = ? AND deleted_at IS NOT NULL";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, copyId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    BookCopy copy = new BookCopy();
+                    copy.setCopyId(rs.getInt("copy_id"));
+                    copy.setBookId(rs.getInt("book_id"));
+                    copy.setBarcode(rs.getString("barcode"));
+                    copy.setLocationShelf(rs.getString("location_shelf"));
+                    copy.setStatus(rs.getString("status"));
+                    copy.setCreatedAt(rs.getTimestamp("created_at"));
+                    copy.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    copy.setPrice(rs.getBigDecimal("price"));
+                    copy.setDeletedAt(rs.getTimestamp("deleted_at"));
+                    copy.setDeletedBy(rs.getInt("deleted_by"));
+                    return copy;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Khôi phục cuốn sách đã bị xóa mềm.
+     */
+    public boolean restore(int copyId) throws SQLException {
+        String sql = "UPDATE book_copies SET deleted_at = NULL, deleted_by = NULL WHERE copy_id = ? AND deleted_at IS NOT NULL";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, copyId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
 }

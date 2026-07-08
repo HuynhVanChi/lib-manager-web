@@ -69,7 +69,7 @@
                 <div class="d-flex align-items-center justify-content-between mb-4 mt-2">
                     <div>
                         <h1 class="fw-bold text-dark m-0" style="font-size:1.6rem; letter-spacing: -0.5px;">Quản lý cuốn sách</h1>
-                        <div class="mt-2 p-2 px-3 bg-primary text-white border-0 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
+                        <div class="mt-2 p-2 px-3 text-white border-0 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
                             <span class="badge bg-white text-primary px-2 py-1 fs-8 text-uppercase fw-bold shadow-sm">Đầu sách</span>
                             <span class="fw-bold text-white fs-6">${book.title}</span>
                             <span class="text-white-50 fs-7">| Tác giả: <strong class="text-white">${book.author}</strong></span>

@@ -71,9 +71,6 @@
                                     </div>
                                     <div>
                                         <h5 class="text-white fw-bold mb-0">Chỉnh sửa thông tin</h5>
-                                        <p class="text-white mb-0" style="opacity:.75;font-size:.82rem;">
-                                            Cập nhật thông tin chi tiết của đầu sách: <strong class="text-warning">${book.title}</strong>
-                                        </p>
                                     </div>
                                 </div>
                             </div>

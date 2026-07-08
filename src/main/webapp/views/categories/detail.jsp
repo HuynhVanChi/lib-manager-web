@@ -113,29 +113,28 @@
                             </div>
                             
                             <div class="p-0">
-                                <div class="table-responsive">
-                                    <table class="table-custom m-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="ps-4" style="width: 80px;">#</th>
-                                                <th style="width: 70px;">Bìa</th>
-                                                <th>Tên sách & Tác giả</th>
-                                                <th>Nhà xuất bản & Năm</th>
-                                                <th style="width: 150px;">Tình trạng kho</th>
-                                                <th style="width: 100px; text-align: center;">Xem</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:choose>
-                                                <c:when test="${empty booksList}">
+                                <c:choose>
+                                    <c:when test="${empty booksList}">
+                                        <div class="empty-state p-5">
+                                            <div class="icon"><i class="fa-solid fa-folder-open text-muted"></i></div>
+                                            <h5 class="fw-semibold text-dark mb-1">Chưa có đầu sách nào</h5>
+                                            <p class="text-muted small mb-0">Danh mục này hiện chưa được phân loại bất kỳ đầu sách nào trong hệ thống.</p>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="table-responsive">
+                                            <table class="table-custom m-0">
+                                                <thead>
                                                     <tr>
-                                                        <td colspan="6" class="text-center py-5 text-muted">
-                                                            <i class="fa-solid fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
-                                                            Không có đầu sách nào thuộc danh mục này.
-                                                        </td>
+                                                        <th class="ps-4" style="width: 80px;">#</th>
+                                                        <th style="width: 70px;">Bìa</th>
+                                                        <th>Tên sách & Tác giả</th>
+                                                        <th>Nhà xuất bản & Năm</th>
+                                                        <th style="width: 150px;">Tình trạng kho</th>
+                                                        <th style="width: 100px; text-align: center;">Xem</th>
                                                     </tr>
-                                                </c:when>
-                                                <c:otherwise>
+                                                </thead>
+                                                <tbody>
                                                     <c:forEach var="b" items="${booksList}" varStatus="loop">
                                                         <tr>
                                                             <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
@@ -173,11 +172,11 @@
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>

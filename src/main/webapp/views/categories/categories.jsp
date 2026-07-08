@@ -285,6 +285,9 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Đóng</button>
+                </div>
             </div>
         </div>
     </div>

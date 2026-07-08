@@ -121,7 +121,7 @@
                                                 <th style="width: 70px;">Bìa</th>
                                                 <th>Tên sách & Tác giả</th>
                                                 <th>Nhà xuất bản & Năm</th>
-                                                <th style="width: 150px;">Số lượng cuốn</th>
+                                                <th style="width: 150px;">Tình trạng kho</th>
                                                 <th style="width: 100px; text-align: center;">Xem</th>
                                             </tr>
                                         </thead>

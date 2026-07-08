@@ -82,7 +82,7 @@
                              </c:choose>
                             
                             <h4 class="fw-bold text-dark mb-1" style="font-size:1.35rem;">${book.title}</h4>
-                            <p class="text-muted small mb-3"><i class="fa-regular fa-user me-1"></i>Tác giả: <strong>${book.author}</strong></p>
+                            <p class="text-muted small mb-1"><i class="fa-regular fa-user me-1"></i>Tác giả: <strong>${book.author}</strong></p>
                             
                             <div class="mb-3">
                                 <span class="badge-status badge-theme-${book.categoryColorTheme} px-3 py-1.5 fs-7">${book.categoryName}</span>
@@ -90,32 +90,29 @@
 
                             <hr class="text-muted my-3">
 
-                            <div class="mb-4 small text-secondary">
+                            <div class="mb-2 small text-secondary">
                                 <div class="row mb-2">
-                                    <div class="col-4 fw-semibold">Nhà xuất bản:</div>
-                                    <div class="col-8 text-dark">${book.publisher}</div>
+                                    <div class="col-5 fw-semibold">Nhà xuất bản:</div>
+                                    <div class="col-7 text-dark">${book.publisher}</div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-4 fw-semibold">Năm xuất bản:</div>
-                                    <div class="col-8 text-dark">${book.publishYear != 0 ? book.publishYear : 'Chưa cập nhật'}</div>
+                                    <div class="col-5 fw-semibold text-nowrap">Năm xuất bản:</div>
+                                    <div class="col-7 text-dark">${book.publishYear != 0 ? book.publishYear : 'Chưa cập nhật'}</div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-4 fw-semibold">Giá nhập:</div>
-                                    <div class="col-8 text-dark fw-bold text-primary">
+                                    <div class="col-5 fw-semibold">Giá nhập:</div>
+                                    <div class="col-7 text-dark fw-bold text-primary">
                                         <fmt:formatNumber value="${book.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-4 fw-semibold">Ngày thêm:</div>
-                                    <div class="col-8 text-dark"><span class="small font-monospace">${book.createdAt}</span></div>
+                                    <div class="col-5 fw-semibold">Ngày thêm:</div>
+                                    <div class="col-7 text-dark"><span class="small font-monospace">${book.createdAt}</span></div>
                                 </div>
-                                <div class="row mb-2">
-                                    <div class="col-4 fw-semibold">Tóm tắt:</div>
-                                    <div class="col-8 text-dark text-wrap">Tác phẩm văn học/tài liệu tham khảo chuyên ngành được lưu giữ trong hệ thống LibraryOS.</div>
-                                </div>
+
                             </div>
 
-                            <div class="d-flex flex-column gap-2 mt-4">
+                            <div class="d-flex flex-column gap-2 mt-2">
                                 <a href="${pageContext.request.contextPath}/books?action=edit&id=${book.bookId}" class="btn btn-primary w-100 hover-lift py-2.5">
                                     <i class="fa-solid fa-pen-to-square me-1"></i> Chỉnh sửa đầu sách
                                 </a>
@@ -139,28 +136,27 @@
                             </div>
                             
                             <div class="p-0">
-                                <div class="table-responsive">
-                                    <table class="table-custom m-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="ps-4" style="width: 80px;">#</th>
-                                                <th>Mã vạch & ID</th>
-                                                <th>Giá nhập</th>
-                                                <th>Vị trí kệ sách</th>
-                                                <th style="width: 180px;">Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:choose>
-                                                <c:when test="${empty copiesList}">
+                                <c:choose>
+                                    <c:when test="${empty copiesList}">
+                                        <div class="empty-state p-5">
+                                            <div class="icon"><i class="fa-solid fa-box-open text-muted"></i></div>
+                                            <h5 class="fw-semibold text-dark mb-1">Chưa có cuốn sách nào</h5>
+                                            <p class="text-muted small mb-0">Đầu sách này hiện chưa có cuốn sách vật lý nào trong kho.</p>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="table-responsive">
+                                            <table class="table-custom m-0">
+                                                <thead>
                                                     <tr>
-                                                        <td colspan="5" class="text-center py-5 text-muted">
-                                                            <i class="fa-solid fa-box-open fs-2 mb-3 d-block text-secondary"></i>
-                                                            Chưa có cuốn sách nào trong kho.
-                                                        </td>
+                                                        <th class="ps-4" style="width: 80px;">#</th>
+                                                        <th>Mã vạch & ID</th>
+                                                        <th>Giá nhập</th>
+                                                        <th>Vị trí kệ sách</th>
+                                                        <th style="width: 180px;">Trạng thái</th>
                                                     </tr>
-                                                </c:when>
-                                                <c:otherwise>
+                                                </thead>
+                                                <tbody>
                                                     <c:forEach var="c" items="${copiesList}" varStatus="loop">
                                                         <tr>
                                                             <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
@@ -206,11 +202,11 @@
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>

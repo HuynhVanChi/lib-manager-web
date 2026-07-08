@@ -205,7 +205,7 @@
                                             <th style="width: 180px; text-align: center;">Danh mục</th>
                                             <th style="width: 180px;">NXB & Năm</th>
                                             <th style="width: 140px;">Giá Nhập</th>
-                                            <th style="width: 160px;">Số lượng cuốn</th>
+                                            <th style="width: 160px; text-align: center;">Tình trạng kho</th>
                                             <th style="width: 160px; text-align: center;">Hành động</th>
                                         </tr>
                                     </thead>
@@ -253,7 +253,7 @@
                                                     <fmt:formatNumber value="${book.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                                 </td>
                                                 <!-- Số cuốn sách khả dụng / Tổng số cuốn -->
-                                                <td>
+                                                <td class="text-center">
                                                     <c:choose>
                                                         <c:when test="${book.totalCopies == 0}">
                                                             <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-1.5 fw-medium">Chưa nhập cuốn nào</span>
@@ -361,7 +361,7 @@
             </div>
         </div>
     </div>
-    <!-- Modal: Thùng rác Đầu sách (Danh sách đầu sách đã xóa mềm) -->
+    <!-- Modal: Thùng rác Đầu sách -->
     <div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow rounded-3">
@@ -425,6 +425,9 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </div>
         </div>

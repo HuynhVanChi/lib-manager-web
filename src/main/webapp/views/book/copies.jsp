@@ -143,29 +143,28 @@
                             </div>
                             
                             <div class="p-0">
-                                <div class="table-responsive">
-                                    <table class="table-custom m-0">
-                                        <thead>
-                                             <tr>
-                                                 <th class="ps-4" style="width: 80px;">#</th>
-                                                 <th>Mã vạch & ID</th>
-                                                 <th>Giá nhập</th>
-                                                 <th>Vị trí kệ sách</th>
-                                                 <th style="width: 180px;">Trạng thái</th>
-                                                 <th style="width: 140px; text-align: center;">Hành động</th>
-                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:choose>
-                                                <c:when test="${empty copiesList}">
-                                                    <tr>
-                                                        <td colspan="6" class="text-center py-5 text-muted">
-                                                            <i class="fa-solid fa-box-open fs-2 mb-3 d-block text-secondary"></i>
-                                                            Đầu sách này hiện chưa có cuốn sách nào trong kho.
-                                                        </td>
-                                                    </tr>
-                                                </c:when>
-                                                <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${empty copiesList}">
+                                        <div class="empty-state p-5">
+                                            <div class="icon"><i class="fa-solid fa-box-open text-muted"></i></div>
+                                            <h5 class="fw-semibold text-dark mb-1">Chưa có cuốn sách nào</h5>
+                                            <p class="text-muted small mb-0">Đầu sách này hiện chưa có cuốn sách vật lý nào trong kho. Hãy nhập cuốn sách mới ở khung bên cạnh.</p>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="table-responsive">
+                                            <table class="table-custom m-0">
+                                                <thead>
+                                                     <tr>
+                                                         <th class="ps-4" style="width: 80px;">#</th>
+                                                         <th>Mã vạch & ID</th>
+                                                         <th>Giá nhập</th>
+                                                         <th>Vị trí kệ sách</th>
+                                                         <th style="width: 180px;">Trạng thái</th>
+                                                         <th style="width: 140px; text-align: center;">Hành động</th>
+                                                     </tr>
+                                                </thead>
+                                                <tbody>
                                                     <c:forEach var="c" items="${copiesList}" varStatus="loop">
                                                         <tr id="row-copy-${c.copyId}" style="transition: background-color 0.3s ease;">
                                                             <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
@@ -240,11 +239,11 @@
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
@@ -302,7 +301,7 @@
 
                                     <div class="d-flex gap-2 mt-4">
                                         <button type="button" id="btnCancelEdit" class="btn btn-secondary hover-lift flex-grow-1 py-2.5 d-none">
-                                            Hủy sửa
+                                            Hủy bỏ
                                         </button>
                                         <button type="submit" id="btnSubmitForm" class="btn btn-save hover-lift flex-grow-1 py-2.5">
                                             <i class="fa-solid fa-plus me-1" id="btnSubmitIcon"></i> <span id="btnSubmitText">Xác nhận nhập kho</span>

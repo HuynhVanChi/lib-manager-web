@@ -167,11 +167,7 @@ public class RecommendServlet extends HttpServlet {
         String readerCode = request.getParameter("readerCode");
         String bookTitle = request.getParameter("bookTitle");
         String author = request.getParameter("author");
-        String category = request.getParameter("category");
-        String publisher = request.getParameter("publisher");
-        String publishYearStr = request.getParameter("publishYear");
         String reason = request.getParameter("reason");
-        String note = request.getParameter("note");
 
         // Validate bắt buộc
         if (readerName == null || readerName.trim().isEmpty() ||
@@ -184,22 +180,9 @@ public class RecommendServlet extends HttpServlet {
             request.setAttribute("readerCode", readerCode);
             request.setAttribute("bookTitle", bookTitle);
             request.setAttribute("author", author);
-            request.setAttribute("category", category);
-            request.setAttribute("publisher", publisher);
-            request.setAttribute("publishYear", publishYearStr);
             request.setAttribute("reason", reason);
-            request.setAttribute("note", note);
             request.getRequestDispatcher("/views/recommend/add.jsp").forward(request, response);
             return;
-        }
-
-        int publishYear = 0;
-        if (publishYearStr != null && !publishYearStr.trim().isEmpty()) {
-            try {
-                publishYear = Integer.parseInt(publishYearStr.trim());
-            } catch (NumberFormatException e) {
-                // Bỏ qua lỗi định dạng năm
-            }
         }
 
         int creatorId = getCurrentUserId(request);
@@ -210,11 +193,7 @@ public class RecommendServlet extends HttpServlet {
         rec.setReaderCode(trimOrNull(readerCode));
         rec.setBookTitle(bookTitle.trim());
         rec.setAuthor(author.trim());
-        rec.setCategory(trimOrNull(category));
-        rec.setPublisher(trimOrNull(publisher));
-        rec.setPublishYear(publishYear);
         rec.setReason(trimOrNull(reason));
-        rec.setNote(trimOrNull(note));
         rec.setCreatedBy(creatorId);
 
         try {
@@ -280,11 +259,7 @@ public class RecommendServlet extends HttpServlet {
         String readerCode = request.getParameter("readerCode");
         String bookTitle = request.getParameter("bookTitle");
         String author = request.getParameter("author");
-        String category = request.getParameter("category");
-        String publisher = request.getParameter("publisher");
-        String publishYearStr = request.getParameter("publishYear");
         String reason = request.getParameter("reason");
-        String note = request.getParameter("note");
 
         if (id <= 0) {
             response.sendRedirect(request.getContextPath() + "/recommend");
@@ -306,15 +281,6 @@ public class RecommendServlet extends HttpServlet {
             return;
         }
 
-        int publishYear = 0;
-        if (publishYearStr != null && !publishYearStr.trim().isEmpty()) {
-            try {
-                publishYear = Integer.parseInt(publishYearStr.trim());
-            } catch (NumberFormatException e) {
-                // Bỏ qua
-            }
-        }
-
         BookRecommendation rec = new BookRecommendation();
         rec.setRecommendationId(id);
         rec.setReaderName(readerName.trim());
@@ -322,11 +288,7 @@ public class RecommendServlet extends HttpServlet {
         rec.setReaderCode(trimOrNull(readerCode));
         rec.setBookTitle(bookTitle.trim());
         rec.setAuthor(author.trim());
-        rec.setCategory(trimOrNull(category));
-        rec.setPublisher(trimOrNull(publisher));
-        rec.setPublishYear(publishYear);
         rec.setReason(trimOrNull(reason));
-        rec.setNote(trimOrNull(note));
 
         try {
             boolean success = recommendationDAO.update(rec);

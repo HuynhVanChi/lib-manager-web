@@ -7,6 +7,7 @@ TRUNCATE TABLE audit_logs;
 TRUNCATE TABLE fines;
 TRUNCATE TABLE borrow_details;
 TRUNCATE TABLE borrow_records;
+TRUNCATE TABLE book_recommendations;
 TRUNCATE TABLE book_recommends;
 TRUNCATE TABLE readers;
 TRUNCATE TABLE users;
@@ -66,9 +67,10 @@ INSERT INTO borrow_details (borrow_detail_id, borrow_record_id, copy_id, borrow_
 INSERT INTO fines (fine_id, borrow_detail_id, amount, reason, status, paid_at, received_by) VALUES
 (1, 2, 15000.00, 'Overdue', 'Paid', '2026-06-20 10:30:00', 2); -- Hà trả trễ hạn 3 ngày bị phạt 15.000đ, đã thanh toán cho thủ thư Đào
 
--- 9. Dữ liệu Đề xuất sách mới (Đã liên kết độc giả đề xuất)
-INSERT INTO book_recommends (book_recommend_id, reader_id, book_title, author, reason, status, feedback, reviewed_by) VALUES
-(1, 1, 'Bắt đầu với Python', 'Eric Matthes', 'Độc giả yêu cầu thêm tài liệu học Python căn bản', 'Pending', NULL, NULL);
+-- 9. Dữ liệu Đề xuất sách mới (Do Thủ thư ghi nhận từ yêu cầu của độc giả, hỗ trợ xóa mềm)
+INSERT INTO book_recommendations (recommendation_id, reader_name, reader_phone, reader_code, book_title, author, reason, status, created_by) VALUES
+(1, 'Phạm Minh Hoàng', '0912345678', 'DG001', 'Clean Code: A Handbook of Agile Software Craftsmanship', 'Robert C. Martin', 'Học sinh mượn để nghiên cứu làm đồ án tốt nghiệp.', 'Pending', 2),
+(2, 'Đỗ Thu Hà', '0987654321', 'DG002', 'Bắt đầu với Python', 'Eric Matthes', 'Đọc giả cần tài liệu tự học Python căn bản.', 'Pending', 2);
 
 -- 10. Dữ liệu Nhật ký đối soát mẫu
 INSERT INTO audit_logs (log_id, user_id, action, table_name, record_id, old_values, new_values) VALUES

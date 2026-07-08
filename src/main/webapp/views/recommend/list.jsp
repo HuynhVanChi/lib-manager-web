@@ -156,7 +156,6 @@
                                         <th>Họ và tên độc giả</th>
                                         <th>Số điện thoại</th>
                                         <th>Sách đề xuất</th>
-                                        <th>Thể loại</th>
                                         <th style="width:130px">Trạng thái</th>
                                         <th style="width:180px; text-align:center">Xét duyệt</th>
                                         <th class="text-end" style="width:120px">Hành động</th>
@@ -199,18 +198,6 @@
                                                 <div class="reader-email">
                                                     Tác giả: <c:out value="${rec.author}"/>
                                                 </div>
-                                            </td>
-
-                                            <%-- Thể loại --%>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty rec.category}">
-                                                        <c:out value="${rec.category}"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="text-muted">—</span>
-                                                    </c:otherwise>
-                                                </c:choose>
                                             </td>
 
                                             <%-- Trạng thái --%>

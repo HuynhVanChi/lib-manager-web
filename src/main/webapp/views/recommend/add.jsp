@@ -167,54 +167,6 @@
                                            maxlength="150"
                                            required>
                                 </div>
-
-                                <%-- Thể loại --%>
-                                <div class="mb-3">
-                                    <label for="category" class="form-label">Thể loại</label>
-                                    <input type="text"
-                                           id="category"
-                                           name="category"
-                                           class="form-control"
-                                           placeholder="Ví dụ: Công nghệ thông tin, Văn học..."
-                                           value="<c:out value='${category}'/>"
-                                           maxlength="100">
-                                </div>
-
-                                <%-- Nhà xuất bản --%>
-                                <div class="mb-3">
-                                    <label for="publisher" class="form-label">Nhà xuất bản</label>
-                                    <input type="text"
-                                           id="publisher"
-                                           name="publisher"
-                                           class="form-control"
-                                           placeholder="Ví dụ: Prentice Hall"
-                                           value="<c:out value='${publisher}'/>"
-                                           maxlength="150">
-                                </div>
-
-                                <%-- Năm xuất bản --%>
-                                <div class="mb-3">
-                                    <label for="publishYear" class="form-label">Năm xuất bản</label>
-                                    <input type="number"
-                                           id="publishYear"
-                                           name="publishYear"
-                                           class="form-control"
-                                           placeholder="Ví dụ: 2008"
-                                           value="<c:out value='${publishYear}'/>"
-                                           min="1000"
-                                           max="2100">
-                                </div>
-
-                                <%-- Ghi chú thủ thư --%>
-                                <div class="mb-3">
-                                    <label for="note" class="form-label">Ghi chú của thủ thư (nội bộ)</label>
-                                    <textarea class="form-control" 
-                                              id="note" 
-                                              name="note" 
-                                              rows="2" 
-                                              placeholder="Nhập ý kiến hoặc lưu ý đặc biệt..."
-                                    ><c:out value="${note}"/></textarea>
-                                </div>
                             </div>
                         </div>
 

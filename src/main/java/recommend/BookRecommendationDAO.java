@@ -17,8 +17,8 @@ public class BookRecommendationDAO {
 
     public boolean create(BookRecommendation rec) throws SQLException {
         String sql = "INSERT INTO book_recommendations (reader_name, reader_phone, reader_code, book_title, author, " +
-                     "category, publisher, publish_year, reason, note, status, created_by) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?)";
+                     "reason, status, created_by) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?)";
                      
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -27,12 +27,8 @@ public class BookRecommendationDAO {
             ps.setString(3, rec.getReaderCode());
             ps.setString(4, rec.getBookTitle());
             ps.setString(5, rec.getAuthor());
-            ps.setString(6, rec.getCategory());
-            ps.setString(7, rec.getPublisher());
-            ps.setInt(8, rec.getPublishYear());
-            ps.setString(9, rec.getReason());
-            ps.setString(10, rec.getNote());
-            ps.setInt(11, rec.getCreatedBy());
+            ps.setString(6, rec.getReason());
+            ps.setInt(7, rec.getCreatedBy());
             
             int affectedRows = ps.executeUpdate();
             if (affectedRows > 0) {
@@ -50,7 +46,7 @@ public class BookRecommendationDAO {
     public boolean update(BookRecommendation rec) throws SQLException {
         String sql = "UPDATE book_recommendations " +
                      "SET reader_name = ?, reader_phone = ?, reader_code = ?, book_title = ?, author = ?, " +
-                     "category = ?, publisher = ?, publish_year = ?, reason = ?, note = ? " +
+                     "reason = ? " +
                      "WHERE recommendation_id = ? AND status = 'Pending' AND deleted_at IS NULL";
                       
         try (Connection conn = DBConnection.getConnection();
@@ -60,12 +56,8 @@ public class BookRecommendationDAO {
             ps.setString(3, rec.getReaderCode());
             ps.setString(4, rec.getBookTitle());
             ps.setString(5, rec.getAuthor());
-            ps.setString(6, rec.getCategory());
-            ps.setString(7, rec.getPublisher());
-            ps.setInt(8, rec.getPublishYear());
-            ps.setString(9, rec.getReason());
-            ps.setString(10, rec.getNote());
-            ps.setInt(11, rec.getRecommendationId());
+            ps.setString(6, rec.getReason());
+            ps.setInt(7, rec.getRecommendationId());
             
             return ps.executeUpdate() > 0;
         }
@@ -181,11 +173,7 @@ public class BookRecommendationDAO {
         rec.setReaderCode(rs.getString("reader_code"));
         rec.setBookTitle(rs.getString("book_title"));
         rec.setAuthor(rs.getString("author"));
-        rec.setCategory(rs.getString("category"));
-        rec.setPublisher(rs.getString("publisher"));
-        rec.setPublishYear(rs.getInt("publish_year"));
         rec.setReason(rs.getString("reason"));
-        rec.setNote(rs.getString("note"));
         rec.setStatus(rs.getString("status"));
         rec.setCreatedBy(rs.getInt("created_by"));
         rec.setCreatorName(rs.getString("creator_name"));

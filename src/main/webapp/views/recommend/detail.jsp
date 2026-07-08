@@ -142,28 +142,6 @@
                                 <span class="meta-value"><c:out value="${recommendation.author}"/></span>
                             </div>
                             <div class="meta-item">
-                                <span class="meta-label">Thể loại sách</span>
-                                <span class="meta-value"><c:out value="${not empty recommendation.category ? recommendation.category : 'Khác'}"/></span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Nhà xuất bản</span>
-                                <span class="meta-value ${empty recommendation.publisher ? 'empty' : ''}">
-                                    <c:choose>
-                                        <c:when test="${not empty recommendation.publisher}"><c:out value="${recommendation.publisher}"/></c:when>
-                                        <c:otherwise>Chưa cập nhật</c:otherwise>
-                                    </c:choose>
-                                </span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Năm xuất bản</span>
-                                <span class="meta-value ${recommendation.publishYear <= 0 ? 'empty' : ''}">
-                                    <c:choose>
-                                        <c:when test="${recommendation.publishYear > 0}">${recommendation.publishYear}</c:when>
-                                        <c:otherwise>Chưa rõ</c:otherwise>
-                                    </c:choose>
-                                </span>
-                            </div>
-                            <div class="meta-item">
                                 <span class="meta-label">Cán bộ ghi nhận</span>
                                 <span class="meta-value"><c:out value="${recommendation.creatorName}"/> <span class="text-muted small">(ID: NV#${recommendation.createdBy})</span></span>
                             </div>
@@ -177,15 +155,6 @@
                                     <c:choose>
                                         <c:when test="${not empty recommendation.reason}"><c:out value="${recommendation.reason}"/></c:when>
                                         <c:otherwise>Không ghi nhận lý do</c:otherwise>
-                                    </c:choose>
-                                </span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Ghi chú của thủ thư</span>
-                                <span class="meta-value ${empty recommendation.note ? 'empty' : ''}">
-                                    <c:choose>
-                                        <c:when test="${not empty recommendation.note}"><c:out value="${recommendation.note}"/></c:when>
-                                        <c:otherwise>Không có ghi chú</c:otherwise>
                                     </c:choose>
                                 </span>
                             </div>

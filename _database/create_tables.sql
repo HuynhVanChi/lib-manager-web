@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS audit_logs;
 DROP TABLE IF EXISTS fines;
 DROP TABLE IF EXISTS borrow_details;
 DROP TABLE IF EXISTS borrow_records;
+DROP TABLE IF EXISTS book_recommendations;
 DROP TABLE IF EXISTS book_recommends;
 DROP TABLE IF EXISTS readers;
 DROP TABLE IF EXISTS users;
@@ -140,21 +141,24 @@ CREATE TABLE fines (
     FOREIGN KEY (received_by) REFERENCES users(user_id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
--- 9. BẢNG ĐỀ XUẤT SÁCH MỚI
-CREATE TABLE book_recommends (
-    book_recommend_id INT AUTO_INCREMENT PRIMARY KEY,
-    reader_id INT NOT NULL, -- Độc giả gửi đề xuất
+-- 9. BẢNG ĐỀ XUẤT SÁCH MỚI (LƯU HÀNH NỘI BỘ - HỖ TRỢ THÙNG RÁC)
+CREATE TABLE book_recommendations (
+    recommendation_id INT AUTO_INCREMENT PRIMARY KEY,
+    reader_name VARCHAR(255) NOT NULL,
+    reader_phone VARCHAR(50),
+    reader_code VARCHAR(100),
     book_title VARCHAR(255) NOT NULL,
-    author VARCHAR(255),
+    author VARCHAR(255) NOT NULL,
     reason TEXT,
-    status VARCHAR(50) DEFAULT 'Pending', -- 'Pending' (Chờ duyệt), 'Approved' (Đã duyệt), 'Rejected' (Từ chối)
-    feedback TEXT, -- Phản hồi từ thủ thư (ví dụ: lý do từ chối hoặc thông tin sách đã về)
-    reviewed_by INT NULL, -- Nhân viên duyệt đề xuất
+    status VARCHAR(50) DEFAULT 'Pending', -- 'Pending', 'Approved', 'Rejected'
+    created_by INT NOT NULL,              -- Cán bộ ghi nhận yêu cầu
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL DEFAULT NULL, -- Hỗ trợ xóa mềm (thùng rác)
+    deleted_by INT NULL,                  -- Người thực hiện xóa
     
-    FOREIGN KEY (reader_id) REFERENCES readers(reader_id) ON DELETE RESTRICT,
-    FOREIGN KEY (reviewed_by) REFERENCES users(user_id) ON DELETE RESTRICT
+    FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE RESTRICT,
+    FOREIGN KEY (deleted_by) REFERENCES users(user_id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
 -- 10. BẢNG NHẬT KÝ ĐỐI SOÁT HỆ THỐNG (Lưu Audit Logs dạng JSON)

@@ -12,11 +12,7 @@ public class BookRecommendation {
     private String readerCode;
     private String bookTitle;
     private String author;
-    private String category;
-    private String publisher;
-    private int publishYear;
     private String reason;
-    private String note;
     private String status;      // 'Pending', 'Created_Form', 'Rejected', 'Added_To_Library'
     private int createdBy;      // user_id của thủ thư nhập yêu cầu
     private String creatorName; // Tên hiển thị của thủ thư tạo đề xuất (JOIN từ users)
@@ -73,44 +69,12 @@ public class BookRecommendation {
         this.author = author;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public int getPublishYear() {
-        return publishYear;
-    }
-
-    public void setPublishYear(int publishYear) {
-        this.publishYear = publishYear;
-    }
-
     public String getReason() {
         return reason;
     }
 
     public void setReason(String reason) {
         this.reason = reason;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public String getStatus() {

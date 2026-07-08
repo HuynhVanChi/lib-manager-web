@@ -11,13 +11,22 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.io.File;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 @WebServlet("/books")
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 2,  // 2MB
+    maxFileSize = 1024 * 1024 * 10,       // 10MB
+    maxRequestSize = 1024 * 1024 * 50     // 50MB
+)
 public class BookServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final BookDAO bookDAO = new BookDAO();
@@ -167,6 +176,7 @@ public class BookServlet extends HttpServlet {
 
         // Nạp danh sách đầu sách và danh mục
         request.setAttribute("booksList", bookDAO.findAllActive(query, categoryId));
+        request.setAttribute("deletedBooksList", bookDAO.findAllDeleted());
         request.setAttribute("categoriesList", categoryDAO.findAllActive());
         
         // Giữ lại các bộ lọc đã chọn lên UI
@@ -204,6 +214,9 @@ public class BookServlet extends HttpServlet {
                 case "delete":
                     handleDeleteBook(request, response, userId);
                     break;
+                case "restore":
+                    handleRestoreBook(request, response, userId);
+                    break;
                 case "insertCopy":
                     handleInsertCopy(request, response, userId);
                     break;
@@ -236,14 +249,28 @@ public class BookServlet extends HttpServlet {
         String author = request.getParameter("author");
         String publisher = request.getParameter("publisher");
         String publishYearStr = request.getParameter("publishYear");
+        String priceStr = request.getParameter("price");
 
-        if (title == null || title.trim().isEmpty() || categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
-            request.setAttribute("errorMessage", "Tên sách và danh mục là bắt buộc!");
+        if (title == null || title.trim().isEmpty() 
+                || categoryIdStr == null || categoryIdStr.trim().isEmpty() 
+                || author == null || author.trim().isEmpty()
+                || priceStr == null || priceStr.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Tên sách, danh mục, tác giả và giá nhập là bắt buộc!");
             request.setAttribute("categoriesList", categoryDAO.findAllActive());
             Book book = new Book();
             book.setTitle(title);
             book.setAuthor(author);
             book.setPublisher(publisher);
+            if (categoryIdStr != null && !categoryIdStr.trim().isEmpty()) {
+                try {
+                    book.setCategoryId(Integer.parseInt(categoryIdStr.trim()));
+                } catch (Exception e) {}
+            }
+            if (priceStr != null && !priceStr.trim().isEmpty()) {
+                try {
+                    book.setPrice(new java.math.BigDecimal(priceStr.trim()));
+                } catch (Exception e) {}
+            }
             request.setAttribute("book", book);
             try {
                 request.getRequestDispatcher("/views/book/add.jsp").forward(request, response);
@@ -278,12 +305,65 @@ public class BookServlet extends HttpServlet {
             }
         }
 
+        java.math.BigDecimal price = java.math.BigDecimal.ZERO;
+        try {
+            price = new java.math.BigDecimal(priceStr.trim());
+            if (price.compareTo(java.math.BigDecimal.ZERO) < 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("errorMessage", "Giá nhập phải là số không âm!");
+            request.setAttribute("categoriesList", categoryDAO.findAllActive());
+            Book book = new Book();
+            book.setCategoryId(Integer.parseInt(categoryIdStr));
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setPublisher(publisher);
+            request.setAttribute("book", book);
+            try {
+                request.getRequestDispatcher("/views/book/add.jsp").forward(request, response);
+            } catch (ServletException se) {
+                se.printStackTrace();
+            }
+            return;
+        }
+
+        String imagePath = null;
+        try {
+            Part filePart = request.getPart("imageFile");
+            imagePath = uploadImage(filePart, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Book book = new Book();
         book.setCategoryId(Integer.parseInt(categoryIdStr));
         book.setTitle(title.trim());
         book.setAuthor(author != null ? author.trim() : "");
         book.setPublisher(publisher != null ? publisher.trim() : "");
         book.setPublishYear(publishYear);
+        book.setImagePath(imagePath);
+        book.setPrice(price);
+
+        // Kiểm tra trùng lặp đầu sách (Tên + Tác giả + NXB + Năm)
+        Book duplicate = bookDAO.findDuplicate(title, author, publisher, publishYear != null ? publishYear : 0, null);
+        if (duplicate != null) {
+            String errorMsg;
+            if (duplicate.getDeletedAt() != null) {
+                errorMsg = "Đầu sách này đã tồn tại trong Thùng rác (Mã sách: #" + duplicate.getBookId() + "). Vui lòng khôi phục trong Thùng rác thay vì tạo mới!";
+            } else {
+                errorMsg = "Đầu sách này đã tồn tại trong hệ thống (Mã sách: #" + duplicate.getBookId() + "). Vui lòng đi tới trang quản lý sách đó và nhập thêm bản sao mới.";
+            }
+            request.setAttribute("errorMessage", errorMsg);
+            request.setAttribute("categoriesList", categoryDAO.findAllActive());
+            request.setAttribute("book", book);
+            try {
+                request.getRequestDispatcher("/views/book/add.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
 
         int newBookId = bookDAO.insert(book);
         if (newBookId > 0) {
@@ -294,6 +374,8 @@ public class BookServlet extends HttpServlet {
             newValues.put("author", book.getAuthor());
             newValues.put("publisher", book.getPublisher());
             newValues.put("publish_year", book.getPublishYear());
+            newValues.put("image_path", book.getImagePath());
+            newValues.put("price", book.getPrice());
 
             AuditLogger.log(userId, AuditLogger.ActionType.INSERT, "books", newBookId, null, newValues);
 
@@ -314,15 +396,29 @@ public class BookServlet extends HttpServlet {
         String author = request.getParameter("author");
         String publisher = request.getParameter("publisher");
         String publishYearStr = request.getParameter("publishYear");
+        String priceStr = request.getParameter("price");
 
-        if (bookIdStr == null || title == null || title.trim().isEmpty() || categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
-            request.setAttribute("errorMessage", "Tên sách và danh mục là bắt buộc!");
+        if (bookIdStr == null || title == null || title.trim().isEmpty() 
+                || categoryIdStr == null || categoryIdStr.trim().isEmpty() 
+                || author == null || author.trim().isEmpty()
+                || priceStr == null || priceStr.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Tên sách, danh mục, tác giả và giá nhập là bắt buộc!");
             request.setAttribute("categoriesList", categoryDAO.findAllActive());
             Book book = new Book();
             if (bookIdStr != null) book.setBookId(Integer.parseInt(bookIdStr));
             book.setTitle(title);
             book.setAuthor(author);
             book.setPublisher(publisher);
+            if (categoryIdStr != null && !categoryIdStr.trim().isEmpty()) {
+                try {
+                    book.setCategoryId(Integer.parseInt(categoryIdStr.trim()));
+                } catch (Exception e) {}
+            }
+            if (priceStr != null && !priceStr.trim().isEmpty()) {
+                try {
+                    book.setPrice(new java.math.BigDecimal(priceStr.trim()));
+                } catch (Exception e) {}
+            }
             request.setAttribute("book", book);
             try {
                 request.getRequestDispatcher("/views/book/edit.jsp").forward(request, response);
@@ -366,6 +462,50 @@ public class BookServlet extends HttpServlet {
             }
         }
 
+        java.math.BigDecimal price = java.math.BigDecimal.ZERO;
+        try {
+            price = new java.math.BigDecimal(priceStr.trim());
+            if (price.compareTo(java.math.BigDecimal.ZERO) < 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("errorMessage", "Giá nhập phải là số không âm!");
+            request.setAttribute("categoriesList", categoryDAO.findAllActive());
+            Book book = new Book();
+            book.setBookId(bookId);
+            book.setCategoryId(Integer.parseInt(categoryIdStr));
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setPublisher(publisher);
+            request.setAttribute("book", book);
+            try {
+                request.getRequestDispatcher("/views/book/edit.jsp").forward(request, response);
+            } catch (ServletException se) {
+                se.printStackTrace();
+            }
+            return;
+        }
+
+        String imagePath = oldBook.getImagePath();
+        String removeImageStr = request.getParameter("removeImage");
+        boolean removeImage = "true".equals(removeImageStr);
+        
+        try {
+            Part filePart = request.getPart("imageFile");
+            if (filePart != null && filePart.getSize() > 0) {
+                String newImagePath = uploadImage(filePart, request);
+                if (newImagePath != null) {
+                    deleteOldImage(oldBook.getImagePath(), request);
+                    imagePath = newImagePath;
+                }
+            } else if (removeImage) {
+                deleteOldImage(oldBook.getImagePath(), request);
+                imagePath = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Book book = new Book();
         book.setBookId(bookId);
         book.setCategoryId(Integer.parseInt(categoryIdStr));
@@ -373,6 +513,28 @@ public class BookServlet extends HttpServlet {
         book.setAuthor(author != null ? author.trim() : "");
         book.setPublisher(publisher != null ? publisher.trim() : "");
         book.setPublishYear(publishYear);
+        book.setImagePath(imagePath);
+        book.setPrice(price);
+
+        // Kiểm tra trùng lặp đầu sách (loại trừ ID hiện tại)
+        Book duplicate = bookDAO.findDuplicate(title, author, publisher, publishYear != null ? publishYear : 0, bookId);
+        if (duplicate != null) {
+            String errorMsg;
+            if (duplicate.getDeletedAt() != null) {
+                errorMsg = "Không thể cập nhật: Một đầu sách tương tự đã tồn tại trong Thùng rác (Mã: #" + duplicate.getBookId() + "). Vui lòng khôi phục trong Thùng rác thay vì tạo trùng!";
+            } else {
+                errorMsg = "Không thể cập nhật: Một đầu sách tương tự đã hoạt động ngoài hệ thống (Mã: #" + duplicate.getBookId() + ").";
+            }
+            request.setAttribute("errorMessage", errorMsg);
+            request.setAttribute("categoriesList", categoryDAO.findAllActive());
+            request.setAttribute("book", book);
+            try {
+                request.getRequestDispatcher("/views/book/edit.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
 
         if (bookDAO.update(book)) {
             // Ghi log
@@ -382,6 +544,8 @@ public class BookServlet extends HttpServlet {
             oldValues.put("author", oldBook.getAuthor());
             oldValues.put("publisher", oldBook.getPublisher());
             oldValues.put("publish_year", oldBook.getPublishYear());
+            oldValues.put("image_path", oldBook.getImagePath());
+            oldValues.put("price", oldBook.getPrice());
 
             Map<String, Object> newValues = new HashMap<>();
             newValues.put("category_id", book.getCategoryId());
@@ -389,6 +553,8 @@ public class BookServlet extends HttpServlet {
             newValues.put("author", book.getAuthor());
             newValues.put("publisher", book.getPublisher());
             newValues.put("publish_year", book.getPublishYear());
+            newValues.put("image_path", book.getImagePath());
+            newValues.put("price", book.getPrice());
 
             AuditLogger.log(userId, AuditLogger.ActionType.UPDATE, "books", bookId, oldValues, newValues);
 
@@ -439,6 +605,54 @@ public class BookServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/books");
     }
 
+    private void handleRestoreBook(HttpServletRequest request, HttpServletResponse response, int userId)
+            throws SQLException, IOException {
+        String bookIdStr = request.getParameter("bookId");
+        if (bookIdStr == null) {
+            setFlashMessage(request, "Mã đầu sách không hợp lệ!", "danger");
+            response.sendRedirect(request.getContextPath() + "/books");
+            return;
+        }
+
+        int bookId = Integer.parseInt(bookIdStr);
+        Book bookInTrash = bookDAO.findDeletedById(bookId);
+        if (bookInTrash == null) {
+            setFlashMessage(request, "Đầu sách không tồn tại trong Thùng rác!", "danger");
+            response.sendRedirect(request.getContextPath() + "/books");
+            return;
+        }
+
+        // TƯ DUY PHÒNG NGỪA TRÙNG LẶP (HƯỚNG 1):
+        // 1. Kiểm tra danh mục
+        Category category = categoryDAO.findById(bookInTrash.getCategoryId());
+        if (category == null) {
+            setFlashMessage(request, "Không thể khôi phục vì danh mục '" + bookInTrash.getCategoryName() + "' đã bị xóa. Vui lòng khôi phục danh mục trước!", "danger");
+            response.sendRedirect(request.getContextPath() + "/books");
+            return;
+        }
+
+        // 2. Kiểm tra trùng lặp đầu sách khác đang hoạt động
+        Book duplicate = bookDAO.findDuplicate(bookInTrash.getTitle(), bookInTrash.getAuthor(), bookInTrash.getPublisher(), bookInTrash.getPublishYear(), null);
+        if (duplicate != null && duplicate.getDeletedAt() == null) {
+            setFlashMessage(request, "Không thể khôi phục: Đã có đầu sách '" + bookInTrash.getTitle() + "' cùng tác giả, nhà xuất bản và năm xuất bản đang hoạt động (Mã: #" + duplicate.getBookId() + ")!", "danger");
+            response.sendRedirect(request.getContextPath() + "/books");
+            return;
+        }
+
+        if (bookDAO.restore(bookId)) {
+            // Ghi log
+            Map<String, Object> newValues = new HashMap<>();
+            newValues.put("title", bookInTrash.getTitle());
+            newValues.put("author", bookInTrash.getAuthor());
+            AuditLogger.log(userId, AuditLogger.ActionType.RESTORE, "books", bookId, null, newValues);
+
+            setFlashMessage(request, "Khôi phục đầu sách và toàn bộ bản sao thành công!", "success");
+        } else {
+            setFlashMessage(request, "Khôi phục đầu sách thất bại!", "danger");
+        }
+        response.sendRedirect(request.getContextPath() + "/books");
+    }
+
     // ==========================================
     // CÁC HÀM XỬ LÝ CUỐN SÁCH CON (BOOK COPIES CRUD)
     // ==========================================
@@ -448,6 +662,7 @@ public class BookServlet extends HttpServlet {
         String bookIdStr = request.getParameter("bookId");
         String locationShelf = request.getParameter("locationShelf");
         String quantityStr = request.getParameter("quantity");
+        String priceStr = request.getParameter("price");
 
         if (bookIdStr == null || locationShelf == null || locationShelf.trim().isEmpty() || quantityStr == null) {
             setFlashMessage(request, "Thông tin thêm cuốn sách không hợp lệ!", "danger");
@@ -465,8 +680,22 @@ public class BookServlet extends HttpServlet {
             return;
         }
 
-        // Tạo mã viết tắt 3 ký tự hoa từ tên sách (JWD, DSA, SDO...)
-        String prefix = generateBookPrefix(book.getTitle());
+        java.math.BigDecimal copyPrice = book.getPrice() != null ? book.getPrice() : java.math.BigDecimal.ZERO;
+        if (priceStr != null && !priceStr.trim().isEmpty()) {
+            try {
+                copyPrice = new java.math.BigDecimal(priceStr.trim());
+                if (copyPrice.compareTo(java.math.BigDecimal.ZERO) < 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                setFlashMessage(request, "Giá nhập phải là số không âm!", "danger");
+                response.sendRedirect(request.getContextPath() + "/books?action=copies&id=" + bookId);
+                return;
+            }
+        }
+
+        // Sử dụng ID đầu sách làm tiền tố bất biến để tránh lỗi khi đổi tên sách (Ví dụ: BK105)
+        String prefix = "BK" + bookId;
 
         Connection conn = null;
         try {
@@ -493,6 +722,7 @@ public class BookServlet extends HttpServlet {
                 copy.setBarcode(barcode);
                 copy.setStatus("Available");
                 copy.setLocationShelf(locationShelf.trim());
+                copy.setPrice(copyPrice);
 
                 bookCopyDAO.insert(conn, copy);
 
@@ -502,6 +732,7 @@ public class BookServlet extends HttpServlet {
                 newValues.put("barcode", barcode);
                 newValues.put("status", "Available");
                 newValues.put("location_shelf", copy.getLocationShelf());
+                newValues.put("price", copy.getPrice());
 
                 // Sử dụng connection dùng chung cho log để roll back nếu lỗi
                 AuditLogger.log(conn, userId, AuditLogger.ActionType.INSERT, "book_copies", 0, null, newValues);
@@ -530,6 +761,7 @@ public class BookServlet extends HttpServlet {
         String copyIdStr = request.getParameter("copyId");
         String locationShelf = request.getParameter("locationShelf");
         String status = request.getParameter("status");
+        String priceStr = request.getParameter("price");
 
         if (copyIdStr == null || locationShelf == null || locationShelf.trim().isEmpty() || status == null) {
             setFlashMessage(request, "Dữ liệu sửa cuốn sách không hợp lệ!", "danger");
@@ -543,6 +775,20 @@ public class BookServlet extends HttpServlet {
             setFlashMessage(request, "Cuốn sách không tồn tại hoặc đã bị xóa!", "danger");
             response.sendRedirect(request.getContextPath() + "/books");
             return;
+        }
+
+        java.math.BigDecimal copyPrice = oldCopy.getPrice() != null ? oldCopy.getPrice() : java.math.BigDecimal.ZERO;
+        if (priceStr != null && !priceStr.trim().isEmpty()) {
+            try {
+                copyPrice = new java.math.BigDecimal(priceStr.trim());
+                if (copyPrice.compareTo(java.math.BigDecimal.ZERO) < 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                setFlashMessage(request, "Giá nhập phải là số không âm!", "danger");
+                response.sendRedirect(request.getContextPath() + "/books?action=copies&id=" + oldCopy.getBookId());
+                return;
+            }
         }
 
         // TƯ DUY PHẢN BIỆN: Nếu trạng thái hiện tại là 'Borrowed' (đang mượn),
@@ -564,6 +810,7 @@ public class BookServlet extends HttpServlet {
         copy.setCopyId(copyId);
         copy.setLocationShelf(locationShelf.trim());
         copy.setStatus(status);
+        copy.setPrice(copyPrice);
 
         if (bookCopyDAO.update(copy)) {
             // Ghi log
@@ -571,11 +818,13 @@ public class BookServlet extends HttpServlet {
             oldValues.put("barcode", oldCopy.getBarcode());
             oldValues.put("status", oldCopy.getStatus());
             oldValues.put("location_shelf", oldCopy.getLocationShelf());
+            oldValues.put("price", oldCopy.getPrice());
 
             Map<String, Object> newValues = new HashMap<>();
             newValues.put("barcode", oldCopy.getBarcode());
             newValues.put("status", status);
             newValues.put("location_shelf", locationShelf.trim());
+            newValues.put("price", copy.getPrice());
 
             AuditLogger.log(userId, AuditLogger.ActionType.UPDATE, "book_copies", copyId, oldValues, newValues);
 
@@ -694,5 +943,53 @@ public class BookServlet extends HttpServlet {
         return pattern.matcher(temp).replaceAll("")
                       .replace('Đ', 'D')
                       .replace('đ', 'd');
+    }
+
+    private String uploadImage(Part filePart, HttpServletRequest request) throws IOException {
+        if (filePart == null || filePart.getSize() <= 0) {
+            return null;
+        }
+        
+        String header = filePart.getHeader("content-disposition");
+        String fileName = "";
+        for (String temp : header.split(";")) {
+            if (temp.trim().startsWith("filename")) {
+                fileName = temp.substring(temp.indexOf("=") + 1).trim().replace("\"", "");
+                // Xử lý IE/Opera đường dẫn đầy đủ
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1)
+                                   .substring(fileName.lastIndexOf('\\') + 1);
+            }
+        }
+        
+        String ext = "jpg";
+        if (fileName.contains(".")) {
+            ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+        }
+        
+        String uniqueFileName = "book_" + System.currentTimeMillis() + "_" + UUID.randomUUID().toString().substring(0, 8) + "." + ext;
+        
+        String uploadPath = request.getServletContext().getRealPath("/assets/images/books");
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+        
+        filePart.write(uploadPath + File.separator + uniqueFileName);
+        return "assets/images/books/" + uniqueFileName;
+    }
+
+    private void deleteOldImage(String relativePath, HttpServletRequest request) {
+        if (relativePath == null || relativePath.isEmpty()) {
+            return;
+        }
+        try {
+            String realPath = request.getServletContext().getRealPath("/" + relativePath);
+            File file = new File(realPath);
+            if (file.exists() && file.isFile()) {
+                file.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

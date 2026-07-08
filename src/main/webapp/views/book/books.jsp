@@ -2,6 +2,7 @@
 <%@ page import="java.util.List,book.Book,categories.Category"%>
 <%-- Hỗ trợ JSTL Core --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -10,12 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Sách - LibraryOS</title>
     
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Project CSS -->
     <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
+    <link href="${pageContext.request.contextPath}/assets/css/category-colors.css" rel="stylesheet" type="text/css">
     <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -68,24 +70,6 @@
             <!-- Vùng đệm p-4 -->
             <div class="container-fluid p-4 flex-grow-1">
                 
-                <!-- Hiển thị thông báo Flash (nếu có) -->
-                <%
-                    String msg = (String) session.getAttribute("message");
-                    String msgType = (String) session.getAttribute("messageType");
-                    if (msg != null) {
-                        session.removeAttribute("message");
-                        session.removeAttribute("messageType");
-                %>
-                    <div class="alert alert-<%= msgType %> alert-dismissible fade show rounded-3 shadow-sm border-0 px-4 py-3 mb-4" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid <%= "success".equals(msgType) ? "fa-circle-check text-success" : "fa-circle-exclamation text-danger" %> fs-5 me-3"></i>
-                            <div class="fw-semibold text-dark"><%= msg %></div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <%
-                    }
-                %>
 
                 <%-- ── TIÊU ĐỀ TRANG ── --%>
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -96,6 +80,14 @@
                         </p>
                     </div>
                     <div class="d-flex gap-2">
+                        <button type="button"
+                                id="btn-open-archive"
+                                class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                                data-bs-toggle="modal"
+                                data-bs-target="#archiveModal">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Thùng rác</span>
+                        </button>
                         <a href="${pageContext.request.contextPath}/books?action=add"
                            id="btn-add-book"
                            class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
@@ -202,47 +194,63 @@
 
                     <%-- ── BẢNG DANH SÁCH ── --%>
                     <div class="table-responsive">
-                        <table class="table-custom">
-                            <thead>
-                                <tr>
-                                    <th class="ps-4" style="width: 80px;">Mã</th>
-                                    <th>Thông tin sách / Tác giả</th>
-                                    <th style="width: 180px;">Danh mục</th>
-                                    <th style="width: 180px;">NXB & Năm</th>
-                                    <th style="width: 160px;">Số lượng cuốn</th>
-                                    <th style="width: 160px; text-align: center;">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:choose>
-                                    <c:when test="${empty booksList}">
+                        <c:choose>
+                            <c:when test="${not empty booksList}">
+                                <table class="table-custom">
+                                    <thead>
                                         <tr>
-                                            <td colspan="6" class="text-center py-5 text-muted">
-                                                <i class="fa-regular fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
-                                                Không tìm thấy đầu sách nào khớp với điều kiện lọc.
-                                            </td>
+                                            <th class="ps-4" style="width: 50px;">#</th>
+                                            <th style="width: 80px; text-align: center;">Ảnh</th>
+                                            <th>Thông tin sách / Tác giả</th>
+                                            <th style="width: 180px; text-align: center;">Danh mục</th>
+                                            <th style="width: 180px;">NXB & Năm</th>
+                                            <th style="width: 140px;">Giá Nhập</th>
+                                            <th style="width: 160px;">Số lượng cuốn</th>
+                                            <th style="width: 160px; text-align: center;">Hành động</th>
                                         </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="book" items="${booksList}">
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="book" items="${booksList}" varStatus="loop">
                                             <tr>
-                                                <!-- ID đầu sách -->
-                                                <td class="ps-4 fw-semibold text-secondary">#${book.bookId}</td>
+                                                <!-- Số thứ tự -->
+                                                <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                <!-- Ảnh bìa -->
+                                                <td class="text-center">
+                                                    <c:choose>
+                                                        <c:when test="${not empty book.imagePath}">
+                                                            <img src="${pageContext.request.contextPath}/${book.imagePath}" 
+                                                                 alt="${book.title}" 
+                                                                 class="rounded shadow-sm" 
+                                                                 style="width: 48px; height: 64px; object-fit: cover; border: 1px solid var(--border);">
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <div class="d-inline-flex align-items-center justify-content-center rounded bg-light text-muted shadow-sm" 
+                                                                 style="width: 48px; height: 64px; border: 1px dashed var(--border);">
+                                                                <i class="fa-solid fa-book" style="font-size: 1.2rem;"></i>
+                                                            </div>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
                                                 <!-- Tiêu đề & Tác giả -->
                                                 <td>
                                                     <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="fw-bold text-indigo-brand fs-6 text-decoration-none hover-underline" style="cursor: pointer;">
                                                         ${book.title}
                                                     </a>
                                                     <div class="text-muted small mt-0.5"><i class="fa-regular fa-user me-1"></i>${book.author}</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">ID: #${book.bookId}</div>
                                                 </td>
                                                 <!-- Danh mục -->
-                                                <td>
-                                                    <span class="badge-status badge-restore-custom px-3 py-1.5 fs-7">${book.categoryName}</span>
+                                                <td class="text-center">
+                                                    <span class="badge-status badge-theme-${book.categoryColorTheme} px-3 py-1.5 fs-7">${book.categoryName}</span>
                                                 </td>
                                                 <!-- Nhà xuất bản & Năm -->
                                                 <td class="text-muted">
                                                     <div>${book.publisher}</div>
                                                     <div class="small">${book.publishYear != 0 ? book.publishYear : "N/A"}</div>
+                                                </td>
+                                                <!-- Giá bìa -->
+                                                <td class="fw-semibold text-dark">
+                                                    <fmt:formatNumber value="${book.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                                 </td>
                                                 <!-- Số cuốn sách khả dụng / Tổng số cuốn -->
                                                 <td>
@@ -261,8 +269,8 @@
                                                 <!-- Thao tác hành động -->
                                                 <td>
                                                     <div class="d-flex gap-1 justify-content-center">
-                                                        <%-- Bản sao --%>
-                                                        <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}" class="btn-action" title="Bản sao">
+                                                        <%-- Quản lý cuốn sách --%>
+                                                        <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}" class="btn-action" title="Quản lý cuốn sách">
                                                             <i class="fa-solid fa-list-check"></i>
                                                         </a>
                                                         <%-- Xem chi tiết --%>
@@ -282,10 +290,32 @@
                                                 </td>
                                             </tr>
                                         </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="empty-state">
+                                    <div class="icon"><i class="fa-solid fa-book"></i></div>
+                                    <h5 class="fw-semibold text-dark mb-1">Không tìm thấy đầu sách nào</h5>
+                                    <p class="mb-3" style="font-size:.875rem;">
+                                        <c:choose>
+                                            <c:when test="${not empty selectedQuery or not empty selectedCategoryId}">
+                                                Không có kết quả phù hợp với bộ lọc tìm kiếm hiện tại.
+                                            </c:when>
+                                            <c:otherwise>
+                                                Chưa có đầu sách nào trong hệ thống.
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </p>
+                                    <c:if test="${empty selectedQuery and empty selectedCategoryId}">
+                                        <a href="${pageContext.request.contextPath}/books?action=add"
+                                           class="btn btn-primary rounded-3 px-4 fw-medium hover-lift">
+                                            <i class="fa-solid fa-plus me-2"></i>Thêm đầu sách đầu tiên
+                                        </a>
+                                    </c:if>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
 
@@ -298,27 +328,104 @@
     <!-- ======================================================= -->
 
     <!-- Modal: Xác nhận xóa đầu sách (Bắc cầu) -->
-    <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+    <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-3">
-                <form action="${pageContext.request.contextPath}/books?action=delete" method="post">
-                    <input type="hidden" id="deleteBookId" name="bookId">
-                    <div class="modal-body p-4 text-center">
-                        <i class="fa-solid fa-triangle-exclamation text-danger fs-1 mb-3"></i>
-                        <h5 class="fw-bold mb-2">Xác nhận xóa đầu sách</h5>
-                        <p class="text-muted small mb-4">Bạn có chắc chắn muốn xóa đầu sách <span class="fw-bold text-dark" id="deleteBookTitle"></span>?</p>
-                        
-                        <div class="alert alert-warning border-0 small text-start rounded-3 mb-4 py-2">
-                            <i class="fa-solid fa-circle-info me-2 text-warning"></i>
-                            <strong>Lưu ý:</strong> Hành động này sẽ thực hiện xóa mềm đầu sách này <strong>VÀ toàn bộ cuốn sách con</strong> trực thuộc đầu sách đó khỏi kho dữ liệu.
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:40px;height:40px;background:#FEE2E2;flex-shrink:0;">
+                            <i class="fa-solid fa-triangle-exclamation" style="color:#DC2626;"></i>
                         </div>
-
-                        <div class="d-flex gap-2 justify-content-center">
-                            <button type="button" class="btn btn-light rounded-3 px-4 py-2 flex-grow-1" data-bs-dismiss="modal">Hủy bỏ</button>
-                            <button type="submit" class="btn btn-danger rounded-3 px-4 py-2 flex-grow-1">Đồng ý xóa</button>
+                        <h6 class="modal-title fw-bold m-0" id="deleteBookModalLabel">Xác nhận xóa đầu sách</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <form action="${pageContext.request.contextPath}/books?action=delete" method="post" class="m-0">
+                    <input type="hidden" id="deleteBookId" name="bookId">
+                    <div class="modal-body">
+                        <p class="mb-1" style="font-size:.9rem;">Bạn có chắc chắn muốn xóa đầu sách:</p>
+                        <p class="fw-bold mb-3" id="deleteBookTitle" style="font-size:1rem; color:var(--primary);">—</p>
+                        <div class="rounded-3 p-3" style="background:#FEF2F2;border:1px solid #FECACA;font-size:.82rem;color:#991B1B;">
+                            <i class="fa-solid fa-info-circle me-1"></i>
+                            Hành động này sẽ thực hiện xóa mềm đầu sách này <strong>VÀ toàn bộ cuốn sách con</strong> trực thuộc đầu sách đó khỏi kho dữ liệu.
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger hover-lift">
+                            <i class="fa-solid fa-trash-can me-1"></i> Xác nhận xóa
+                        </button>
+                    </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal: Thùng rác Đầu sách (Danh sách đầu sách đã xóa mềm) -->
+    <div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow rounded-3">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:40px;height:40px;background:#F1F5F9;flex-shrink:0;">
+                            <i class="fa-solid fa-trash-can" style="color:#64748B;"></i>
+                        </div>
+                        <h6 class="modal-title fw-bold m-0" id="archiveModalLabel">Thùng rác Đầu sách</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">
+                        <i class="fa-solid fa-info-circle me-1"></i>
+                        Dưới đây là danh sách các đầu sách đã bị xóa mềm. Bạn có thể khôi phục lại chúng cùng toàn bộ các cuốn sách con.
+                    </p>
+                    
+                    <div class="table-responsive rounded-3 border" style="max-height: 290px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0" style="font-size:.85rem;">
+                            <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
+                                <tr>
+                                    <th class="ps-3" style="width: 80px;">Mã sách</th>
+                                    <th>Tên đầu sách</th>
+                                    <th>Tác giả</th>
+                                    <th>Danh mục</th>
+                                    <th>Năm XB</th>
+                                    <th class="text-center" style="width: 120px;">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${empty deletedBooksList}">
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4 text-muted">
+                                                Thùng rác hiện đang trống.
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="b" items="${deletedBooksList}">
+                                            <tr>
+                                                <td class="ps-3 fw-semibold text-secondary">#${b.bookId}</td>
+                                                <td class="fw-semibold text-dark">${b.title}</td>
+                                                <td>${empty b.author ? '—' : b.author}</td>
+                                                <td><span class="badge-status badge-theme-${b.categoryColorTheme} px-3 py-1.5 fs-7">${b.categoryName}</span></td>
+                                                <td>${empty b.publishYear ? '—' : b.publishYear}</td>
+                                                <td class="text-center">
+                                                    <form action="${pageContext.request.contextPath}/books?action=restore" method="post" class="d-inline m-0">
+                                                        <input type="hidden" name="bookId" value="${b.bookId}">
+                                                        <button type="submit" class="btn-action hover-lift" title="Khôi phục đầu sách" style="color: #15803D !important; border-color: #86EFAC !important;">
+                                                            <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -331,6 +438,49 @@
         // Khai báo context path cho file JS ngoài sử dụng
         const contextPath = "${pageContext.request.contextPath}";
     </script>
+    <%-- ── FLASH TOAST (cục bộ tương tự Độc giả) ── --%>
+    <%
+        String msg = (String) session.getAttribute("message");
+        String msgType = (String) session.getAttribute("messageType");
+        if (msg != null) {
+            session.removeAttribute("message");
+            session.removeAttribute("messageType");
+            String resolvedType = "success".equals(msgType) ? "success" : "error";
+    %>
+        <div class="flash-toast <%= resolvedType %>" id="flash-toast" role="alert">
+            <span class="toast-icon">
+                <% if ("success".equals(resolvedType)) { %>
+                    <i class="fa-solid fa-circle-check"></i>
+                <% } else { %>
+                    <i class="fa-solid fa-circle-xmark"></i>
+                <% } %>
+            </span>
+            <span style="font-size:.875rem;font-weight:500;flex:1;">
+                <%= msg %>
+            </span>
+            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <script>
+            function closeToast() {
+                const toast = document.getElementById('flash-toast');
+                if (toast) {
+                    toast.style.transition = 'opacity .3s ease';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }
+            (function () {
+                const toast = document.getElementById('flash-toast');
+                if (toast) {
+                    setTimeout(closeToast, 3500);
+                }
+            })();
+        </script>
+    <%
+        }
+    %>
     <script src="${pageContext.request.contextPath}/assets/book/books-jsp.js"></script>
 </body>
 </html>

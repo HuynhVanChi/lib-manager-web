@@ -25,33 +25,83 @@ public class CategoryServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         
+        String action = request.getParameter("action");
+        if ("add".equals(action)) {
+            request.getRequestDispatcher("/views/categories/add.jsp").forward(request, response);
+            return;
+        } else if ("edit".equals(action)) {
+            String idStr = request.getParameter("id");
+            if (idStr != null && !idStr.trim().isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idStr.trim());
+                    Category cat = categoryDAO.findById(id);
+                    if (cat != null) {
+                        request.setAttribute("category", cat);
+                    } else {
+                        setFlashMessage(request, "Danh mục không tồn tại hoặc đã bị xóa!", "danger");
+                        response.sendRedirect(request.getContextPath() + "/categories");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    setFlashMessage(request, "Mã danh mục không hợp lệ!", "danger");
+                    response.sendRedirect(request.getContextPath() + "/categories");
+                    return;
+                }
+            } else {
+                setFlashMessage(request, "Mã danh mục không hợp lệ!", "danger");
+                response.sendRedirect(request.getContextPath() + "/categories");
+                return;
+            }
+            request.getRequestDispatcher("/views/categories/edit.jsp").forward(request, response);
+            return;
+        } else if ("detail".equals(action)) {
+            String idStr = request.getParameter("id");
+            if (idStr != null && !idStr.trim().isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idStr.trim());
+                    Category cat = categoryDAO.findById(id);
+                    if (cat != null) {
+                        request.setAttribute("category", cat);
+                        book.BookDAO bookDAO = new book.BookDAO();
+                        List<book.Book> booksList = bookDAO.findAllActive(null, id);
+                        request.setAttribute("booksList", booksList);
+                    } else {
+                        setFlashMessage(request, "Danh mục không tồn tại hoặc đã bị xóa!", "danger");
+                        response.sendRedirect(request.getContextPath() + "/categories");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    setFlashMessage(request, "Mã danh mục không hợp lệ!", "danger");
+                    response.sendRedirect(request.getContextPath() + "/categories");
+                    return;
+                }
+            } else {
+                setFlashMessage(request, "Mã danh mục không hợp lệ!", "danger");
+                response.sendRedirect(request.getContextPath() + "/categories");
+                return;
+            }
+            request.getRequestDispatcher("/views/categories/detail.jsp").forward(request, response);
+            return;
+        }
+        
         String query = request.getParameter("query");
         if (query != null) {
             query = query.trim();
         }
         
-        String showTrash = request.getParameter("trash");
-        if ("true".equals(showTrash)) {
-            List<Category> deletedList;
-            if (query != null && !query.isEmpty()) {
-                deletedList = categoryDAO.searchDeleted(query);
-            } else {
-                deletedList = categoryDAO.findAllDeleted();
-            }
-            request.setAttribute("deletedCategories", deletedList);
-            request.setAttribute("isTrashView", true);
+        List<Category> activeList;
+        if (query != null && !query.isEmpty()) {
+            activeList = categoryDAO.searchActive(query);
         } else {
-            List<Category> activeList;
-            if (query != null && !query.isEmpty()) {
-                activeList = categoryDAO.searchActive(query);
-            } else {
-                activeList = categoryDAO.findAllActive();
-            }
-            request.setAttribute("activeCategories", activeList);
-            request.setAttribute("isTrashView", false);
+            activeList = categoryDAO.findAllActive();
         }
         
+        List<Category> deletedList = categoryDAO.findAllDeleted();
+        
+        request.setAttribute("activeCategories", activeList);
+        request.setAttribute("deletedCategories", deletedList);
         request.setAttribute("searchQuery", query);
+        
         request.getRequestDispatcher("/views/categories/categories.jsp").forward(request, response);
     }
 
@@ -104,8 +154,14 @@ public class CategoryServlet extends HttpServlet {
         String description = request.getParameter("description");
 
         if (name == null || name.trim().isEmpty()) {
-            setFlashMessage(request, "Tên danh mục không được để trống!", "danger");
-            response.sendRedirect(request.getContextPath() + "/categories");
+            request.setAttribute("errorMessage", "Tên danh mục không được để trống!");
+            request.setAttribute("categoryName", name);
+            request.setAttribute("categoryDescription", description);
+            try {
+                request.getRequestDispatcher("/views/categories/add.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
@@ -113,14 +169,30 @@ public class CategoryServlet extends HttpServlet {
 
         // Kiểm tra trùng tên đang hoạt động
         if (categoryDAO.existsByName(name, null)) {
-            setFlashMessage(request, "Tên danh mục '" + name + "' đã tồn tại và đang hoạt động!", "danger");
-            response.sendRedirect(request.getContextPath() + "/categories");
+            request.setAttribute("errorMessage", "Tên danh mục '" + name + "' đã tồn tại và đang hoạt động!");
+            request.setAttribute("categoryName", name);
+            request.setAttribute("categoryDescription", description);
+            try {
+                request.getRequestDispatcher("/views/categories/add.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
             return;
+        }
+
+        String colorTheme = request.getParameter("colorTheme");
+        if (colorTheme == null || colorTheme.trim().isEmpty()) {
+            colorTheme = "indigo";
+        }
+        List<String> validColors = java.util.Arrays.asList("blue", "indigo", "purple", "pink", "rose", "red", "orange", "amber", "emerald", "teal", "slate");
+        if (!validColors.contains(colorTheme.trim().toLowerCase())) {
+            colorTheme = "indigo";
         }
 
         Category c = new Category();
         c.setName(name);
         c.setDescription(description);
+        c.setColorTheme(colorTheme.trim());
 
         int newId = categoryDAO.insert(c);
         if (newId > 0) {
@@ -128,15 +200,22 @@ public class CategoryServlet extends HttpServlet {
             Map<String, Object> newValues = new HashMap<>();
             newValues.put("name", name);
             newValues.put("description", description);
+            newValues.put("color_theme", colorTheme.trim());
 
             AuditLogger.log(userId, AuditLogger.ActionType.INSERT, "categories", newId, null, newValues);
             
             setFlashMessage(request, "Thêm mới danh mục thành công!", "success");
+            response.sendRedirect(request.getContextPath() + "/categories");
         } else {
-            setFlashMessage(request, "Thêm mới danh mục thất bại!", "danger");
+            request.setAttribute("errorMessage", "Thêm mới danh mục thất bại!");
+            request.setAttribute("categoryName", name);
+            request.setAttribute("categoryDescription", description);
+            try {
+                request.getRequestDispatcher("/views/categories/add.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
         }
-        
-        response.sendRedirect(request.getContextPath() + "/categories");
     }
 
     private void handleUpdate(HttpServletRequest request, HttpServletResponse response, int userId)
@@ -145,13 +224,24 @@ public class CategoryServlet extends HttpServlet {
         String name = request.getParameter("name");
         String description = request.getParameter("description");
 
-        if (idStr == null || name == null || name.trim().isEmpty()) {
-            setFlashMessage(request, "Thông tin cập nhật không hợp lệ!", "danger");
-            response.sendRedirect(request.getContextPath() + "/categories");
+        if (idStr == null || idStr.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Thông tin cập nhật không hợp lệ!");
+            Category c = new Category();
+            if (idStr != null && !idStr.trim().isEmpty()) {
+                c.setCategoryId(Integer.parseInt(idStr.trim()));
+            }
+            c.setName(name);
+            c.setDescription(description);
+            request.setAttribute("category", c);
+            try {
+                request.getRequestDispatcher("/views/categories/edit.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
-        int id = Integer.parseInt(idStr);
+        int id = Integer.parseInt(idStr.trim());
         name = name.trim();
 
         // Lấy dữ liệu cũ để ghi Audit Log
@@ -164,34 +254,60 @@ public class CategoryServlet extends HttpServlet {
 
         // Kiểm tra trùng tên với danh mục khác
         if (categoryDAO.existsByName(name, id)) {
-            setFlashMessage(request, "Tên danh mục '" + name + "' đã được sử dụng bởi danh mục khác!", "danger");
-            response.sendRedirect(request.getContextPath() + "/categories");
+            request.setAttribute("errorMessage", "Tên danh mục '" + name + "' đã được sử dụng bởi danh mục khác!");
+            Category c = new Category();
+            c.setCategoryId(id);
+            c.setName(name);
+            c.setDescription(description);
+            request.setAttribute("category", c);
+            try {
+                request.getRequestDispatcher("/views/categories/edit.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
             return;
+        }
+
+        String colorTheme = request.getParameter("colorTheme");
+        if (colorTheme == null || colorTheme.trim().isEmpty()) {
+            colorTheme = "indigo";
+        }
+        List<String> validColors = java.util.Arrays.asList("blue", "indigo", "purple", "pink", "rose", "red", "orange", "amber", "emerald", "teal", "slate");
+        if (!validColors.contains(colorTheme.trim().toLowerCase())) {
+            colorTheme = "indigo";
         }
 
         Category c = new Category();
         c.setCategoryId(id);
         c.setName(name);
         c.setDescription(description);
+        c.setColorTheme(colorTheme.trim());
 
         if (categoryDAO.update(c)) {
             // Ghi Audit Log
             Map<String, Object> oldValues = new HashMap<>();
             oldValues.put("name", oldCat.getName());
             oldValues.put("description", oldCat.getDescription());
+            oldValues.put("color_theme", oldCat.getColorTheme());
 
             Map<String, Object> newValues = new HashMap<>();
             newValues.put("name", name);
             newValues.put("description", description);
+            newValues.put("color_theme", colorTheme.trim());
 
             AuditLogger.log(userId, AuditLogger.ActionType.UPDATE, "categories", id, oldValues, newValues);
 
             setFlashMessage(request, "Cập nhật danh mục thành công!", "success");
+            response.sendRedirect(request.getContextPath() + "/categories");
         } else {
-            setFlashMessage(request, "Cập nhật danh mục thất bại!", "danger");
+            request.setAttribute("errorMessage", "Cập nhật danh mục thất bại!");
+            request.setAttribute("category", c);
+            try {
+                request.getRequestDispatcher("/views/categories/edit.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
         }
-        
-        response.sendRedirect(request.getContextPath() + "/categories");
     }
 
     private void handleDelete(HttpServletRequest request, HttpServletResponse response, int userId)
@@ -241,7 +357,7 @@ public class CategoryServlet extends HttpServlet {
         String idStr = request.getParameter("categoryId");
         if (idStr == null) {
             setFlashMessage(request, "Mã danh mục không hợp lệ!", "danger");
-            response.sendRedirect(request.getContextPath() + "/categories?trash=true");
+            response.sendRedirect(request.getContextPath() + "/categories");
             return;
         }
 
@@ -251,14 +367,14 @@ public class CategoryServlet extends HttpServlet {
         Category deletedCat = categoryDAO.findDeletedById(id);
         if (deletedCat == null) {
             setFlashMessage(request, "Không tìm thấy danh mục đã bị xóa!", "danger");
-            response.sendRedirect(request.getContextPath() + "/categories?trash=true");
+            response.sendRedirect(request.getContextPath() + "/categories");
             return;
         }
 
         // Kiểm tra xem đã có danh mục nào đang hoạt động trùng tên chưa (Chặn trùng lặp khi khôi phục)
         if (categoryDAO.existsByName(deletedCat.getName(), null)) {
             setFlashMessage(request, "Không thể khôi phục vì đã có danh mục '" + deletedCat.getName() + "' khác đang hoạt động!", "danger");
-            response.sendRedirect(request.getContextPath() + "/categories?trash=true");
+            response.sendRedirect(request.getContextPath() + "/categories");
             return;
         }
 

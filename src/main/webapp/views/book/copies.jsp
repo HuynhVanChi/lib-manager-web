@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List,book.Book,book.BookCopy"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -9,85 +10,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Bản Sao - LibraryOS</title>
     
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB;
-        }
-        .bg-indigo-brand {
-            background-color: #312E81 !important;
-        }
-        .text-indigo-brand {
-            color: #312E81 !important;
-        }
-        .btn-indigo-brand {
-            background-color: #312E81;
-            color: #ffffff;
-            border: none;
-            transition: all 0.2s ease-in-out;
-        }
-        .btn-indigo-brand:hover {
-            background-color: #1e1b4b;
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .btn-outline-indigo-brand {
-            border: 2px solid #312E81;
-            color: #312E81;
-            background-color: transparent;
-            font-weight: 600;
-        }
-        .btn-outline-indigo-brand:hover {
-            background-color: #312E81;
-            color: #ffffff;
-        }
-        .card-custom {
-            border: none;
-            border-radius: 12px;
-        }
-        .table-premium th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            color: #4b5563;
-            background-color: #f3f4f6;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        .table-premium td {
-            font-size: 0.875rem;
-            color: #1f2937;
-        }
-        /* Custom badges */
-        .badge-soft-success {
-            background-color: rgba(34, 197, 94, 0.1);
-            color: #15803d;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-        .badge-soft-warning {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: #b45309;
-            border: 1px solid rgba(245, 158, 11, 0.2);
-        }
-        .badge-soft-danger {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #b91c1c;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-        .badge-soft-secondary {
-            background-color: rgba(107, 114, 128, 0.1);
-            color: #4b5563;
-            border: 1px solid rgba(107, 114, 128, 0.2);
-        }
-    </style>
+    <!-- Project CSS -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body class="m-0 p-0 bg-light">
 
@@ -107,32 +38,22 @@
             <div class="container-fluid p-4 flex-grow-1">
                 
                 <!-- Thanh hướng dẫn điều hướng (Breadcrumbs) -->
-                <nav aria-label="breadcrumb" class="mb-4">
+                <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/books" class="text-indigo-brand text-decoration-none fw-medium">Quản lý Sách</a></li>
-                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="text-indigo-brand text-decoration-none fw-medium">${book.title}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Quản lý bản sao</li>
+                        <li class="breadcrumb-item">
+                            <a href="${pageContext.request.contextPath}/books">
+                                <i class="fa-solid fa-book me-1"></i>Quản lý sách
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}">
+                                ${book.title}
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Quản lý cuốn sách</li>
                     </ol>
                 </nav>
 
-                <!-- Hiển thị thông báo Flash (nếu có) -->
-                <%
-                    String msg = (String) session.getAttribute("message");
-                    String msgType = (String) session.getAttribute("messageType");
-                    if (msg != null) {
-                        session.removeAttribute("message");
-                        session.removeAttribute("messageType");
-                %>
-                    <div class="alert alert-<%= msgType %> alert-dismissible fade show rounded-3 shadow-sm border-0 px-4 py-3 mb-4" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid <%= "success".equals(msgType) ? "fa-circle-check text-success" : "fa-circle-exclamation text-danger" %> fs-5 me-3"></i>
-                            <div class="fw-semibold text-dark"><%= msg %></div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <%
-                    }
-                %>
 
                 <!-- Tính toán thống kê nhanh bản sao bằng JSTL -->
                 <c:set var="damagedCount" value="0"/>
@@ -145,12 +66,16 @@
                 </c:forEach>
 
                 <!-- Header Tên sách -->
-                <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-4 mt-2">
                     <div>
-                        <h3 class="fw-bold text-dark m-0">Quản lý bản sao vật lý</h3>
-                        <p class="text-muted m-0 mt-1">Đầu sách: <span class="fw-semibold text-indigo-brand">${book.title}</span> (Tác giả: ${book.author})</p>
+                        <h1 class="fw-bold text-dark m-0" style="font-size:1.6rem; letter-spacing: -0.5px;">Quản lý cuốn sách</h1>
+                        <div class="mt-2 p-2 px-3 bg-primary text-white border-0 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
+                            <span class="badge bg-white text-primary px-2 py-1 fs-8 text-uppercase fw-bold shadow-sm">Đầu sách</span>
+                            <span class="fw-bold text-white fs-6">${book.title}</span>
+                            <span class="text-white-50 fs-7">| Tác giả: <strong class="text-white">${book.author}</strong></span>
+                        </div>
                     </div>
-                    <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn btn-light rounded-3 d-flex align-items-center gap-2">
+                    <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn-back hover-lift">
                         <i class="fa-solid fa-arrow-left"></i> Quay lại chi tiết
                     </a>
                 </div>
@@ -158,27 +83,47 @@
                 <!-- Thống kê nhanh bản sao của đầu sách này -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
-                        <div class="card card-custom shadow-sm bg-white p-3 text-center">
-                            <span class="text-muted small fw-medium d-block">Tổng số bản sao</span>
-                            <span class="fs-4 fw-bold text-dark mt-1 d-block">${book.totalCopies}</span>
+                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted small fw-medium d-block">Tổng số cuốn sách</span>
+                                <span class="fs-4 fw-bold text-dark mt-1 d-block">${book.totalCopies}</span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-light text-primary" style="width:48px;height:48px;">
+                                <i class="fa-solid fa-copy fs-5"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="card card-custom shadow-sm bg-white p-3 text-center">
-                            <span class="text-muted small fw-medium d-block">Sẵn có (Available)</span>
-                            <span class="fs-4 fw-bold text-success mt-1 d-block">${book.availableCopies}</span>
+                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted small fw-medium d-block">Sẵn có (Available)</span>
+                                <span class="fs-4 fw-bold text-success mt-1 d-block">${book.availableCopies}</span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:rgba(34,197,94,0.1);color:#15803d;">
+                                <i class="fa-solid fa-circle-check fs-5"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="card card-custom shadow-sm bg-white p-3 text-center">
-                            <span class="text-muted small fw-medium d-block">Đang cho mượn</span>
-                            <span class="fs-4 fw-bold text-warning mt-1 d-block">${borrowedCount}</span>
+                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted small fw-medium d-block">Đang cho mượn</span>
+                                <span class="fs-4 fw-bold text-warning mt-1 d-block">${borrowedCount}</span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:rgba(245,158,11,0.1);color:#b45309;">
+                                <i class="fa-solid fa-book-open fs-5"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="card card-custom shadow-sm bg-white p-3 text-center">
-                            <span class="text-muted small fw-medium d-block">Hỏng / Mất / Thanh lý</span>
-                            <span class="fs-4 fw-bold text-danger mt-1 d-block">${damagedCount + lostCount}</span>
+                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted small fw-medium d-block">Hỏng / Mất / Hủy</span>
+                                <span class="fs-4 fw-bold text-danger mt-1 d-block">${damagedCount + lostCount}</span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:rgba(239,68,68,0.1);color:#b91c1c;">
+                                <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -187,82 +132,111 @@
                 <div class="row g-4">
                     <!-- Cột 1: Danh sách bản sao (8/12) -->
                     <div class="col-12 col-lg-8">
-                        <div class="card card-custom shadow-sm h-100">
-                            <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
-                                <h6 class="fw-bold text-dark m-0">
-                                    <i class="fa-solid fa-list-check me-1 text-indigo-brand"></i> Danh sách bản sao hiện tại
-                                </h6>
+                        <div class="form-card bg-white h-100">
+                            
+                            <%-- Header Card --%>
+                            <div class="form-card-header">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-list-check fs-5 text-white"></i>
+                                    <h5 class="text-white fw-bold mb-0" style="font-size:1rem;">Danh sách cuốn sách hiện tại</h5>
+                                </div>
                             </div>
                             
-                            <div class="card-body p-0">
+                            <div class="p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-hover align-middle table-premium m-0">
+                                    <table class="table-custom m-0">
                                         <thead>
-                                            <tr>
-                                                <th class="ps-4 py-3" style="width: 80px;">Mã</th>
-                                                <th>Mã vạch (Barcode)</th>
-                                                <th>Vị trí kệ sách</th>
-                                                <th style="width: 180px;">Trạng thái</th>
-                                                <th class="text-end pe-4" style="width: 240px;">Thao tác</th>
-                                            </tr>
+                                             <tr>
+                                                 <th class="ps-4" style="width: 80px;">#</th>
+                                                 <th>Mã vạch & ID</th>
+                                                 <th>Giá nhập</th>
+                                                 <th>Vị trí kệ sách</th>
+                                                 <th style="width: 180px;">Trạng thái</th>
+                                                 <th style="width: 140px; text-align: center;">Hành động</th>
+                                             </tr>
                                         </thead>
                                         <tbody>
                                             <c:choose>
                                                 <c:when test="${empty copiesList}">
                                                     <tr>
-                                                        <td colspan="5" class="text-center py-5 text-muted">
+                                                        <td colspan="6" class="text-center py-5 text-muted">
                                                             <i class="fa-solid fa-box-open fs-2 mb-3 d-block text-secondary"></i>
-                                                            Đầu sách này hiện chưa có bản sao nào trong kho.
+                                                            Đầu sách này hiện chưa có cuốn sách nào trong kho.
                                                         </td>
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:forEach var="c" items="${copiesList}">
-                                                        <tr>
-                                                            <td class="ps-4 fw-semibold text-secondary">#${c.copyId}</td>
-                                                            <td><span class="font-monospace fw-bold text-indigo-brand">${c.barcode}</span></td>
+                                                    <c:forEach var="c" items="${copiesList}" varStatus="loop">
+                                                        <tr id="row-copy-${c.copyId}" style="transition: background-color 0.3s ease;">
+                                                            <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                            <td>
+                                                                <span class="font-monospace fw-bold text-dark">${c.barcode}</span>
+                                                                <div class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">ID: #${c.copyId}</div>
+                                                            </td>
+                                                            <td class="fw-semibold text-dark">
+                                                                <fmt:formatNumber value="${c.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
+                                                            </td>
                                                             <td>${empty c.locationShelf ? 'Chưa xếp kệ' : c.locationShelf}</td>
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${c.status == 'Available'}">
-                                                                        <span class="badge badge-soft-success rounded-pill px-2.5 py-1.5 fw-medium">Available</span>
+                                                                        <span class="badge-status badge-success">
+                                                                            <i class="fa-solid fa-circle-check me-1" style="font-size:.65rem;"></i>Sẵn có
+                                                                        </span>
                                                                     </c:when>
                                                                     <c:when test="${c.status == 'Borrowed'}">
-                                                                        <span class="badge badge-soft-warning rounded-pill px-2.5 py-1.5 fw-medium">Borrowed</span>
+                                                                        <span class="badge-status badge-info">
+                                                                            <i class="fa-solid fa-book-open me-1" style="font-size:.65rem;"></i>Đang mượn
+                                                                        </span>
                                                                     </c:when>
                                                                     <c:when test="${c.status == 'Damaged'}">
-                                                                        <span class="badge badge-soft-danger rounded-pill px-2.5 py-1.5 fw-medium">Damaged</span>
+                                                                        <span class="badge-status badge-warning">
+                                                                            <i class="fa-solid fa-triangle-exclamation me-1" style="font-size:.65rem;"></i>Bị hỏng
+                                                                        </span>
+                                                                    </c:when>
+                                                                    <c:when test="${c.status == 'Lost'}">
+                                                                        <span class="badge-status badge-danger">
+                                                                            <i class="fa-solid fa-circle-question me-1" style="font-size:.65rem;"></i>Bị mất
+                                                                        </span>
+                                                                    </c:when>
+                                                                    <c:when test="${c.status == 'Decommissioned'}">
+                                                                        <span class="badge-status badge-secondary">
+                                                                            <i class="fa-solid fa-box-archive me-1" style="font-size:.65rem;"></i>Thanh lý
+                                                                        </span>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <span class="badge badge-soft-secondary rounded-pill px-2.5 py-1.5 fw-medium">${c.status}</span>
+                                                                        <span class="badge-status badge-secondary">${c.status}</span>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>
-                                                            <td class="text-end pe-4">
-                                                                <div class="d-flex justify-content-end gap-1.5">
-                                                                    <!-- Trạng thái 'Borrowed' thì hạn chế hành động -->
-                                                                    <c:choose>
-                                                                        <c:when test="${c.status == 'Borrowed'}">
-                                                                            <button class="btn btn-outline-secondary btn-sm rounded-3 py-1 btn-edit-copy-trigger" 
-                                                                                    data-id="${c.copyId}" data-barcode="${c.barcode}" data-location="${c.locationShelf}" data-status="${c.status}">
-                                                                                <i class="fa-solid fa-lock"></i> Sửa vị trí
-                                                                            </button>
-                                                                            <button class="btn btn-light btn-sm rounded-3 py-1 text-muted" disabled title="Sách đang được mượn, không thể xóa">
-                                                                                <i class="fa-solid fa-ban"></i> Xóa
-                                                                            </button>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <button class="btn btn-outline-indigo-brand btn-sm rounded-3 btn-edit-copy-trigger"
-                                                                                    data-id="${c.copyId}" data-barcode="${c.barcode}" data-location="${c.locationShelf}" data-status="${c.status}">
-                                                                                <i class="fa-solid fa-pen"></i> Sửa
-                                                                            </button>
-                                                                            <button class="btn btn-outline-danger btn-sm rounded-3 btn-delete-copy-trigger"
-                                                                                    data-id="${c.copyId}" data-barcode="${c.barcode}">
-                                                                                <i class="fa-solid fa-trash-can"></i> Xóa
-                                                                            </button>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </div>
+                                                            <td class="text-center">
+                                                                 <div class="d-flex justify-content-center gap-1">
+                                                                     <c:choose>
+                                                                         <c:when test="${c.status == 'Borrowed'}">
+                                                                             <!-- Edit location shelf only -->
+                                                                             <button type="button" class="btn-action btn-edit-copy-trigger" title="Sửa vị trí kệ (Sách đang mượn)"
+                                                                                     data-id="${c.copyId}" data-barcode="${c.barcode}" data-location="${c.locationShelf}" data-status="${c.status}" data-price="${c.price}">
+                                                                                 <i class="fa-solid fa-lock text-secondary"></i>
+                                                                             </button>
+                                                                             <!-- Delete copy disabled -->
+                                                                             <button type="button" class="btn-action danger" disabled title="Sách đang được mượn, không thể xóa" style="opacity: 0.4; cursor: not-allowed;">
+                                                                                 <i class="fa-solid fa-trash-can"></i>
+                                                                             </button>
+                                                                         </c:when>
+                                                                         <c:otherwise>
+                                                                             <!-- Edit copy -->
+                                                                             <button type="button" class="btn-action btn-edit-copy-trigger" title="Sửa"
+                                                                                     data-id="${c.copyId}" data-barcode="${c.barcode}" data-location="${c.locationShelf}" data-status="${c.status}" data-price="${c.price}">
+                                                                                 <i class="fa-solid fa-pen"></i>
+                                                                             </button>
+                                                                             <!-- Delete copy -->
+                                                                             <button type="button" class="btn-action danger btn-delete-copy-trigger" title="Xóa"
+                                                                                     data-id="${c.copyId}" data-barcode="${c.barcode}">
+                                                                                 <i class="fa-solid fa-trash-can"></i>
+                                                                             </button>
+                                                                         </c:otherwise>
+                                                                     </c:choose>
+                                                                 </div>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -274,39 +248,70 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Cột 2: Thêm nhanh bản sao (4/12) -->
+                    
+                    <!-- Cột 2: Khung nhập/sửa bản sao (4/12) -->
                     <div class="col-12 col-lg-4">
-                        <div class="card card-custom shadow-sm">
-                            <div class="card-header bg-white border-0 py-3">
-                                <h6 class="fw-bold text-dark m-0">
-                                    <i class="fa-solid fa-circle-plus me-1 text-indigo-brand"></i> Nhập nhanh bản sao mới
-                                </h6>
+                        <div class="form-card bg-white" id="copyFormCard" style="transition: all 0.3s ease; border: 1px solid rgba(0,0,0,.08);">
+                            
+                            <%-- Header Card --%>
+                            <div class="form-card-header" id="copyFormHeader" style="transition: all 0.3s ease;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-circle-plus fs-5 text-white" id="copyFormIcon"></i>
+                                    <h5 class="text-white fw-bold mb-0" id="copyFormTitle" style="font-size:1rem;">Nhập nhanh cuốn sách mới</h5>
+                                </div>
                             </div>
-                            <div class="card-body p-4 pt-1">
-                                <form action="${pageContext.request.contextPath}/books?action=insertCopy" method="post">
-                                    <!-- Hidden bookId -->
+                            
+                            <div class="p-4">
+                                <form id="copyForm" action="${pageContext.request.contextPath}/books?action=insertCopy" method="post">
+                                    <!-- Hidden fields -->
                                     <input type="hidden" name="bookId" value="${book.bookId}">
+                                    <input type="hidden" name="copyId" id="formCopyId" value="">
 
                                     <div class="mb-3">
-                                        <label class="form-label small fw-semibold text-secondary">Vị trí xếp kệ <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control rounded-3" name="locationShelf" required placeholder="Ví dụ: Kệ A1-01, Kệ B3...">
-                                        <div class="form-text text-muted">Vị trí lưu trữ cuốn sách vật lý trong thư viện.</div>
+                                        <label class="form-label" id="labelLocationShelf">Vị trí xếp kệ <span class="required-mark">*</span></label>
+                                        <input type="text" class="form-control" name="locationShelf" id="formLocationShelf" required placeholder="Ví dụ: Kệ A1-01, Kệ B3...">
+                                        <div class="form-hint" id="hintLocationShelf">Vị trí lưu trữ cuốn sách vật lý trong thư viện.</div>
                                     </div>
 
-                                    <div class="mb-4">
-                                        <label class="form-label small fw-semibold text-secondary">Số lượng cuốn nhập kho <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control rounded-3" name="quantity" min="1" max="50" value="1" required>
-                                        <div class="form-text text-muted">Tối đa 50 cuốn cho mỗi lần thêm.</div>
+                                    <div class="mb-3">
+                                        <label class="form-label" id="labelPrice">Giá nhập cuốn sách (VND) <span class="required-mark">*</span></label>
+                                        <input type="number" class="form-control" name="price" id="formPrice" min="0" step="1000" value="${book.price != null ? book.price : '0'}" required placeholder="Ví dụ: 79000">
+                                        <div class="form-hint" id="hintPrice">Mặc định giá nhập đầu sách (<fmt:formatNumber value="${book.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>).</div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-indigo-brand rounded-3 w-100 py-2.5 fw-semibold">
-                                        <i class="fa-solid fa-plus-circle me-1"></i> Xác nhận nhập kho
-                                    </button>
+                                    <div class="mb-4" id="formQuantityGroup">
+                                        <label class="form-label">Số lượng cuốn nhập kho <span class="required-mark">*</span></label>
+                                        <input type="number" class="form-control" name="quantity" id="formQuantity" min="1" max="50" value="1" required>
+                                        <div class="form-hint">Tối đa 50 cuốn cho mỗi lần thêm.</div>
+                                    </div>
+
+                                    <div class="mb-4 d-none" id="formStatusGroup">
+                                        <label class="form-label">Trạng thái cuốn sách <span class="required-mark">*</span></label>
+                                        <select class="form-select" id="formCopyStatus" name="status">
+                                            <option value="Available">Sẵn sàng cho mượn (Available)</option>
+                                            <option value="Borrowed" id="optionBorrowed" disabled>Đang cho mượn - Khóa (Borrowed)</option>
+                                            <option value="Damaged">Bị hỏng (Damaged)</option>
+                                            <option value="Lost"> Bị mất (Lost)</option>
+                                            <option value="Decommissioned">Thanh lý (Decommissioned)</option>
+                                        </select>
+                                        <div class="text-muted small mt-2 d-none" id="borrowedWarning" style="font-size:.78rem;">
+                                            <i class="fa-solid fa-triangle-exclamation text-warning me-1"></i>
+                                            Sách đang có độc giả mượn. Không được thay đổi trạng thái lúc này để tránh làm lệch dữ liệu mượn trả!
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex gap-2 mt-4">
+                                        <button type="button" id="btnCancelEdit" class="btn btn-secondary hover-lift flex-grow-1 py-2.5 d-none">
+                                            Hủy sửa
+                                        </button>
+                                        <button type="submit" id="btnSubmitForm" class="btn btn-save hover-lift flex-grow-1 py-2.5">
+                                            <i class="fa-solid fa-plus me-1" id="btnSubmitIcon"></i> <span id="btnSubmitText">Xác nhận nhập kho</span>
+                                        </button>
+                                    </div>
                                     
-                                    <div class="alert alert-light border-0 small rounded-3 mt-4 mb-0 text-muted" style="background-color: #f8fafc;">
-                                        <i class="fa-solid fa-circle-info me-2 text-indigo-brand"></i>
-                                        Mã vạch (Barcode) sẽ được hệ thống tự động sinh theo cấu trúc viết tắt của tựa đề (Ví dụ: <strong>${book.title}</strong> sẽ tự động sinh mã dạng <code>[VIẾT_TẮT]-xxx</code>).
+                                    <div class="alert alert-light border-0 small rounded-3 mt-4 mb-0 text-muted" id="formBarcodeHint" style="background-color: #f8fafc; font-size:.8rem;">
+                                        <i class="fa-solid fa-circle-info me-2 text-primary"></i>
+                                        Mã vạch (Barcode) sẽ được tự động sinh theo ID đầu sách (Ví dụ: ID đầu sách: <strong>#${book.bookId}</strong> -> <code>BK${book.bookId}-xxx</code>).
                                     </div>
                                 </form>
                             </div>
@@ -318,65 +323,22 @@
         </main>
     </div>
 
-    <!-- Modal phụ: Chỉnh sửa vị trí/trạng thái Bản sao -->
-    <div class="modal fade" id="editCopyModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
-            <div class="modal-content border-0 shadow rounded-3">
-                <form id="editCopyForm" action="${pageContext.request.contextPath}/books?action=updateCopy" method="post">
-                    <input type="hidden" id="editCopyId" name="copyId">
-                    
-                    <div class="modal-header bg-indigo-brand text-white border-0 py-2.5 rounded-top-3">
-                        <h6 class="modal-title fw-bold">
-                            <i class="fa-solid fa-pen-to-square me-1"></i>Sửa Bản Sao: <span id="editCopyBarcodeLabel" class="text-warning"></span>
-                        </h6>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Vị trí kệ sách <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control rounded-3" id="editCopyLocation" name="locationShelf" required>
-                        </div>
-                        
-                        <div class="mb-0">
-                            <label class="form-label small fw-semibold text-secondary">Trạng thái cuốn sách</label>
-                            <select class="form-select rounded-3" id="editCopyStatus" name="status">
-                                <option value="Available">Available (Sẵn sàng cho mượn)</option>
-                                <option value="Borrowed" id="optionBorrowed" disabled>Borrowed (Đang cho mượn - Khóa)</option>
-                                <option value="Damaged">Damaged (Bị hỏng)</option>
-                                <option value="Lost">Lost (Bị mất)</option>
-                                <option value="Decommissioned">Decommissioned (Thanh lý/Hủy)</option>
-                            </select>
-                            <div class="text-muted small mt-2 d-none" id="borrowedWarning">
-                                <i class="fa-solid fa-triangle-exclamation text-warning me-1"></i>
-                                Sách đang có độc giả mượn. Không được thay đổi trạng thái lúc này để tránh làm lệch dữ liệu mượn trả!
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light rounded-3 btn-sm px-4 py-2" data-bs-dismiss="modal">Hủy bỏ</button>
-                        <button type="submit" class="btn btn-indigo-brand rounded-3 btn-sm px-4 py-2">Xác nhận lưu</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     <!-- Modal phụ: Xác nhận xóa Bản sao -->
     <div class="modal fade" id="deleteCopyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
-            <div class="modal-content border-0 shadow rounded-3">
+            <div class="modal-content border-0 shadow rounded-3 overflow-hidden">
                 <form action="${pageContext.request.contextPath}/books?action=deleteCopy" method="post">
                     <input type="hidden" id="deleteCopyId" name="copyId">
                     <div class="modal-body p-4 text-center">
                         <i class="fa-solid fa-circle-exclamation text-danger fs-1 mb-3"></i>
-                        <h5 class="fw-bold mb-2">Xóa bản sao sách</h5>
-                        <p class="text-muted small mb-4">Bạn có chắc chắn muốn xóa bản sao có mã vạch <span class="fw-bold text-dark" id="deleteCopyBarcode"></span> ra khỏi kho thư viện?</p>
+                        <h5 class="fw-bold mb-2 text-dark">Xóa cuốn sách</h5>
+                        <p class="text-muted small mb-4">Bạn có chắc chắn muốn xóa cuốn sách có mã vạch <span class="fw-bold text-dark" id="deleteCopyBarcode"></span> ra khỏi kho thư viện?</p>
                         
                         <div class="d-flex gap-2 justify-content-center">
-                            <button type="button" class="btn btn-light rounded-3 px-4 py-2 flex-grow-1" data-bs-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-danger rounded-3 px-4 py-2 flex-grow-1">Đồng ý xóa</button>
+                            <button type="button" class="btn btn-secondary px-4 py-2 rounded-3 flex-grow-1" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-danger px-4 py-2 rounded-3 flex-grow-1 hover-lift">Đồng ý xóa</button>
                         </div>
                     </div>
                 </form>
@@ -384,8 +346,54 @@
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <%-- ── FLASH TOAST (cục bộ tương tự Độc giả) ── --%>
+    <%
+        String msg = (String) session.getAttribute("message");
+        String msgType = (String) session.getAttribute("messageType");
+        if (msg != null) {
+            session.removeAttribute("message");
+            session.removeAttribute("messageType");
+            String resolvedType = "success".equals(msgType) ? "success" : "error";
+    %>
+        <div class="flash-toast <%= resolvedType %>" id="flash-toast" role="alert">
+            <span class="toast-icon">
+                <% if ("success".equals(resolvedType)) { %>
+                    <i class="fa-solid fa-circle-check"></i>
+                <% } else { %>
+                    <i class="fa-solid fa-circle-xmark"></i>
+                <% } %>
+            </span>
+            <span style="font-size:.875rem;font-weight:500;flex:1;">
+                <%= msg %>
+            </span>
+            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <script>
+            function closeToast() {
+                const toast = document.getElementById('flash-toast');
+                if (toast) {
+                    toast.style.transition = 'opacity .3s ease';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }
+            (function () {
+                const toast = document.getElementById('flash-toast');
+                if (toast) {
+                    setTimeout(closeToast, 3500);
+                }
+            })();
+        </script>
+    <%
+        }
+    %>
+    <script>
+        const contextPath = "${pageContext.request.contextPath}";
+    </script>
     <script src="${pageContext.request.contextPath}/assets/book/copies-jsp.js"></script>
 </body>
 </html>

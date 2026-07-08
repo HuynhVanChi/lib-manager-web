@@ -16,6 +16,9 @@ public class Book {
     private Integer deletedBy;
     private int totalCopies;
     private int availableCopies;
+    private String imagePath;
+    private java.math.BigDecimal price;
+    private String categoryColorTheme;
 
     public Book() {
     }
@@ -122,5 +125,29 @@ public class Book {
 
     public void setDeletedBy(Integer deletedBy) {
         this.deletedBy = deletedBy;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public java.math.BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(java.math.BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getCategoryColorTheme() {
+        return categoryColorTheme;
+    }
+
+    public void setCategoryColorTheme(String categoryColorTheme) {
+        this.categoryColorTheme = categoryColorTheme;
     }
 }

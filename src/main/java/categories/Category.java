@@ -6,6 +6,7 @@ public class Category {
     private int categoryId;
     private String name;
     private String description;
+    private String colorTheme;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;
@@ -18,6 +19,13 @@ public class Category {
         this.categoryId = categoryId;
         this.name = name;
         this.description = description;
+    }
+
+    public Category(int categoryId, String name, String description, String colorTheme) {
+        this.categoryId = categoryId;
+        this.name = name;
+        this.description = description;
+        this.colorTheme = colorTheme;
     }
 
     public int getCategoryId() {
@@ -74,5 +82,30 @@ public class Category {
 
     public void setDeletedBy(Integer deletedBy) {
         this.deletedBy = deletedBy;
+    }
+
+    public String getColorTheme() {
+        return colorTheme;
+    }
+
+    public void setColorTheme(String colorTheme) {
+        this.colorTheme = colorTheme;
+    }
+
+    public String getHexColor() {
+        if (this.colorTheme == null) return "#64748b"; // slate default
+        switch (this.colorTheme.toLowerCase()) {
+            case "blue": return "#3b82f6";
+            case "indigo": return "#6366f1";
+            case "purple": return "#a855f7";
+            case "pink": return "#ec4899";
+            case "rose": return "#f43f5e";
+            case "red": return "#ef4444";
+            case "orange": return "#f97316";
+            case "amber": return "#f59e0b";
+            case "emerald": return "#10b981";
+            case "teal": return "#14b8a6";
+            default: return "#64748b"; // slate
+        }
     }
 }

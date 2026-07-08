@@ -20,27 +20,27 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ==========================================
 
 -- 1. Dữ liệu Danh mục sách
-INSERT INTO categories (category_id, name, description) VALUES
-(1, 'Công nghệ thông tin', 'Sách về lập trình, mạng máy tính, AI, cơ sở dữ liệu...'),
-(2, 'Văn học & Nghệ thuật', 'Tiểu thuyết, truyện ngắn, thơ ca, danh tác cổ điển...'),
-(3, 'Kinh tế & Kinh doanh', 'Sách về quản trị, tài chính, khởi nghiệp, marketing...');
+INSERT INTO categories (category_id, name, description, color_theme) VALUES
+(1, 'Công nghệ thông tin', 'Sách về lập trình, mạng máy tính, AI, cơ sở dữ liệu...', 'indigo'),
+(2, 'Văn học & Nghệ thuật', 'Tiểu thuyết, truyện ngắn, thơ ca, danh tác cổ điển...', 'rose'),
+(3, 'Kinh tế & Kinh doanh', 'Sách về quản trị, tài chính, khởi nghiệp, marketing...', 'amber');
 
 -- 2. Dữ liệu Đầu sách (Không còn cột quantity vì đã chuyển xuống bản sao)
-INSERT INTO books (book_id, category_id, title, author, publisher, publish_year) VALUES
-(1, 1, 'Lập trình JWDa Web căn bản', 'Nguyễn Văn B', 'NXB Giáo Dục', 2024),
-(2, 1, 'Cấu trúc dữ liệu và Giải thuật', 'Trần Minh C', 'NXB Khoa Học', 2023),
-(3, 2, 'Số đỏ', 'Vũ Trọng Phụng', 'NXB Văn Học', 2020),
-(4, 3, 'Nghĩ giàu và Làm giàu', 'Napoleon Hill', 'NXB Trẻ', 2021);
+INSERT INTO books (book_id, category_id, title, author, publisher, publish_year, price, image_path) VALUES
+(1, 1, 'Lập trình JWDa Web căn bản', 'Nguyễn Văn B', 'NXB Giáo Dục', 2024, 79000, 'assets/images/books/book_jwd.png'),
+(2, 1, 'Cấu trúc dữ liệu và Giải thuật', 'Trần Minh C', 'NXB Khoa Học', 2023, 95000, 'assets/images/books/book_dsa.png'),
+(3, 2, 'Số đỏ', 'Vũ Trọng Phụng', 'NXB Văn Học', 2020, 55000, 'assets/images/books/book_sdo.png'),
+(4, 3, 'Nghĩ giàu và Làm giàu', 'Napoleon Hill', 'NXB Trẻ', 2021, 110000, 'assets/images/books/book_think_rich.png');
 
 -- 3. Dữ liệu Bản sao sách cụ thể (Mỗi đầu sách có nhiều bản sao vật lý trên kệ)
-INSERT INTO book_copies (copy_id, book_id, barcode, status, location_shelf) VALUES
-(1, 1, 'JWD-001', 'Available', 'Kệ A1-01'),
-(2, 1, 'JWD-002', 'Borrowed', 'Kệ A1-01'), -- Đang được mượn bởi Hoàng (Record 1)
-(3, 1, 'JWD-003', 'Available', 'Kệ A1-02'),
-(4, 2, 'DSA-001', 'Available', 'Kệ A2-01'),
-(5, 2, 'DSA-002', 'Available', 'Kệ A2-01'),
-(6, 3, 'SDO-001', 'Available', 'Kệ B1-01'), -- Đã trả bởi Hà (Record 2)
-(7, 4, 'NGL-001', 'Available', 'Kệ C1-01');
+INSERT INTO book_copies (copy_id, book_id, barcode, status, location_shelf, price) VALUES
+(1, 1, 'BK1-001', 'Available', 'Kệ A1-01', 79000),
+(2, 1, 'BK1-002', 'Borrowed', 'Kệ A1-01', 79000),
+(3, 1, 'BK1-003', 'Available', 'Kệ A1-02', 79000),
+(4, 2, 'BK2-001', 'Available', 'Kệ A2-01', 95000),
+(5, 2, 'BK2-002', 'Available', 'Kệ A2-01', 95000),
+(6, 3, 'BK3-001', 'Available', 'Kệ B1-01', 55000),
+(7, 4, 'BK4-001', 'Available', 'Kệ C1-01', 110000);
 
 -- 4. Dữ liệu Tài khoản Quản trị / Nhân sự
 INSERT INTO users (user_id, username, password, full_name, role) VALUES

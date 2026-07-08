@@ -1,0 +1,156 @@
+/* ======================================================= */
+/* 10 PREMIUM DYNAMIC COLOR THEMES FOR CATEGORIES          */
+/* ======================================================= */
+
+/* General status badge class reset */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 9999px; /* Pill shape */
+    transition: all 0.2s ease-in-out;
+}
+
+/* 1. BLUE */
+.badge-theme-blue {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    color: #1d4ed8 !important;
+    border: 1px solid rgba(59, 130, 246, 0.25) !important;
+}
+
+/* 2. INDIGO */
+.badge-theme-indigo {
+    background-color: rgba(99, 102, 241, 0.1) !important;
+    color: #4338ca !important;
+    border: 1px solid rgba(99, 102, 241, 0.25) !important;
+}
+
+/* 3. PURPLE */
+.badge-theme-purple {
+    background-color: rgba(168, 85, 247, 0.1) !important;
+    color: #6d28d9 !important;
+    border: 1px solid rgba(168, 85, 247, 0.25) !important;
+}
+
+/* 4. PINK */
+.badge-theme-pink {
+    background-color: rgba(236, 72, 153, 0.1) !important;
+    color: #be185d !important;
+    border: 1px solid rgba(236, 72, 153, 0.25) !important;
+}
+
+/* 5. ROSE */
+.badge-theme-rose {
+    background-color: rgba(244, 63, 94, 0.1) !important;
+    color: #be123c !important;
+    border: 1px solid rgba(244, 63, 94, 0.25) !important;
+}
+
+/* 6. RED */
+.badge-theme-red {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    color: #b91c1c !important;
+    border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+
+/* 7. ORANGE */
+.badge-theme-orange {
+    background-color: rgba(249, 115, 22, 0.1) !important;
+    color: #c2410c !important;
+    border: 1px solid rgba(249, 115, 22, 0.25) !important;
+}
+
+/* 8. AMBER */
+.badge-theme-amber {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    color: #b45309 !important;
+    border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+/* 9. EMERALD */
+.badge-theme-emerald {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: #047857 !important;
+    border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+
+/* 10. TEAL */
+.badge-theme-teal {
+    background-color: rgba(20, 184, 166, 0.1) !important;
+    color: #0f766e !important;
+    border: 1px solid rgba(20, 184, 166, 0.25) !important;
+}
+
+/* SLATE (Default fallback) */
+.badge-theme-slate {
+    background-color: rgba(100, 116, 139, 0.1) !important;
+    color: #334155 !important;
+    border: 1px solid rgba(100, 116, 139, 0.25) !important;
+}
+
+/* ======================================================= */
+/* COLOR DOTS PICKER STYLES                                */
+/* ======================================================= */
+.color-picker-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.color-dot-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.color-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.color-dot-wrapper:hover .color-dot {
+    transform: scale(1.15);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Active selection ring */
+.color-dot-wrapper.active .color-dot {
+    border-color: #334155;
+    box-shadow: 0 0 0 2px rgba(51, 65, 85, 0.25);
+}
+
+.color-dot-wrapper.active .color-dot::after {
+    content: "✓";
+    font-size: 14px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* Dot Color Definitions */
+.dot-blue { background-color: #3b82f6; }
+.dot-indigo { background-color: #6366f1; }
+.dot-purple { background-color: #a855f7; }
+.dot-pink { background-color: #ec4899; }
+.dot-rose { background-color: #f43f5e; }
+.dot-red { background-color: #ef4444; }
+.dot-orange { background-color: #f97316; }
+.dot-amber { background-color: #f59e0b; }
+.dot-emerald { background-color: #10b981; }
+.dot-teal { background-color: #14b8a6; }
+.dot-slate { background-color: #64748b; }

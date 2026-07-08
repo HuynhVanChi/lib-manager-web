@@ -10,12 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${isTrashView ? "Thùng rác Danh mục" : "Quản lý Danh mục"} - LibraryOS</title>
     
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Project CSS -->
     <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
+    <link href="${pageContext.request.contextPath}/assets/css/category-colors.css" rel="stylesheet" type="text/css">
     <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -48,48 +49,29 @@
             <!-- Vùng đệm p-4 -->
             <div class="container-fluid p-4 flex-grow-1">
                 
-                <!-- Hiển thị thông báo Flash (nếu có) -->
-                <%
-                    String msg = (String) session.getAttribute("message");
-                    String msgType = (String) session.getAttribute("messageType");
-                    if (msg != null) {
-                        session.removeAttribute("message");
-                        session.removeAttribute("messageType");
-                %>
-                    <div class="alert alert-<%= msgType %> alert-dismissible fade show rounded-3 shadow-sm border-0 px-4 py-3 mb-4" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid <%= "success".equals(msgType) ? "fa-circle-check text-success" : "fa-circle-exclamation text-danger" %> fs-5 me-3"></i>
-                            <div class="fw-semibold text-dark"><%= msg %></div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <%
-                    }
-                %>
 
                 <!-- Tiêu đề trang & Nút chức năng -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0 text-dark">${isTrashView ? "Thùng rác Danh mục" : "Danh mục sách"}</h2>
-                        <p class="text-muted small m-0 mt-1">${isTrashView ? "Xem và khôi phục các danh mục đã bị xóa mềm" : "Quản lý các danh mục phân loại đầu sách"}</p>
+                        <h2 class="fw-bold m-0 text-dark">Danh mục sách</h2>
+                        <p class="text-muted small m-0 mt-1">Quản lý các danh mục phân loại đầu sách</p>
                     </div>
                     
                     <div class="d-flex gap-2">
-                        <c:choose>
-                            <c:when test="${isTrashView}">
-                                <a href="${pageContext.request.contextPath}/categories" class="btn btn-outline-secondary rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium hover-lift">
-                                    <i class="fa-solid fa-arrow-left"></i> Quay lại Danh sách
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/categories?trash=true" class="btn btn-outline-danger rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium border-0 shadow-sm bg-white text-danger hover-lift">
-                                    <i class="fa-solid fa-trash-can"></i> Thùng rác
-                                </a>
-                                <button class="btn btn-primary rounded-3 d-flex align-items-center gap-2 px-3 py-2 fw-medium hover-lift" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                                    <i class="fa-solid fa-plus"></i> Thêm danh mục
-                                </button>
-                            </c:otherwise>
-                        </c:choose>
+                        <button type="button"
+                                id="btn-open-archive"
+                                class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                                data-bs-toggle="modal"
+                                data-bs-target="#archiveModal">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Thùng rác</span>
+                        </button>
+                        <a href="${pageContext.request.contextPath}/categories?action=add"
+                           id="btn-add-category"
+                           class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Thêm danh mục</span>
+                        </a>
                     </div>
                 </div>
 
@@ -126,30 +108,13 @@
                                 </a>
                             </c:if>
 
-                            <%-- Thùng rác indicator ẩn --%>
-                            <c:if test="${isTrashView}">
-                                <input type="hidden" name="trash" value="true">
-                            </c:if>
-                            
                             <%-- Tổng kết quả --%>
                             <span class="text-muted ms-auto" style="font-size:.82rem;">
                                 <c:choose>
-                                    <c:when test="${isTrashView}">
-                                        <c:choose>
-                                            <c:when test="${not empty deletedCategories}">
-                                                Hiển thị <strong>${deletedCategories.size()}</strong> danh mục đã xóa
-                                            </c:when>
-                                            <c:otherwise>Không có kết quả</c:otherwise>
-                                        </c:choose>
+                                    <c:when test="${not empty activeCategories}">
+                                        Hiển thị <strong>${activeCategories.size()}</strong> danh mục
                                     </c:when>
-                                    <c:otherwise>
-                                        <c:choose>
-                                            <c:when test="${not empty activeCategories}">
-                                                Hiển thị <strong>${activeCategories.size()}</strong> danh mục
-                                            </c:when>
-                                            <c:otherwise>Không có kết quả</c:otherwise>
-                                        </c:choose>
-                                    </c:otherwise>
+                                    <c:otherwise>Không có kết quả</c:otherwise>
                                 </c:choose>
                             </span>
                         </form>
@@ -157,99 +122,68 @@
 
                     <%-- ── BẢNG DANH SÁCH ── --%>
                     <div class="table-responsive">
-                        <table class="table-custom">
-                            <thead>
-                                <tr>
-                                    <th class="ps-4" style="width: 80px;">Mã</th>
-                                    <th style="width: 250px;">Tên Danh Mục</th>
-                                    <th>Mô Tả Chi Tiết</th>
-                                    <c:choose>
-                                        <c:when test="${isTrashView}">
-                                            <th style="width: 200px;">Ngày Xóa</th>
-                                            <th style="width: 140px; text-align: center;">Hành động</th>
-                                        </c:when>
-                                        <c:otherwise>
+                        <c:choose>
+                            <c:when test="${not empty activeCategories}">
+                                <table class="table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4" style="width: 80px;">#</th>
+                                            <th style="width: 250px;">Tên Danh Mục</th>
+                                            <th>Mô Tả Chi Tiết</th>
                                             <th style="width: 200px;">Ngày Tạo</th>
                                             <th style="width: 140px; text-align: center;">Hành động</th>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:choose>
-                                    <c:when test="${isTrashView}">
-                                        <!-- Hiển thị Thùng rác -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="cat" items="${activeCategories}" varStatus="loop">
+                                            <tr>
+                                                <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                <td>
+                                                    <div class="d-flex flex-column align-items-start">
+                                                        <span class="badge-status badge-theme-${cat.colorTheme} px-3 py-1.5 fs-7">${cat.name}</span>
+                                                        <span class="text-muted mt-1 ps-2.5" style="font-size: 0.72rem;">ID: #${cat.categoryId}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-muted" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                    ${cat.description != null && !cat.description.isEmpty() ? cat.description : "Không có mô tả"}
+                                                </td>
+                                                <td>${cat.createdAt}</td>
+                                                <td>
+                                                    <div class="d-flex gap-1 justify-content-center">
+                                                        <a href="${pageContext.request.contextPath}/categories?action=detail&id=${cat.categoryId}" class="btn-action" title="Xem chi tiết">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </a>
+                                                        <a href="${pageContext.request.contextPath}/categories?action=edit&id=${cat.categoryId}" class="btn-action" title="Sửa">
+                                                            <i class="fa-solid fa-pen"></i>
+                                                        </a>
+                                                        <button class="btn-action danger btn-delete-trigger" 
+                                                                data-id="${cat.categoryId}" data-name="${cat.name}" title="Xóa">
+                                                            <i class="fa-solid fa-trash-can"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="empty-state">
+                                    <div class="icon"><i class="fa-solid fa-tags"></i></div>
+                                    <h5 class="fw-semibold text-dark mb-1">Không tìm thấy danh mục nào</h5>
+                                    <p class="mb-3" style="font-size:.875rem;">
                                         <c:choose>
-                                            <c:when test="${empty deletedCategories}">
-                                                <tr>
-                                                    <td colspan="5" class="text-center py-5 text-muted">
-                                                        <i class="fa-regular fa-trash-can fs-2 mb-3 d-block text-secondary"></i>
-                                                        Thùng rác trống.
-                                                    </td>
-                                                </tr>
+                                            <c:when test="${not empty searchQuery}">
+                                                Không có danh mục nào phù hợp với từ khóa tìm kiếm.
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="cat" items="${deletedCategories}">
-                                                    <tr>
-                                                        <td class="ps-4 fw-semibold text-secondary">#${cat.categoryId}</td>
-                                                        <td><span class="fw-bold text-indigo-brand">${cat.name}</span></td>
-                                                        <td class="text-muted text-truncate" style="max-width: 350px;">${cat.description}</td>
-                                                        <td>${cat.deletedAt}</td>
-                                                        <td>
-                                                            <div class="d-flex gap-1 justify-content-center">
-                                                                <button class="btn-action btn-restore-trigger" 
-                                                                        data-id="${cat.categoryId}" data-name="${cat.name}" title="Khôi phục">
-                                                                    <i class="fa-solid fa-rotate-left"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
+                                                Chưa có danh mục nào hoạt động trong hệ thống. Hãy bấm nút phía trên bên phải để khởi tạo!
                                             </c:otherwise>
                                         </c:choose>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <!-- Hiển thị Danh mục hoạt động -->
-                                        <c:choose>
-                                            <c:when test="${empty activeCategories}">
-                                                <tr>
-                                                    <td colspan="5" class="text-center py-5 text-muted">
-                                                        <i class="fa-regular fa-folder-open fs-2 mb-3 d-block text-secondary"></i>
-                                                        Chưa có danh mục nào. Hãy bấm "Thêm danh mục" để khởi tạo!
-                                                    </td>
-                                                </tr>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <c:forEach var="cat" items="${activeCategories}">
-                                                    <tr>
-                                                        <td class="ps-4 fw-semibold text-secondary">#${cat.categoryId}</td>
-                                                        <td>
-                                                            <span class="badge-status badge-restore-custom px-3 py-1.5 fs-7">${cat.name}</span>
-                                                        </td>
-                                                        <td class="text-muted" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                            ${cat.description != null && !cat.description.isEmpty() ? cat.description : "Không có mô tả"}
-                                                        </td>
-                                                        <td>${cat.createdAt}</td>
-                                                        <td>
-                                                            <div class="d-flex gap-1 justify-content-center">
-                                                                <button class="btn-action btn-edit-trigger" 
-                                                                        data-id="${cat.categoryId}" data-name="${cat.name}" data-desc="${cat.description}" title="Sửa">
-                                                                    <i class="fa-solid fa-pen"></i>
-                                                                </button>
-                                                                <button class="btn-action danger btn-delete-trigger" 
-                                                                        data-id="${cat.categoryId}" data-name="${cat.name}" title="Xóa">
-                                                                    <i class="fa-solid fa-trash-can"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-                        </table>
+                                    </p>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
 
@@ -258,115 +192,149 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- 3. CÁC MODAL HỘP THOẠI (BOOTSTRAP 5)                    -->
+    <!-- 3. CÁC MODAL HỘP THOẠI (BOOTSTRAP)                    -->
     <!-- ======================================================= -->
-
-    <!-- Modal: Thêm danh mục -->
-    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow rounded-3">
-                <form action="${pageContext.request.contextPath}/categories?action=insert" method="post">
-                    <div class="modal-header bg-indigo-brand text-white border-0 py-3 rounded-top-3">
-                        <h5 class="modal-title fw-bold" id="addCategoryModalLabel">
-                            <i class="fa-solid fa-plus-circle me-2"></i>Thêm Danh Mục Mới
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label for="addName" class="form-label fw-semibold text-secondary">Tên danh mục <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control rounded-3" id="addName" name="name" required placeholder="Ví dụ: Công nghệ thông tin, Kinh tế...">
-                        </div>
-                        <div class="mb-0">
-                            <label for="addDescription" class="form-label fw-semibold text-secondary">Mô tả</label>
-                            <textarea class="form-control rounded-3" id="addDescription" name="description" rows="4" placeholder="Mô tả tóm tắt nội dung danh mục sách này..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light rounded-3 px-4 py-2" data-bs-dismiss="modal">Hủy bỏ</button>
-                        <button type="submit" class="btn btn-indigo-brand rounded-3 px-4 py-2">Xác nhận thêm</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Sửa danh mục -->
-    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow rounded-3">
-                <form action="${pageContext.request.contextPath}/categories?action=update" method="post">
-                    <input type="hidden" id="editCategoryId" name="categoryId">
-                    <div class="modal-header bg-indigo-brand text-white border-0 py-3 rounded-top-3">
-                        <h5 class="modal-title fw-bold" id="editCategoryModalLabel">
-                            <i class="fa-solid fa-pen-to-square me-2"></i>Chỉnh Sửa Danh Mục
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label for="editName" class="form-label fw-semibold text-secondary">Tên danh mục <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control rounded-3" id="editName" name="name" required>
-                        </div>
-                        <div class="mb-0">
-                            <label for="editDescription" class="form-label fw-semibold text-secondary">Mô tả</label>
-                            <textarea class="form-control rounded-3" id="editDescription" name="description" rows="4"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light rounded-3 px-4 py-2" data-bs-dismiss="modal">Hủy bỏ</button>
-                        <button type="submit" class="btn btn-indigo-brand rounded-3 px-4 py-2">Lưu thay đổi</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal: Xác nhận xóa mềm -->
     <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-3">
-                <form action="${pageContext.request.contextPath}/categories?action=delete" method="post">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:40px;height:40px;background:#FEE2E2;flex-shrink:0;">
+                            <i class="fa-solid fa-triangle-exclamation" style="color:#DC2626;"></i>
+                        </div>
+                        <h6 class="modal-title fw-bold m-0" id="deleteCategoryModalLabel">Xác nhận xóa danh mục</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <form action="${pageContext.request.contextPath}/categories?action=delete" method="post" class="m-0">
                     <input type="hidden" id="deleteCategoryId" name="categoryId">
-                    <div class="modal-body p-4 text-center">
-                        <i class="fa-solid fa-triangle-exclamation text-danger fs-1 mb-3"></i>
-                        <h5 class="fw-bold mb-2">Xác nhận xóa danh mục</h5>
-                        <p class="text-muted small mb-4">Bạn có chắc chắn muốn xóa danh mục <span class="fw-bold text-dark" id="deleteCategoryName"></span>? Hành động này sẽ chuyển danh mục vào thùng rác.</p>
-                        
-                        <div class="d-flex gap-2 justify-content-center">
-                            <button type="button" class="btn btn-light rounded-3 px-4 py-2 flex-grow-1" data-bs-dismiss="modal">Hủy bỏ</button>
-                            <button type="submit" class="btn btn-danger rounded-3 px-4 py-2 flex-grow-1">Đồng ý xóa</button>
+                    <div class="modal-body">
+                        <p class="mb-1" style="font-size:.9rem;">Bạn có chắc chắn muốn xóa danh mục:</p>
+                        <p class="fw-bold mb-3" id="deleteCategoryName" style="font-size:1rem; color:var(--primary);">—</p>
+                        <div class="rounded-3 p-3" style="background:#FEF2F2;border:1px solid #FECACA;font-size:.82rem;color:#991B1B;">
+                            <i class="fa-solid fa-info-circle me-1"></i>
+                            Hành động này sẽ ẩn danh mục khỏi danh sách nhưng <strong>không xóa vĩnh viễn</strong> dữ liệu.
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger hover-lift">
+                            <i class="fa-solid fa-trash-can me-1"></i> Xác nhận xóa
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Xác nhận khôi phục -->
-    <div class="modal fade" id="restoreCategoryModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
-            <div class="modal-content border-0 shadow rounded-3">
-                <form action="${pageContext.request.contextPath}/categories?action=restore" method="post">
-                    <input type="hidden" id="restoreCategoryId" name="categoryId">
-                    <div class="modal-body p-4 text-center">
-                        <i class="fa-solid fa-clock-rotate-left text-success fs-1 mb-3"></i>
-                        <h5 class="fw-bold mb-2">Khôi phục danh mục</h5>
-                        <p class="text-muted small mb-4">Bạn có chắc chắn muốn khôi phục danh mục <span class="fw-bold text-dark" id="restoreCategoryName"></span> về danh sách hoạt động?</p>
-                        
-                        <div class="d-flex gap-2 justify-content-center">
-                            <button type="button" class="btn btn-light rounded-3 px-4 py-2 flex-grow-1" data-bs-dismiss="modal">Hủy bỏ</button>
-                            <button type="submit" class="btn btn-success rounded-3 px-4 py-2 flex-grow-1 text-white">Khôi phục</button>
+    <!-- Modal: Thùng rác danh mục -->
+    <div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 36px; height: 36px;">
+                            <i class="fa-solid fa-trash-can text-secondary"></i>
                         </div>
+                        <h6 class="modal-title fw-bold m-0" id="archiveModalLabel">Thùng rác danh mục</h6>
                     </div>
-                </form>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <c:choose>
+                        <c:when test="${not empty deletedCategories}">
+                            <div class="table-responsive" style="max-height: 290px; overflow-y: auto;">
+                                <table class="table-custom m-0">
+                                    <thead style="position: sticky; top: 0; z-index: 10;">
+                                        <tr>
+                                            <th class="ps-4" style="width: 80px;">Mã</th>
+                                            <th>Tên danh mục</th>
+                                            <th>Mô tả chi tiết</th>
+                                            <th class="text-center" style="width: 140px;">Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="delCat" items="${deletedCategories}">
+                                            <tr>
+                                                <td class="ps-4 fw-semibold text-secondary">#<c:out value="${delCat.categoryId}"/></td>
+                                                <td><span class="badge-status badge-theme-${delCat.colorTheme} px-3 py-1.5 fs-7"><c:out value="${delCat.name}"/></span></td>
+                                                <td class="text-muted"><c:out value="${delCat.description != null ? delCat.description : '—'}"/></td>
+                                                <td class="text-center">
+                                                    <form method="post" action="${pageContext.request.contextPath}/categories?action=restore" class="m-0 d-inline">
+                                                        <input type="hidden" name="categoryId" value="${delCat.categoryId}"/>
+                                                        <button type="submit" class="btn-action hover-lift" title="Khôi phục danh mục" style="color: #15803D !important; border-color: #86EFAC !important;">
+                                                            <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder-open fs-2 mb-2 opacity-50"></i>
+                                <p class="small m-0">Thùng rác trống. Không có danh mục nào đã xóa.</p>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <%-- ── FLASH TOAST (cục bộ tương tự Độc giả) ── --%>
+    <%
+        String msg = (String) session.getAttribute("message");
+        String msgType = (String) session.getAttribute("messageType");
+        if (msg != null) {
+            session.removeAttribute("message");
+            session.removeAttribute("messageType");
+            String resolvedType = "success".equals(msgType) ? "success" : "error";
+    %>
+        <div class="flash-toast <%= resolvedType %>" id="flash-toast" role="alert">
+            <span class="toast-icon">
+                <% if ("success".equals(resolvedType)) { %>
+                    <i class="fa-solid fa-circle-check"></i>
+                <% } else { %>
+                    <i class="fa-solid fa-circle-xmark"></i>
+                <% } %>
+            </span>
+            <span style="font-size:.875rem;font-weight:500;flex:1;">
+                <%= msg %>
+            </span>
+            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <script>
+            function closeToast() {
+                const toast = document.getElementById('flash-toast');
+                if (toast) {
+                    toast.style.transition = 'opacity .3s ease';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }
+            (function () {
+                const toast = document.getElementById('flash-toast');
+                if (toast) {
+                    setTimeout(closeToast, 3500);
+                }
+            })();
+        </script>
+    <%
+        }
+    %>
     <!-- Script tương tác Modal (Tách ra từ categories.jsp) -->
     <script src="${pageContext.request.contextPath}/assets/categories/categories-jsp.js"></script>
 </body>

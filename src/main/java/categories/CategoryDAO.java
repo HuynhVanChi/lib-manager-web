@@ -23,6 +23,7 @@ public class CategoryDAO {
                 c.setCategoryId(rs.getInt("category_id"));
                 c.setName(rs.getString("name"));
                 c.setDescription(rs.getString("description"));
+                c.setColorTheme(rs.getString("color_theme"));
                 c.setCreatedAt(rs.getTimestamp("created_at"));
                 c.setUpdatedAt(rs.getTimestamp("updated_at"));
                 list.add(c);
@@ -48,6 +49,7 @@ public class CategoryDAO {
                     c.setCategoryId(rs.getInt("category_id"));
                     c.setName(rs.getString("name"));
                     c.setDescription(rs.getString("description"));
+                    c.setColorTheme(rs.getString("color_theme"));
                     c.setCreatedAt(rs.getTimestamp("created_at"));
                     c.setUpdatedAt(rs.getTimestamp("updated_at"));
                     return c;
@@ -74,6 +76,7 @@ public class CategoryDAO {
                     c.setCategoryId(rs.getInt("category_id"));
                     c.setName(rs.getString("name"));
                     c.setDescription(rs.getString("description"));
+                    c.setColorTheme(rs.getString("color_theme"));
                     c.setCreatedAt(rs.getTimestamp("created_at"));
                     c.setUpdatedAt(rs.getTimestamp("updated_at"));
                     c.setDeletedAt(rs.getTimestamp("deleted_at"));
@@ -91,12 +94,13 @@ public class CategoryDAO {
      * Thêm mới danh mục.
      */
     public int insert(Category category) throws SQLException {
-        String sql = "INSERT INTO categories (name, description) VALUES (?, ?)";
+        String sql = "INSERT INTO categories (name, description, color_theme) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             pstmt.setString(1, category.getName());
             pstmt.setString(2, category.getDescription());
+            pstmt.setString(3, category.getColorTheme() != null ? category.getColorTheme() : "indigo");
             int affectedRows = pstmt.executeUpdate();
             
             if (affectedRows > 0) {
@@ -114,13 +118,14 @@ public class CategoryDAO {
      * Cập nhật danh mục.
      */
     public boolean update(Category category) throws SQLException {
-        String sql = "UPDATE categories SET name = ?, description = ? WHERE category_id = ? AND deleted_at IS NULL";
+        String sql = "UPDATE categories SET name = ?, description = ?, color_theme = ? WHERE category_id = ? AND deleted_at IS NULL";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, category.getName());
             pstmt.setString(2, category.getDescription());
-            pstmt.setInt(3, category.getCategoryId());
+            pstmt.setString(3, category.getColorTheme() != null ? category.getColorTheme() : "indigo");
+            pstmt.setInt(4, category.getCategoryId());
             
             return pstmt.executeUpdate() > 0;
         }
@@ -218,6 +223,7 @@ public class CategoryDAO {
                 c.setCategoryId(rs.getInt("category_id"));
                 c.setName(rs.getString("name"));
                 c.setDescription(rs.getString("description"));
+                c.setColorTheme(rs.getString("color_theme"));
                 c.setCreatedAt(rs.getTimestamp("created_at"));
                 c.setDeletedAt(rs.getTimestamp("deleted_at"));
                 c.setDeletedBy(rs.getInt("deleted_by"));
@@ -249,6 +255,7 @@ public class CategoryDAO {
                     c.setCategoryId(rs.getInt("category_id"));
                     c.setName(rs.getString("name"));
                     c.setDescription(rs.getString("description"));
+                    c.setColorTheme(rs.getString("color_theme"));
                     c.setCreatedAt(rs.getTimestamp("created_at"));
                     c.setUpdatedAt(rs.getTimestamp("updated_at"));
                     list.add(c);
@@ -280,6 +287,7 @@ public class CategoryDAO {
                     c.setCategoryId(rs.getInt("category_id"));
                     c.setName(rs.getString("name"));
                     c.setDescription(rs.getString("description"));
+                    c.setColorTheme(rs.getString("color_theme"));
                     c.setCreatedAt(rs.getTimestamp("created_at"));
                     c.setDeletedAt(rs.getTimestamp("deleted_at"));
                     c.setDeletedBy(rs.getInt("deleted_by"));

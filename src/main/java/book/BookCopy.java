@@ -12,6 +12,7 @@ public class BookCopy {
     private Timestamp updatedAt;
     private Timestamp deletedAt;
     private Integer deletedBy;
+    private java.math.BigDecimal price;
 
     public BookCopy() {
     }
@@ -86,5 +87,13 @@ public class BookCopy {
 
     public void setDeletedBy(Integer deletedBy) {
         this.deletedBy = deletedBy;
+    }
+
+    public java.math.BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(java.math.BigDecimal price) {
+        this.price = price;
     }
 }

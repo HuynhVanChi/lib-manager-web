@@ -13,7 +13,7 @@ public class BookDAO {
     public List<Book> findAllActive(String searchQuery, Integer categoryId) {
         List<Book> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
-            "SELECT b.*, c.name AS category_name, " +
+            "SELECT b.*, c.name AS category_name, c.color_theme AS category_color_theme, " +
             "(SELECT COUNT(*) FROM book_copies WHERE book_id = b.book_id AND deleted_at IS NULL) AS total_copies, " +
             "(SELECT COUNT(*) FROM book_copies WHERE book_id = b.book_id AND status = 'Available' AND deleted_at IS NULL) AS available_copies " +
             "FROM books b " +
@@ -57,6 +57,9 @@ public class BookDAO {
                     b.setUpdatedAt(rs.getTimestamp("updated_at"));
                     b.setTotalCopies(rs.getInt("total_copies"));
                     b.setAvailableCopies(rs.getInt("available_copies"));
+                    b.setImagePath(rs.getString("image_path"));
+                    b.setPrice(rs.getBigDecimal("price"));
+                    b.setCategoryColorTheme(rs.getString("category_color_theme"));
                     list.add(b);
                 }
             }
@@ -70,7 +73,7 @@ public class BookDAO {
      * Tìm đầu sách theo ID.
      */
     public Book findById(int id) {
-        String sql = "SELECT b.*, c.name AS category_name, " +
+        String sql = "SELECT b.*, c.name AS category_name, c.color_theme AS category_color_theme, " +
                      "(SELECT COUNT(*) FROM book_copies WHERE book_id = b.book_id AND deleted_at IS NULL) AS total_copies, " +
                      "(SELECT COUNT(*) FROM book_copies WHERE book_id = b.book_id AND status = 'Available' AND deleted_at IS NULL) AS available_copies " +
                      "FROM books b JOIN categories c ON b.category_id = c.category_id WHERE b.book_id = ? AND b.deleted_at IS NULL";
@@ -92,6 +95,9 @@ public class BookDAO {
                     b.setUpdatedAt(rs.getTimestamp("updated_at"));
                     b.setTotalCopies(rs.getInt("total_copies"));
                     b.setAvailableCopies(rs.getInt("available_copies"));
+                    b.setImagePath(rs.getString("image_path"));
+                    b.setPrice(rs.getBigDecimal("price"));
+                    b.setCategoryColorTheme(rs.getString("category_color_theme"));
                     return b;
                 }
             }
@@ -105,7 +111,7 @@ public class BookDAO {
      * Thêm mới đầu sách.
      */
     public int insert(Book book) throws SQLException {
-        String sql = "INSERT INTO books (category_id, title, author, publisher, publish_year) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books (category_id, title, author, publisher, publish_year, image_path, price) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
@@ -118,6 +124,8 @@ public class BookDAO {
             } else {
                 pstmt.setNull(5, Types.INTEGER);
             }
+            pstmt.setString(6, book.getImagePath());
+            pstmt.setBigDecimal(7, book.getPrice() != null ? book.getPrice() : java.math.BigDecimal.ZERO);
             
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -135,7 +143,7 @@ public class BookDAO {
      * Cập nhật đầu sách.
      */
     public boolean update(Book book) throws SQLException {
-        String sql = "UPDATE books SET category_id = ?, title = ?, author = ?, publisher = ?, publish_year = ? WHERE book_id = ? AND deleted_at IS NULL";
+        String sql = "UPDATE books SET category_id = ?, title = ?, author = ?, publisher = ?, publish_year = ?, image_path = ?, price = ? WHERE book_id = ? AND deleted_at IS NULL";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
@@ -148,7 +156,9 @@ public class BookDAO {
             } else {
                 pstmt.setNull(5, Types.INTEGER);
             }
-            pstmt.setInt(6, book.getBookId());
+            pstmt.setString(6, book.getImagePath());
+            pstmt.setBigDecimal(7, book.getPrice() != null ? book.getPrice() : java.math.BigDecimal.ZERO);
+            pstmt.setInt(8, book.getBookId());
             
             return pstmt.executeUpdate() > 0;
         }
@@ -309,5 +319,130 @@ public class BookDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public List<Book> findAllDeleted() {
+        List<Book> list = new ArrayList<>();
+        String sql = "SELECT b.*, c.name AS category_name, c.color_theme AS category_color_theme FROM books b " +
+                     "JOIN categories c ON b.category_id = c.category_id " +
+                     "WHERE b.deleted_at IS NOT NULL ORDER BY b.deleted_at DESC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                Book b = new Book();
+                b.setBookId(rs.getInt("book_id"));
+                b.setCategoryId(rs.getInt("category_id"));
+                b.setCategoryName(rs.getString("category_name"));
+                b.setTitle(rs.getString("title"));
+                b.setAuthor(rs.getString("author"));
+                b.setPublisher(rs.getString("publisher"));
+                b.setPublishYear(rs.getInt("publish_year"));
+                b.setImagePath(rs.getString("image_path"));
+                b.setCreatedAt(rs.getTimestamp("created_at"));
+                b.setUpdatedAt(rs.getTimestamp("updated_at"));
+                b.setDeletedAt(rs.getTimestamp("deleted_at"));
+                b.setPrice(rs.getBigDecimal("price"));
+                b.setCategoryColorTheme(rs.getString("category_color_theme"));
+                list.add(b);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean restore(int bookId) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            String restoreBookSql = "UPDATE books SET deleted_at = NULL, deleted_by = NULL WHERE book_id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(restoreBookSql)) {
+                pstmt.setInt(1, bookId);
+                pstmt.executeUpdate();
+            }
+
+            String restoreCopiesSql = "UPDATE book_copies SET deleted_at = NULL, deleted_by = NULL WHERE book_id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(restoreCopiesSql)) {
+                pstmt.setInt(1, bookId);
+                pstmt.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close();
+            }
+        }
+    }
+
+    public Book findDuplicate(String title, String author, String publisher, int publishYear, Integer excludeId) {
+        String sql = "SELECT * FROM books WHERE title = ? AND author = ? AND publisher = ? AND publish_year = ?";
+        if (excludeId != null) {
+            sql += " AND book_id != " + excludeId;
+        }
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title.trim());
+            pstmt.setString(2, author != null ? author.trim() : "");
+            pstmt.setString(3, publisher != null ? publisher.trim() : "");
+            pstmt.setInt(4, publishYear);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Book b = new Book();
+                    b.setBookId(rs.getInt("book_id"));
+                    b.setTitle(rs.getString("title"));
+                    b.setAuthor(rs.getString("author"));
+                    b.setPublisher(rs.getString("publisher"));
+                    b.setPublishYear(rs.getInt("publish_year"));
+                    b.setDeletedAt(rs.getTimestamp("deleted_at"));
+                    return b;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Book findDeletedById(int bookId) {
+        String sql = "SELECT b.*, c.name AS category_name, c.color_theme AS category_color_theme FROM books b " +
+                     "JOIN categories c ON b.category_id = c.category_id " +
+                     "WHERE b.book_id = ? AND b.deleted_at IS NOT NULL";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, bookId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Book b = new Book();
+                    b.setBookId(rs.getInt("book_id"));
+                    b.setCategoryId(rs.getInt("category_id"));
+                    b.setCategoryName(rs.getString("category_name"));
+                    b.setTitle(rs.getString("title"));
+                    b.setAuthor(rs.getString("author"));
+                    b.setPublisher(rs.getString("publisher"));
+                    b.setPublishYear(rs.getInt("publish_year"));
+                    b.setImagePath(rs.getString("image_path"));
+                    b.setCreatedAt(rs.getTimestamp("created_at"));
+                    b.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    b.setDeletedAt(rs.getTimestamp("deleted_at"));
+                    b.setPrice(rs.getBigDecimal("price"));
+                    b.setCategoryColorTheme(rs.getString("category_color_theme"));
+                    return b;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

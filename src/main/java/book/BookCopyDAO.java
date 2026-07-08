@@ -27,6 +27,7 @@ public class BookCopyDAO {
                     copy.setLocationShelf(rs.getString("location_shelf"));
                     copy.setCreatedAt(rs.getTimestamp("created_at"));
                     copy.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    copy.setPrice(rs.getBigDecimal("price"));
                     list.add(copy);
                 }
             }
@@ -55,6 +56,7 @@ public class BookCopyDAO {
                     copy.setLocationShelf(rs.getString("location_shelf"));
                     copy.setCreatedAt(rs.getTimestamp("created_at"));
                     copy.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    copy.setPrice(rs.getBigDecimal("price"));
                     return copy;
                 }
             }
@@ -68,7 +70,7 @@ public class BookCopyDAO {
      * Thêm mới một cuốn sách (bản sao) độc lập.
      */
     public boolean insert(BookCopy copy) throws SQLException {
-        String sql = "INSERT INTO book_copies (book_id, barcode, status, location_shelf) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO book_copies (book_id, barcode, status, location_shelf, price) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
@@ -76,6 +78,7 @@ public class BookCopyDAO {
             pstmt.setString(2, copy.getBarcode());
             pstmt.setString(3, copy.getStatus() != null ? copy.getStatus() : "Available");
             pstmt.setString(4, copy.getLocationShelf());
+            pstmt.setBigDecimal(5, copy.getPrice() != null ? copy.getPrice() : java.math.BigDecimal.ZERO);
             
             return pstmt.executeUpdate() > 0;
         }
@@ -85,28 +88,30 @@ public class BookCopyDAO {
      * Thêm mới cuốn sách trong cùng một Connection dùng chung (phục vụ Transaction).
      */
     public boolean insert(Connection conn, BookCopy copy) throws SQLException {
-        String sql = "INSERT INTO book_copies (book_id, barcode, status, location_shelf) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO book_copies (book_id, barcode, status, location_shelf, price) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, copy.getBookId());
             pstmt.setString(2, copy.getBarcode());
             pstmt.setString(3, copy.getStatus() != null ? copy.getStatus() : "Available");
             pstmt.setString(4, copy.getLocationShelf());
+            pstmt.setBigDecimal(5, copy.getPrice() != null ? copy.getPrice() : java.math.BigDecimal.ZERO);
             
             return pstmt.executeUpdate() > 0;
         }
     }
 
     /**
-     * Cập nhật thông tin cuốn sách (vị trí kệ, trạng thái).
+     * Cập nhật thông tin cuốn sách (vị trí kệ, trạng thái, giá nhập).
      */
     public boolean update(BookCopy copy) throws SQLException {
-        String sql = "UPDATE book_copies SET location_shelf = ?, status = ? WHERE copy_id = ? AND deleted_at IS NULL";
+        String sql = "UPDATE book_copies SET location_shelf = ?, status = ?, price = ? WHERE copy_id = ? AND deleted_at IS NULL";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, copy.getLocationShelf());
             pstmt.setString(2, copy.getStatus());
-            pstmt.setInt(3, copy.getCopyId());
+            pstmt.setBigDecimal(3, copy.getPrice() != null ? copy.getPrice() : java.math.BigDecimal.ZERO);
+            pstmt.setInt(4, copy.getCopyId());
             
             return pstmt.executeUpdate() > 0;
         }

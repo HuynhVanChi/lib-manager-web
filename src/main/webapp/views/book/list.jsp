@@ -199,7 +199,7 @@
                                 <table class="table-custom">
                                     <thead>
                                         <tr>
-                                            <th class="ps-4" style="width: 50px;">#</th>
+                                            <th class="ps-4" style="width: 50px;">ID</th>
                                             <th style="width: 80px; text-align: center;">Ảnh</th>
                                             <th>Thông tin sách / Tác giả</th>
                                             <th style="width: 180px; text-align: center;">Danh mục</th>
@@ -212,8 +212,8 @@
                                     <tbody>
                                         <c:forEach var="book" items="${booksList}" varStatus="loop">
                                             <tr>
-                                                <!-- Số thứ tự -->
-                                                <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                <!-- ID -->
+                                                <td class="ps-4 text-muted fw-medium">#${book.bookId}</td>
                                                 <!-- Ảnh bìa -->
                                                 <td class="text-center">
                                                     <c:choose>
@@ -237,7 +237,6 @@
                                                         ${book.title}
                                                     </a>
                                                     <div class="text-muted small mt-0.5"><i class="fa-regular fa-user me-1"></i>${book.author}</div>
-                                                    <div class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">ID: #${book.bookId}</div>
                                                 </td>
                                                 <!-- Danh mục -->
                                                 <td class="text-center">

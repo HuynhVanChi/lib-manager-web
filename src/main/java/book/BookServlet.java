@@ -185,7 +185,7 @@ public class BookServlet extends HttpServlet {
         request.setAttribute("selectedQuery", query);
         request.setAttribute("selectedCategoryId", categoryId);
 
-        request.getRequestDispatcher("/views/book/books.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/book/list.jsp").forward(request, response);
     }
 
     @Override

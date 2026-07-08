@@ -73,7 +73,7 @@ public class ReaderDAO {
             sql.append(" AND status = ?");
         }
 
-        sql.append(" ORDER BY full_name ASC");
+        sql.append(" ORDER BY reader_id DESC");
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {

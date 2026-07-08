@@ -740,6 +740,23 @@
                 const labels = list.map(item => item.label);
                 const values = list.map(item => item.value);
 
+                // Bản đồ mã màu đồng bộ với các theme badge của Danh mục
+                const categoryThemeColors = {
+                    'blue': '#3B82F6',
+                    'indigo': '#6366F1',
+                    'purple': '#8B5CF6',
+                    'pink': '#EC4899',
+                    'rose': '#F43F5E',
+                    'red': '#EF4444',
+                    'orange': '#F97316',
+                    'amber': '#F59E0B',
+                    'emerald': '#10B981',
+                    'teal': '#14B8A6',
+                    'slate': '#64748B'
+                };
+
+                const backgroundColors = list.map(item => categoryThemeColors[item.color] || '#6B7280');
+
                 if (categoryChartInstance) {
                     categoryChartInstance.destroy();
                 }
@@ -748,6 +765,7 @@
                 if (list.length === 0) {
                     labels.push("Chưa có dữ liệu");
                     values.push(1);
+                    backgroundColors.push("#E5E7EB");
                 }
 
                 const ctx = document.getElementById("categoryChart").getContext("2d");
@@ -757,18 +775,7 @@
                         labels: labels,
                         datasets: [{
                             data: values,
-                            backgroundColor: [
-                                '#312E81', // Tím Indigo chủ đạo
-                                '#4F46E5', // Tím nhạt
-                                '#8B5CF6', // Tím Violet
-                                '#A78BFA', // Tím pastel
-                                '#EC4899', // Hồng đậm
-                                '#F43F5E', // Hồng san hô
-                                '#10B981', // Xanh ngọc
-                                '#3B82F6', // Xanh dương
-                                '#F59E0B', // Cam vàng
-                                '#6B7280'  // Xám
-                            ],
+                            backgroundColor: backgroundColors,
                             borderWidth: 2,
                             borderColor: '#ffffff'
                         }]

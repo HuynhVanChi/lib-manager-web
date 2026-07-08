@@ -120,7 +120,7 @@
                             <table class="table-custom">
                                 <thead>
                                     <tr>
-                                        <th style="width:50px">#</th>
+                                         <th style="width:50px">ID</th>
                                         <th>Họ và tên</th>
                                         <th>Email</th>
                                         <th>Số điện thoại</th>
@@ -133,17 +133,14 @@
                                     <c:forEach var="r" items="${readers}" varStatus="loop">
                                         <tr id="reader-row-${r.readerId}">
 
-                                            <%-- STT --%>
-                                            <td class="text-muted fw-medium">${loop.index + 1}</td>
+                                            <%-- ID --%>
+                                             <td class="text-muted fw-medium">#${r.readerId}</td>
 
                                             <%-- Họ tên --%>
                                             <td>
-                                                <div class="reader-name">
-                                                    <c:out value="${r.fullName}"/>
-                                                </div>
-                                                <div class="reader-email">
-                                                    ID: #<c:out value="${r.readerId}"/>
-                                                </div>
+                                                 <div class="reader-name">
+                                                     <c:out value="${r.fullName}"/>
+                                                 </div>
                                             </td>
 
                                             <%-- Email --%>

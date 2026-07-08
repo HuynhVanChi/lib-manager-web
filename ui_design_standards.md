@@ -112,13 +112,18 @@ Tất cả các nút bấm được tách biệt giữa **Kiểu dáng nút** (B
 
 Để tạo bảng dữ liệu, lập trình viên sử dụng lớp `.table-custom`. Lớp này đã loại bỏ hoàn toàn các viền dọc thô cứng và tích hợp hiệu ứng hover mượt mà cho từng dòng.
 
+### Quy định đồng bộ hóa bảng dữ liệu:
+*   **Tên tệp giao diện danh sách gốc:** Tất cả các tính năng quản trị danh sách chính phải đặt tên tệp giao diện gốc là `list.jsp` (Ví dụ: `views/categories/list.jsp`, `views/book/list.jsp`, `views/reader/list.jsp`...) để nhất quán cấu trúc toàn dự án.
+*   **Quy chuẩn cột đầu tiên (ID thay cho STT):** Thay vì hiển thị Số thứ tự (STT) tự tăng ($1, 2, 3...$), cột đầu tiên của tất cả các bảng dữ liệu chính bắt buộc phải đặt tên là **ID** và hiển thị trực tiếp Database ID của bản ghi dạng `#ID` (Ví dụ: `#1001`, `#1002`). Điều này giúp Thủ thư định vị và đối soát dữ liệu một cách độc lập và chính xác.
+*   **Quy chuẩn sắp xếp mặc định (Newest First):** Mọi danh sách phải được sắp xếp theo thời gian mới nhất lên đầu (`created_at DESC` hoặc `ID DESC`) để cung cấp phản hồi trực quan lập tức cho người dùng ngay sau khi họ thêm mới hoặc cập nhật bản ghi.
+
 ### Cấu trúc mã HTML chuẩn:
 ```html
 <div class="table-responsive">
     <table class="table-custom">
         <thead>
             <tr>
-                <th style="width: 50px;">#</th>
+                <th style="width: 80px;">ID</th>
                 <th>Cột thông tin A</th>
                 <th>Cột thông tin B</th>
                 <th class="text-end">Hành động</th>
@@ -126,7 +131,7 @@ Tất cả các nút bấm được tách biệt giữa **Kiểu dáng nút** (B
         </thead>
         <tbody>
             <tr>
-                <td>1</td>
+                <td class="text-muted fw-medium">#1001</td>
                 <td>Dữ liệu dòng 1</td>
                 <td>Dữ liệu dòng 1</td>
                 <td class="text-end">

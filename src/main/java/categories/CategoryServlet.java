@@ -102,7 +102,7 @@ public class CategoryServlet extends HttpServlet {
         request.setAttribute("deletedCategories", deletedList);
         request.setAttribute("searchQuery", query);
         
-        request.getRequestDispatcher("/views/categories/categories.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/categories/list.jsp").forward(request, response);
     }
 
     @Override

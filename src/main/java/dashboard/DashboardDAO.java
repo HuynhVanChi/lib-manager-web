@@ -140,23 +140,27 @@ public class DashboardDAO {
      */
     public List<ChartDataPointDTO> getTopCategories() throws SQLException {
         List<ChartDataPointDTO> list = new ArrayList<>();
-        String sql = "SELECT c.name AS category_name, COUNT(bd.borrow_detail_id) AS borrow_count " +
+        String sql = "SELECT c.name AS category_name, c.color_theme, COUNT(bd.borrow_detail_id) AS borrow_count " +
                      "FROM borrow_details bd " +
                      "JOIN book_copies bc ON bd.copy_id = bc.copy_id " +
                      "JOIN books b ON bc.book_id = b.book_id " +
                      "JOIN categories c ON b.category_id = c.category_id " +
                      "WHERE c.deleted_at IS NULL AND b.deleted_at IS NULL AND bc.deleted_at IS NULL " +
-                     "GROUP BY c.category_id, c.name " +
+                     "GROUP BY c.category_id, c.name, c.color_theme " +
                      "ORDER BY borrow_count DESC " +
                      "LIMIT 10";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                list.add(new ChartDataPointDTO(rs.getString("category_name"), rs.getDouble("borrow_count")));
-            }
-        }
+             while (rs.next()) {
+                 list.add(new ChartDataPointDTO(
+                     rs.getString("category_name"), 
+                     rs.getDouble("borrow_count"), 
+                     rs.getString("color_theme")
+                 ));
+             }
+         }
         return list;
     }
 

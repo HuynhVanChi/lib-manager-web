@@ -53,8 +53,8 @@
                 <!-- Tiêu đề trang & Nút chức năng -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0 text-dark">Danh mục sách</h2>
-                        <p class="text-muted small m-0 mt-1">Quản lý các danh mục phân loại đầu sách</p>
+                        <h1 class="fw-bold m-0 text-dark" style="font-size:1.6rem;">Danh mục sách</h1>
+                        <p class="text-muted mb-0 mt-1" style="font-size:.85rem;">Quản lý các danh mục phân loại đầu sách</p>
                     </div>
                     
                     <div class="d-flex gap-2">
@@ -127,7 +127,7 @@
                                 <table class="table-custom">
                                     <thead>
                                         <tr>
-                                            <th class="ps-4" style="width: 80px;">#</th>
+                                            <th class="ps-4" style="width: 80px;">ID</th>
                                             <th style="width: 250px;">Tên Danh Mục</th>
                                             <th>Mô Tả Chi Tiết</th>
                                             <th style="width: 200px;">Ngày Tạo</th>
@@ -137,12 +137,11 @@
                                     <tbody>
                                         <c:forEach var="cat" items="${activeCategories}" varStatus="loop">
                                             <tr>
-                                                <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                <td class="ps-4 text-muted fw-medium">#${cat.categoryId}</td>
                                                 <td>
-                                                    <div class="d-flex flex-column align-items-start">
-                                                        <span class="badge-status badge-theme-${cat.colorTheme} px-3 py-1.5 fs-7">${cat.name}</span>
-                                                        <span class="text-muted mt-1 ps-2.5" style="font-size: 0.72rem;">ID: #${cat.categoryId}</span>
-                                                    </div>
+                                                     <div class="d-flex flex-column align-items-start">
+                                                         <span class="badge-status badge-theme-${cat.colorTheme} px-3 py-1.5 fs-7">${cat.name}</span>
+                                                     </div>
                                                 </td>
                                                 <td class="text-muted" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                                     ${cat.description != null && !cat.description.isEmpty() ? cat.description : "Không có mô tả"}

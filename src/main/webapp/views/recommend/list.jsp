@@ -152,7 +152,7 @@
                             <table class="table-custom">
                                 <thead>
                                     <tr>
-                                        <th style="width:50px">#</th>
+                                        <th style="width:50px">ID</th>
                                         <th>Họ và tên độc giả</th>
                                         <th>Số điện thoại</th>
                                         <th>Sách đề xuất</th>
@@ -165,16 +165,13 @@
                                     <c:forEach var="rec" items="${recommendationsList}" varStatus="loop">
                                         <tr id="recommendation-row-${rec.recommendationId}">
 
-                                            <%-- STT --%>
-                                            <td class="text-muted fw-medium">${loop.index + 1}</td>
+                                            <%-- ID --%>
+                                            <td class="text-muted fw-medium">#${rec.recommendationId}</td>
 
                                             <%-- Họ tên độc giả --%>
                                             <td>
                                                 <div class="reader-name">
                                                     <c:out value="${rec.readerName}"/>
-                                                </div>
-                                                <div class="reader-email">
-                                                    ID: #<c:out value="${rec.recommendationId}"/>
                                                 </div>
                                             </td>
 

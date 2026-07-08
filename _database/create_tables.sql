@@ -20,7 +20,7 @@ CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    color_theme VARCHAR(50) NOT NULL DEFAULT 'indigo',
+    color_theme VARCHAR(50) NOT NULL DEFAULT 'indigo', -- Hỗ trợ 10 tông màu: blue, indigo, purple, pink, rose, red, orange, amber, emerald, teal (mặc định fallback: slate)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,

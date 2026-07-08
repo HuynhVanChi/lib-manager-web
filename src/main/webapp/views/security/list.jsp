@@ -141,7 +141,7 @@
                     <table class="table-custom">
                         <thead>
                             <tr>
-                                <th style="width: 50px;">#</th>
+                                <th style="width: 50px;">ID</th>
                                 <th>Tên đăng nhập</th>
                                 <th>Họ và tên</th>
                                 <th style="width: 150px;">Vai trò</th>
@@ -166,7 +166,6 @@
                             </tr>
                         <%
                             } else {
-                               int idx = 1;
                                for (security.TaiKhoan tk : accounts) {
                                     String badge = "Admin".equalsIgnoreCase(tk.getRole())
                                         ? "<span class='badge-status badge-active'><i class='fa-solid fa-user-shield me-1' style='font-size:.65rem;'></i>Admin</span>"
@@ -175,10 +174,9 @@
                                         ? tk.getCreatedAt().toString().substring(0, 19) : "—";
                         %>
                             <tr>
-                                <td class="text-muted fw-medium"><%=idx++%></td>
+                                <td class="text-muted fw-medium">#<%=tk.getUserId()%></td>
                                 <td>
                                     <div class="fw-semibold"><a href="${pageContext.request.contextPath}/accounts?action=detail&userId=<%=tk.getUserId()%>" class="text-decoration-none text-primary hover-underline"><%=tk.getUsername()%></a></div>
-                                    <div class="text-muted" style="font-size:.78rem;">ID: #<%=tk.getUserId()%></div>
                                 </td>
                                 <td><%=tk.getFullName()%></td>
                                 <td><%=badge%></td>

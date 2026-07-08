@@ -68,7 +68,7 @@
             <i class="fa-solid fa-user-tie" style="width: 32px; font-size: 1.15rem;"></i> Nhân sự
         </a>
 
-        <a href="${pageContext.request.contextPath}/recommends" 
+        <a href="${pageContext.request.contextPath}/recommend" 
            class="nav-link d-flex align-items-center mb-1 rounded py-2 px-3 menu-link <%= checkURI.contains("recommend") ? "active" : "" %>">
             <i class="fa-solid fa-lightbulb" style="width: 32px; font-size: 1.15rem;"></i> Đề xuất sách
         </a>

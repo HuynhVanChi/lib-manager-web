@@ -7,53 +7,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Thống kê - LibraryOS</title>
     
-    <!-- Nhúng Bootstrap 5 CSS -->
+    <!-- 1. Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Nhúng FontAwesome -->
+    <!-- 2. FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- 3. Stylesheet dùng chung của dự án -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <!-- Nhúng Font chữ Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB;
-            color: #1F2937;
+            background-color: var(--bg-page);
+            color: var(--text-dark);
         }
 
-        /* Tông màu chủ đạo Tím Indigo (#312E81) */
-        :root {
-            --primary-color: #312E81;
-            --primary-light: #4F46E5;
-            --accent-purple: #A78BFA;
-            --card-border-radius: 12px;
+        /* Tùy chỉnh màu sắc tĩnh cho các thẻ thống kê stat-card */
+        .stat-total {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .stat-total .stat-icon {
+            background: rgba(49, 46, 129, 0.12);
+            color: var(--primary);
         }
 
-        /* Hiệu ứng viền phát sáng nhẹ cho KPI Cards */
-        .kpi-card {
-            border-radius: var(--card-border-radius);
-            border: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #ffffff;
+        .stat-titles {
+            background: #F5F3FF;
+            color: #6D28D9;
         }
-        .kpi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+        .stat-titles .stat-icon {
+            background: rgba(109, 40, 217, 0.12);
+            color: #6D28D9;
         }
 
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.35rem;
-            transition: all 0.3s ease;
+        .stat-readers {
+            background: #FFF1F2;
+            color: #BE123C;
+        }
+        .stat-readers .stat-icon {
+            background: rgba(190, 18, 60, 0.12);
+            color: #BE123C;
         }
 
-        .kpi-card:hover .icon-box {
-            transform: scale(1.1);
+        .stat-borrows {
+            background: #F0FDFA;
+            color: #0F766E;
+        }
+        .stat-borrows .stat-icon {
+            background: rgba(15, 118, 110, 0.12);
+            color: #0F766E;
+        }
+
+        .stat-borrowing {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        .stat-borrowing .stat-icon {
+            background: rgba(217, 119, 6, 0.12);
+            color: #D97706;
+        }
+
+        .stat-overdue {
+            background: #FEF2F2;
+            color: #B91C1C;
+        }
+        .stat-overdue .stat-icon {
+            background: rgba(185, 28, 28, 0.12);
+            color: #B91C1C;
+        }
+
+        .stat-in-stock {
+            background: #F0FDF4;
+            color: #15803D;
+        }
+        .stat-in-stock .stat-icon {
+            background: rgba(21, 128, 61, 0.12);
+            color: #15803D;
         }
 
         /* Thống kê chi tiết & Biểu đồ */
@@ -76,6 +107,13 @@
             position: relative;
             width: 100%;
             height: 250px;
+        }
+
+        /* Biểu đồ Top 10 cần cao hơn để hiển thị đủ 10 dòng ngang */
+        .chart-container-top10 {
+            position: relative;
+            width: 100%;
+            height: 380px;
         }
 
         /* Skeleton Loading Effect */
@@ -106,10 +144,23 @@
         }
 
         /* Nút chuyển đổi thời gian trên biểu đồ */
+        .btn-group .btn {
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-group .btn:hover:not(.btn-toggle-active) {
+            background-color: var(--primary-soft) !important;
+            color: var(--primary-light) !important;
+        }
         .btn-toggle-active {
-            background-color: var(--primary-color) !important;
+            background-color: var(--primary) !important;
             color: #ffffff !important;
-            border-color: var(--primary-color) !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 4px 12px rgba(49, 46, 129, 0.25) !important;
+        }
+        .btn-toggle-active:hover {
+            background-color: var(--primary-light) !important;
+            border-color: var(--primary-light) !important;
+            box-shadow: 0 6px 16px rgba(49, 46, 129, 0.4) !important;
         }
 
         /* Xử lý bảng xếp hạng đẹp */
@@ -186,14 +237,16 @@
 
             <div class="container-fluid p-4">
                 
+
+
                 <!-- Tiêu đề trang & Nút tải lại -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h2 class="fw-bold m-0 text-dark" style="letter-spacing: -0.5px;">Tổng quan Thư viện</h2>
                         <p class="text-muted mb-0 small">Báo cáo trực quan tình hình mượn trả và tồn kho sách thực tế.</p>
                     </div>
-                    <button class="btn btn-white border shadow-sm rounded-3 px-3 py-2 text-dark fw-medium" id="btn-refresh">
-                        <i class="fa-solid fa-arrows-rotate me-1 text-primary"></i> Tải lại dữ liệu
+                    <button class="btn btn-save hover-lift fw-medium" id="btn-refresh">
+                        <i class="fa-solid fa-arrows-rotate me-1"></i> Tải lại dữ liệu
                     </button>
                 </div>
 
@@ -205,7 +258,7 @@
                             <h5 class="alert-heading fw-semibold mb-1">Không thể tải dữ liệu thống kê</h5>
                             <p class="mb-0 small" id="error-message">Đã xảy ra lỗi kết nối đến cơ sở dữ liệu.</p>
                         </div>
-                        <button class="btn btn-outline-danger btn-sm rounded-3 px-3" id="btn-retry">Thử lại</button>
+                        <button class="btn btn-danger hover-lift btn-sm px-3" id="btn-retry">Thử lại</button>
                     </div>
                 </div>
 
@@ -215,105 +268,105 @@
                 <div class="row g-3 mb-4" id="kpi-grid">
                     <!-- KPI 1: Tổng số sách -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card kpi-card shadow-sm h-100">
-                            <div class="card-body p-3.5 d-flex align-items-center">
-                                <div class="icon-box bg-indigo-subtle text-indigo me-3" style="background-color: #E0E7FF; color: #312E81;">
+                        <div class="stat-card stat-total h-100">
+                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                <span class="stat-label">Tổng số cuốn sách</span>
+                                <div class="stat-icon m-0">
                                     <i class="fa-solid fa-cubes"></i>
                                 </div>
-                                <div class="lh-sm">
-                                    <span class="text-muted small fw-medium">Tổng số cuốn sách</span>
-                                    <h3 class="fw-bold m-0 mt-1" id="kpi-total-books"><div class="skeleton skeleton-number"></div></h3>
-                                </div>
+                            </div>
+                            <div class="stat-value" id="kpi-total-books">
+                                <div class="skeleton skeleton-number"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- KPI 2: Tổng số đầu sách -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card kpi-card shadow-sm h-100">
-                            <div class="card-body p-3.5 d-flex align-items-center">
-                                <div class="icon-box bg-purple-subtle text-purple me-3" style="background-color: #F3E8FF; color: #7C3AED;">
+                        <div class="stat-card stat-titles h-100">
+                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                <span class="stat-label">Tổng số đầu sách</span>
+                                <div class="stat-icon m-0">
                                     <i class="fa-solid fa-book"></i>
                                 </div>
-                                <div class="lh-sm">
-                                    <span class="text-muted small fw-medium">Tổng số đầu sách</span>
-                                    <h3 class="fw-bold m-0 mt-1" id="kpi-total-titles"><div class="skeleton skeleton-number"></div></h3>
-                                </div>
+                            </div>
+                            <div class="stat-value" id="kpi-total-titles">
+                                <div class="skeleton skeleton-number"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- KPI 3: Tổng số độc giả -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card kpi-card shadow-sm h-100">
-                            <div class="card-body p-3.5 d-flex align-items-center">
-                                <div class="icon-box bg-rose-subtle text-rose me-3" style="background-color: #FFE4E6; color: #E11D48;">
+                        <div class="stat-card stat-readers h-100">
+                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                <span class="stat-label">Tổng số độc giả</span>
+                                <div class="stat-icon m-0">
                                     <i class="fa-solid fa-users"></i>
                                 </div>
-                                <div class="lh-sm">
-                                    <span class="text-muted small fw-medium">Tổng số độc giả</span>
-                                    <h3 class="fw-bold m-0 mt-1" id="kpi-total-readers"><div class="skeleton skeleton-number"></div></h3>
-                                </div>
+                            </div>
+                            <div class="stat-value" id="kpi-total-readers">
+                                <div class="skeleton skeleton-number"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- KPI 4: Tổng số lượt mượn -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card kpi-card shadow-sm h-100">
-                            <div class="card-body p-3.5 d-flex align-items-center">
-                                <div class="icon-box bg-teal-subtle text-teal me-3" style="background-color: #CCFBF1; color: #0D9488;">
+                        <div class="stat-card stat-borrows h-100">
+                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                <span class="stat-label">Tổng số lượt mượn</span>
+                                <div class="stat-icon m-0">
                                     <i class="fa-solid fa-clipboard-list"></i>
                                 </div>
-                                <div class="lh-sm">
-                                    <span class="text-muted small fw-medium">Tổng số lượt mượn</span>
-                                    <h3 class="fw-bold m-0 mt-1" id="kpi-total-borrows"><div class="skeleton skeleton-number"></div></h3>
-                                </div>
+                            </div>
+                            <div class="stat-value" id="kpi-total-borrows">
+                                <div class="skeleton skeleton-number"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- KPI 5: Số sách đang mượn -->
                     <div class="col-12 col-md-4 col-lg-4">
-                        <div class="card kpi-card shadow-sm h-100 border-start border-warning border-3">
-                            <div class="card-body p-3.5 d-flex align-items-center">
-                                <div class="icon-box bg-amber-subtle text-amber me-3" style="background-color: #FEF3C7; color: #D97706;">
+                        <div class="stat-card stat-borrowing h-100">
+                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                <span class="stat-label">Sách đang mượn ngoài</span>
+                                <div class="stat-icon m-0">
                                     <i class="fa-solid fa-book-open"></i>
                                 </div>
-                                <div class="lh-sm">
-                                    <span class="text-muted small fw-medium">Sách đang mượn ngoài</span>
-                                    <h3 class="fw-bold m-0 mt-1 text-warning-emphasis" id="kpi-borrowing"><div class="skeleton skeleton-number"></div></h3>
-                                </div>
+                            </div>
+                            <div class="stat-value" id="kpi-borrowing">
+                                <div class="skeleton skeleton-number"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- KPI 6: Sách quá hạn -->
                     <div class="col-12 col-md-4 col-lg-4">
-                        <div class="card kpi-card shadow-sm h-100 border-start border-danger border-3">
-                            <div class="card-body p-3.5 d-flex align-items-center">
-                                <div class="icon-box bg-red-subtle text-red me-3" style="background-color: #FEE2E2; color: #DC2626;">
+                        <div class="stat-card stat-overdue h-100">
+                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                <span class="stat-label">Sách bị quá hạn trả</span>
+                                <div class="stat-icon m-0">
                                     <i class="fa-solid fa-triangle-exclamation"></i>
                                 </div>
-                                <div class="lh-sm">
-                                    <span class="text-muted small fw-medium">Sách bị quá hạn trả</span>
-                                    <h3 class="fw-bold m-0 mt-1 text-danger" id="kpi-overdue"><div class="skeleton skeleton-number"></div></h3>
-                                </div>
+                            </div>
+                            <div class="stat-value" id="kpi-overdue">
+                                <div class="skeleton skeleton-number"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- KPI 7: Sách còn trong kho -->
                     <div class="col-12 col-md-4 col-lg-4">
-                        <div class="card kpi-card shadow-sm h-100 border-start border-success border-3">
-                            <div class="card-body p-3.5 d-flex align-items-center">
-                                <div class="icon-box bg-green-subtle text-green me-3" style="background-color: #DCFCE7; color: #16A34A;">
+                        <div class="stat-card stat-in-stock h-100">
+                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                <span class="stat-label">Sách sẵn sàng trong kho</span>
+                                <div class="stat-icon m-0">
                                     <i class="fa-solid fa-warehouse"></i>
                                 </div>
-                                <div class="lh-sm">
-                                    <span class="text-muted small fw-medium">Sách sẵn sàng trong kho</span>
-                                    <h3 class="fw-bold m-0 mt-1 text-success" id="kpi-in-stock"><div class="skeleton skeleton-number"></div></h3>
-                                </div>
+                            </div>
+                            <div class="stat-value" id="kpi-in-stock">
+                                <div class="skeleton skeleton-number"></div>
                             </div>
                         </div>
                     </div>
@@ -322,12 +375,12 @@
                 <!-- ======================================================== -->
                 <!-- TRẠNG THÁI TRỐNG (EMPTY STATE - ẨN MẶC ĐỊNH)               -->
                 <!-- ======================================================== -->
-                <div class="card border-0 shadow-sm rounded-3 p-5 text-center d-none" id="empty-state">
-                    <div class="py-5">
-                        <i class="fa-solid fa-chart-line fs-1 text-muted mb-4"></i>
-                        <h4 class="fw-bold text-dark mb-2">Chưa có dữ liệu thống kê</h4>
-                        <p class="text-muted mx-auto" style="max-width: 480px;">Hiện tại hệ thống thư viện chưa ghi nhận bất kỳ lượt mượn trả sách nào. Hãy thực hiện mượn sách để kích hoạt số liệu thống kê tự động.</p>
+                <div class="empty-state d-none" id="empty-state">
+                    <div class="icon">
+                        <i class="fa-solid fa-chart-line"></i>
                     </div>
+                    <h5 class="fw-bold text-dark">Chưa có dữ liệu thống kê</h5>
+                    <p class="text-muted small mb-0">Hiện tại hệ thống thư viện chưa ghi nhận bất kỳ lượt mượn trả sách nào. Hãy thực hiện mượn sách để kích hoạt số liệu thống kê tự động.</p>
                 </div>
 
                 <!-- ======================================================== -->
@@ -338,7 +391,7 @@
                     <div class="row">
                         <!-- Biểu đồ lượt mượn -->
                         <div class="col-12 col-lg-8">
-                            <div class="card chart-card shadow-sm p-4">
+                            <div class="card chart-card shadow-sm p-4 h-100">
                                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                                     <div>
                                         <h5 class="fw-bold m-0 text-dark">Thống kê Lượt Mượn Sách</h5>
@@ -361,11 +414,11 @@
 
                         <!-- Top Thể loại -->
                         <div class="col-12 col-lg-4">
-                            <div class="card chart-card shadow-sm p-4">
+                            <div class="card chart-card shadow-sm p-4 h-100">
                                 <h5 class="fw-bold mb-1 text-dark">Thể Loại Đọc Nhiều Nhất</h5>
                                 <p class="text-muted small mb-3">Tỷ lệ lượt mượn phân bổ theo các danh mục.</p>
                                 
-                                <div class="chart-container-small" id="category-chart-wrapper">
+                                <div class="chart-container" id="category-chart-wrapper">
                                     <canvas id="categoryChart"></canvas>
                                 </div>
                                 <div class="skeleton-chart skeleton d-none" id="category-chart-skeleton"></div>
@@ -377,11 +430,11 @@
                     <div class="row">
                         <!-- Top 10 Sách -->
                         <div class="col-12 col-lg-6">
-                            <div class="card chart-card shadow-sm p-4">
+                            <div class="card chart-card shadow-sm p-4 h-100">
                                 <h5 class="fw-bold mb-1 text-dark">Top 10 Sách Được Mượn Nhiều Nhất</h5>
                                 <p class="text-muted small mb-3">Biểu đồ so sánh số lần mượn của các tựa sách hàng đầu.</p>
                                 
-                                <div class="chart-container" id="book-chart-wrapper">
+                                <div class="chart-container-top10" id="book-chart-wrapper">
                                     <canvas id="bookChart"></canvas>
                                 </div>
                                 <div class="skeleton-chart skeleton d-none" id="book-chart-skeleton"></div>
@@ -390,11 +443,11 @@
 
                         <!-- Top Tác giả -->
                         <div class="col-12 col-lg-6">
-                            <div class="card chart-card shadow-sm p-4">
+                            <div class="card chart-card shadow-sm p-4 h-100">
                                 <h5 class="fw-bold mb-1 text-dark">Top 10 Tác Giả Đọc Nhiều Nhất</h5>
                                 <p class="text-muted small mb-3">Thống kê tổng số cuốn sách được đọc theo từng tác giả.</p>
                                 
-                                <div class="chart-container" id="author-chart-wrapper">
+                                <div class="chart-container-top10" id="author-chart-wrapper">
                                     <canvas id="authorChart"></canvas>
                                 </div>
                                 <div class="skeleton-chart skeleton d-none" id="author-chart-skeleton"></div>
@@ -708,9 +761,29 @@
                             legend: {
                                 position: 'bottom',
                                 labels: {
-                                    boxWidth: 12,
-                                    font: { size: 11 },
-                                    padding: 10
+                                    boxWidth: 14,
+                                    font: { size: 14, family: 'Inter, sans-serif' },
+                                    padding: 12,
+                                    color: '#1F2937',
+                                    // Cắt ngắn nhãn quá dài
+                                    generateLabels: function(chart) {
+                                        const original = Chart.overrides.pie.plugins.legend.labels.generateLabels(chart);
+                                        return original.map(label => {
+                                            if (label.text && label.text.length > 20) {
+                                                label.text = label.text.substring(0, 18) + '…';
+                                            }
+                                            return label;
+                                        });
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const pct = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                        return ` ${context.label}: ${context.parsed} lượt (${pct}%)`;
+                                    }
                                 }
                             }
                         }
@@ -806,14 +879,33 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '60%', // Độ rỗng tâm vòng tròn
+                        cutout: '55%',
                         plugins: {
                             legend: {
                                 position: 'bottom',
                                 labels: {
-                                    boxWidth: 12,
-                                    font: { size: 11 },
-                                    padding: 10
+                                    boxWidth: 14,
+                                    font: { size: 14, family: 'Inter, sans-serif' },
+                                    padding: 12,
+                                    color: '#1F2937',
+                                    generateLabels: function(chart) {
+                                        const original = Chart.overrides.doughnut.plugins.legend.labels.generateLabels(chart);
+                                        return original.map(label => {
+                                            if (label.text && label.text.length > 20) {
+                                                label.text = label.text.substring(0, 18) + '\u2026';
+                                            }
+                                            return label;
+                                        });
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const pct = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                        return ` ${context.label}: ${context.parsed} lượt (${pct}%)`;
+                                    }
                                 }
                             }
                         }

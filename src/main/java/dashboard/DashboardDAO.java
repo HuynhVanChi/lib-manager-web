@@ -161,10 +161,54 @@ public class DashboardDAO {
     }
 
     /**
-     * Lấy số lượt mượn theo ngày (7 ngày qua, bao gồm cả hôm nay).
-     * Đã áp dụng Data Padding để đảm bảo không bị đứt gãy biểu đồ nếu có ngày không phát sinh lượt mượn.
+     * Lấy số lượt mượn theo khối 4 giờ (chỉ trong ngày hôm nay).
+     * Đã áp dụng Data Padding cho đủ 6 khung giờ (mỗi khung 4 tiếng).
      */
     public List<ChartDataPointDTO> getBorrowCountByDay() throws SQLException {
+        Map<Integer, Double> map = new LinkedHashMap<>();
+        // Khởi tạo 6 khung giờ, mỗi khung 4 tiếng (tương ứng block_index từ 0 đến 5)
+        for (int i = 0; i < 6; i++) {
+            map.put(i, 0.0);
+        }
+
+        String sql = "SELECT FLOOR(HOUR(created_at) / 4) AS block_index, COUNT(*) AS count " +
+                     "FROM borrow_details " +
+                     "WHERE DATE(created_at) = CURDATE() " +
+                     "GROUP BY block_index";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                int blockIndex = rs.getInt("block_index");
+                double count = rs.getDouble("count");
+                if (map.containsKey(blockIndex)) {
+                    map.put(blockIndex, count);
+                }
+            }
+        }
+
+        String[] labels = {
+            "00:00-04:00",
+            "04:00-08:00",
+            "08:00-12:00",
+            "12:00-16:00",
+            "16:00-20:00",
+            "20:00-00:00"
+        };
+
+        List<ChartDataPointDTO> list = new ArrayList<>();
+        for (Map.Entry<Integer, Double> entry : map.entrySet()) {
+            list.add(new ChartDataPointDTO(labels[entry.getKey()], entry.getValue()));
+        }
+        return list;
+    }
+
+    /**
+     * Lấy số lượt mượn theo ngày trong tuần (7 ngày gần nhất, bao gồm cả hôm nay).
+     * Đã áp dụng Data Padding để đảm bảo không bị đứt gãy biểu đồ nếu có ngày không phát sinh lượt mượn.
+     */
+    public List<ChartDataPointDTO> getBorrowCountByWeek() throws SQLException {
         Map<String, Double> map = new LinkedHashMap<>();
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -202,75 +246,43 @@ public class DashboardDAO {
     }
 
     /**
-     * Lấy số lượt mượn theo tuần (8 tuần gần nhất).
-     */
-    public List<ChartDataPointDTO> getBorrowCountByWeek() throws SQLException {
-        List<ChartDataPointDTO> list = new ArrayList<>();
-        String sql = "SELECT YEARWEEK(borrow_date, 1) AS week_key, MIN(borrow_date) AS week_start, COUNT(*) AS count " +
-                     "FROM borrow_details " +
-                     "WHERE borrow_date >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK) " +
-                     "GROUP BY week_key " +
-                     "ORDER BY week_key ASC";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                String weekStartStr = rs.getString("week_start");
-                String label = "Tuần ";
-                if (weekStartStr != null) {
-                    try {
-                        LocalDate date = LocalDate.parse(weekStartStr);
-                        label += date.format(DateTimeFormatter.ofPattern("dd/MM"));
-                    } catch (Exception e) {
-                        label += weekStartStr;
-                    }
-                } else {
-                    label += rs.getString("week_key");
-                }
-                list.add(new ChartDataPointDTO(label, rs.getDouble("count")));
-            }
-        }
-        return list;
-    }
-
-    /**
-     * Lấy số lượt mượn theo tháng (12 tháng gần nhất).
-     * Đã áp dụng Data Padding để đảm bảo hiển thị đầy đủ 12 tháng.
+     * Lấy số lượt mượn theo tuần trong tháng hiện tại (Tuần 1, 2, 3, 4).
+     * Đã áp dụng Data Padding để đảm bảo hiển thị đủ 4 tuần.
      */
     public List<ChartDataPointDTO> getBorrowCountByMonth() throws SQLException {
         Map<String, Double> map = new LinkedHashMap<>();
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        map.put("Tuần 1", 0.0);
+        map.put("Tuần 2", 0.0);
+        map.put("Tuần 3", 0.0);
+        map.put("Tuần 4", 0.0);
 
-        // Khởi tạo 12 tháng gần nhất với giá trị mặc định bằng 0.0
-        for (int i = 11; i >= 0; i--) {
-            LocalDate date = today.minusMonths(i);
-            map.put(date.format(formatter), 0.0);
-        }
-
-        String sql = "SELECT DATE_FORMAT(borrow_date, '%Y-%m') AS month_label, COUNT(*) AS count " +
+        String sql = "SELECT " +
+                     "  CASE " +
+                     "    WHEN DAY(borrow_date) <= 7 THEN 'Tuần 1' " +
+                     "    WHEN DAY(borrow_date) <= 14 THEN 'Tuần 2' " +
+                     "    WHEN DAY(borrow_date) <= 21 THEN 'Tuần 3' " +
+                     "    ELSE 'Tuần 4' " +
+                     "  END AS week_of_month, " +
+                     "  COUNT(*) AS count " +
                      "FROM borrow_details " +
-                     "WHERE borrow_date >= DATE_SUB(CURDATE(), INTERVAL 11 MONTH) " +
-                     "GROUP BY month_label";
+                     "WHERE borrow_date >= DATE_FORMAT(CURDATE(), '%Y-%m-01') " +
+                     "GROUP BY week_of_month";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                String monthStr = rs.getString("month_label");
+                String weekLabel = rs.getString("week_of_month");
                 double count = rs.getDouble("count");
-                if (map.containsKey(monthStr)) {
-                    map.put(monthStr, count);
+                if (map.containsKey(weekLabel)) {
+                    map.put(weekLabel, count);
                 }
             }
         }
 
         List<ChartDataPointDTO> list = new ArrayList<>();
         for (Map.Entry<String, Double> entry : map.entrySet()) {
-            String[] parts = entry.getKey().split("-");
-            String displayLabel = parts[1] + "/" + parts[0]; // Chuyển từ yyyy-MM thành MM/yyyy
-            list.add(new ChartDataPointDTO(displayLabel, entry.getValue()));
+            list.add(new ChartDataPointDTO(entry.getKey(), entry.getValue()));
         }
         return list;
     }

@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+    java.time.LocalDate todayDate = java.time.LocalDate.now();
+    int currentMonth = todayDate.getMonthValue();
+    int currentYear = todayDate.getYear();
+%>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -89,7 +94,7 @@
 
         /* Thống kê chi tiết & Biểu đồ */
         .chart-card {
-            border-radius: var(--card-border-radius);
+            border-radius: var(--radius);
             border: none;
             background: #ffffff;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
@@ -388,13 +393,13 @@
                 <!-- ======================================================== -->
                 <div id="dashboard-content-grid">
                     <!-- HÀNG 1: BIỂU ĐỒ LƯỢT MƯỢN THEO THỜI GIAN & TOP THỂ LOẠI -->
-                    <div class="row">
+                    <div class="row g-4 mb-4">
                         <!-- Biểu đồ lượt mượn -->
                         <div class="col-12 col-lg-8">
                             <div class="card chart-card shadow-sm p-4 h-100">
                                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                                     <div>
-                                        <h5 class="fw-bold m-0 text-dark">Thống kê Lượt Mượn Sách</h5>
+                                        <h5 class="fw-bold m-0 text-dark">Thống kê Lượt Mượn Sách<span id="trend-title-suffix" class="fs-6 text-muted fw-normal"></span></h5>
                                         <span class="text-muted small">Biểu đồ giám sát lượt mượn sách phát sinh.</span>
                                     </div>
                                     <!-- Nút bấm chuyển đổi Ngày, Tuần, Tháng -->
@@ -427,7 +432,7 @@
                     </div>
 
                     <!-- HÀNG 2: TOP SÁCH & TOP TÁC GIẢ -->
-                    <div class="row">
+                    <div class="row g-4 mb-4">
                         <!-- Top 10 Sách -->
                         <div class="col-12 col-lg-6">
                             <div class="card chart-card shadow-sm p-4 h-100">
@@ -493,11 +498,11 @@
             const btnTrendMonth = document.getElementById("btn-trend-month");
 
             // Khởi chạy
-            loadDashboardData();
+            loadDashboardData(false);
 
             // Đăng ký sự kiện
-            btnRefresh.addEventListener("click", loadDashboardData);
-            btnRetry.addEventListener("click", loadDashboardData);
+            btnRefresh.addEventListener("click", () => loadDashboardData(true));
+            btnRetry.addEventListener("click", () => loadDashboardData(false));
 
             btnTrendDay.addEventListener("click", () => switchTrendMode("day"));
             btnTrendWeek.addEventListener("click", () => switchTrendMode("week"));
@@ -506,9 +511,11 @@
             /**
              * Thực hiện gọi AJAX lên Servlet để lấy toàn bộ dữ liệu.
              */
-            function loadDashboardData() {
+            function loadDashboardData(isSilent = false) {
                 // 1. Hiển thị Skeleton Loading trên các con số và biểu đồ
-                showSkeletonLoading(true);
+                if (!isSilent) {
+                    showSkeletonLoading(true);
+                }
                 errorContainer.classList.add("d-none");
                 emptyState.classList.add("d-none");
                 contentGrid.classList.remove("d-none");
@@ -523,7 +530,9 @@
                     })
                     .then(data => {
                         dashboardData = data;
-                        showSkeletonLoading(false);
+                        if (!isSilent) {
+                            showSkeletonLoading(false);
+                        }
                         
                         // Kiểm tra nếu dữ liệu trống hoàn toàn (Chưa mượn cuốn nào)
                         if (!data.metrics || data.metrics.totalBorrows === 0) {
@@ -632,9 +641,19 @@
                 btnTrendWeek.classList.remove("btn-toggle-active");
                 btnTrendMonth.classList.remove("btn-toggle-active");
 
-                if (mode === "day") btnTrendDay.classList.add("btn-toggle-active");
-                else if (mode === "week") btnTrendWeek.classList.add("btn-toggle-active");
-                else if (mode === "month") btnTrendMonth.classList.add("btn-toggle-active");
+                const titleSuffix = document.getElementById("trend-title-suffix");
+                if (mode === "day") {
+                    btnTrendDay.classList.add("btn-toggle-active");
+                    if (titleSuffix) titleSuffix.textContent = "";
+                } else if (mode === "week") {
+                    btnTrendWeek.classList.add("btn-toggle-active");
+                    if (titleSuffix) titleSuffix.textContent = "";
+                } else if (mode === "month") {
+                    btnTrendMonth.classList.add("btn-toggle-active");
+                    if (titleSuffix) {
+                        titleSuffix.textContent = ` - Tháng <%= currentMonth %>/<%= currentYear %>`;
+                    }
+                }
 
                 // Vẽ lại biểu đồ xu hướng
                 drawTrendChart();

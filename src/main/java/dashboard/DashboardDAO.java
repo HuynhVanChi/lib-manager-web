@@ -173,7 +173,7 @@ public class DashboardDAO {
 
         String sql = "SELECT FLOOR(HOUR(created_at) / 4) AS block_index, COUNT(*) AS count " +
                      "FROM borrow_details " +
-                     "WHERE DATE(created_at) = CURDATE() " +
+                     "WHERE borrow_date = CURDATE() " +
                      "GROUP BY block_index";
 
         try (Connection conn = DBConnection.getConnection();
@@ -251,38 +251,39 @@ public class DashboardDAO {
      */
     public List<ChartDataPointDTO> getBorrowCountByMonth() throws SQLException {
         Map<String, Double> map = new LinkedHashMap<>();
-        map.put("Tuần 1", 0.0);
-        map.put("Tuần 2", 0.0);
-        map.put("Tuần 3", 0.0);
-        map.put("Tuần 4", 0.0);
+        LocalDate today = LocalDate.now();
+        int daysInMonth = today.lengthOfMonth();
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM");
+        DateTimeFormatter sqlFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        String sql = "SELECT " +
-                     "  CASE " +
-                     "    WHEN DAY(borrow_date) <= 7 THEN 'Tuần 1' " +
-                     "    WHEN DAY(borrow_date) <= 14 THEN 'Tuần 2' " +
-                     "    WHEN DAY(borrow_date) <= 21 THEN 'Tuần 3' " +
-                     "    ELSE 'Tuần 4' " +
-                     "  END AS week_of_month, " +
-                     "  COUNT(*) AS count " +
+        // Khởi tạo tất cả các ngày trong tháng hiện tại với giá trị mặc định 0.0
+        for (int day = 1; day <= daysInMonth; day++) {
+            LocalDate date = today.withDayOfMonth(day);
+            map.put(date.format(sqlFormatter), 0.0);
+        }
+
+        String sql = "SELECT borrow_date, COUNT(*) AS count " +
                      "FROM borrow_details " +
                      "WHERE borrow_date >= DATE_FORMAT(CURDATE(), '%Y-%m-01') " +
-                     "GROUP BY week_of_month";
+                     "  AND borrow_date <= LAST_DAY(CURDATE()) " +
+                     "GROUP BY borrow_date";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                String weekLabel = rs.getString("week_of_month");
+                String dateStr = rs.getString("borrow_date");
                 double count = rs.getDouble("count");
-                if (map.containsKey(weekLabel)) {
-                    map.put(weekLabel, count);
+                if (map.containsKey(dateStr)) {
+                    map.put(dateStr, count);
                 }
             }
         }
 
         List<ChartDataPointDTO> list = new ArrayList<>();
         for (Map.Entry<String, Double> entry : map.entrySet()) {
-            list.add(new ChartDataPointDTO(entry.getKey(), entry.getValue()));
+            LocalDate date = LocalDate.parse(entry.getKey(), sqlFormatter);
+            list.add(new ChartDataPointDTO(date.format(displayFormatter), entry.getValue()));
         }
         return list;
     }

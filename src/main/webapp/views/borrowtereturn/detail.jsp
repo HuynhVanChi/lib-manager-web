@@ -1,0 +1,237 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Phiếu Mượn #${item.borrow_detail_id} - LibraryOS</title>
+    
+    <!-- 1. Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 2. FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- 3. Stylesheet dùng chung của dự án -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="m-0 p-0 bg-light">
+
+    <!-- KHUNG LAYOUT CHÍNH -->
+    <div class="d-flex">
+        
+        <!-- SIDEBAR -->
+        <jsp:include page="/views/layout/sidebar.jsp"/>
+
+        <!-- NỘI DUNG CHÍNH -->
+        <main class="w-100 min-vh-100 d-flex flex-column">
+            
+            <!-- HEADER -->
+            <jsp:include page="/views/layout/header.jsp"/>
+
+            <!-- VÙNG ĐỆM NỘI DUNG -->
+            <div class="container-fluid p-4 flex-grow-1">
+
+                <!-- Breadcrumbs điều hướng -->
+                <div class="mb-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return">Mượn trả & Vi phạm</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Chi tiết phiếu mượn #${item.borrow_detail_id}</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <!-- KHUNG THÔNG TIN CHI TIẾT -->
+                <div class="card form-card mx-auto shadow-sm" style="max-width: 900px;">
+                    <div class="card-header form-card-header text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold"><i class="fa-solid fa-circle-info me-2"></i>Chi Tiết Phiếu Mượn Sách</h5>
+                        <span class="badge bg-white text-primary fw-bold px-3 py-1.5 rounded">#${item.borrow_detail_id}</span>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <div class="row g-4 mb-4">
+                            <!-- Cột Độc Giả -->
+                            <div class="col-md-6 border-end">
+                                <div class="section-divider mt-0 mb-3">Thông tin độc giả</div>
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <td class="text-muted" style="width: 130px;">Họ tên:</td>
+                                        <td class="fw-bold text-dark">${item.reader_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Email:</td>
+                                        <td class="fw-medium">${item.reader_email}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Số điện thoại:</td>
+                                        <td class="fw-medium">${not empty item.reader_phone ? item.reader_phone : '<span class="text-muted">—</span>'}</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Cột Sách -->
+                            <div class="col-md-6">
+                                <div class="section-divider mt-0 mb-3">Thông tin sách mượn</div>
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <td class="text-muted" style="width: 130px;">Tên sách:</td>
+                                        <td class="fw-bold text-dark">${item.book_title}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mã sách:</td>
+                                        <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <!-- Tiến trình mượn trả -->
+                            <div class="col-md-6 border-end">
+                                <div class="section-divider mt-0 mb-3">Lịch trình thời gian</div>
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <td class="text-muted" style="width: 130px;">Ngày mượn:</td>
+                                        <td class="fw-medium"><i class="fa-regular fa-calendar-check me-1"></i> ${item.borrow_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Hạn phải trả:</td>
+                                        <td class="fw-medium text-warning"><i class="fa-regular fa-clock me-1"></i> ${item.due_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Ngày thực trả:</td>
+                                        <td class="fw-medium text-success">
+                                            <c:choose>
+                                                <c:when test="${not empty item.return_date}">
+                                                    <i class="fa-regular fa-calendar-plus me-1"></i> ${item.return_date}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="text-muted"><i class="fa-regular fa-circle-question me-1"></i> Chưa trả sách</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Trạng thái & Hiện trạng -->
+                            <div class="col-md-6">
+                                <div class="section-divider mt-0 mb-3">Trạng thái vận hành</div>
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <td class="text-muted" style="width: 130px;">Trạng thái phiếu:</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${item.status == 'Borrowing'}">
+                                                    <span class="badge-status badge-suspended">Đang mượn</span>
+                                                </c:when>
+                                                <c:when test="${item.status == 'Returned'}">
+                                                    <span class="badge-status badge-active">Đã trả</span>
+                                                </c:when>
+                                                <c:when test="${item.status == 'Overdue'}">
+                                                    <span class="badge-status badge-danger-custom">Quá hạn</span>
+                                                </c:when>
+                                                <c:when test="${item.status == 'Lost'}">
+                                                    <span class="badge-status badge-danger-custom">Báo mất</span>
+                                                </c:when>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Hiện trạng sách:</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${item.book_condition == 'Mất sách'}">
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Mất sách</span>
+                                                </c:when>
+                                                <c:when test="${item.book_condition == 'Rách nặng'}">
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Rách nặng</span>
+                                                </c:when>
+                                                <c:when test="${item.book_condition == 'Rách nhẹ'}">
+                                                    <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Rách nhẹ</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Bình thường</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- CÁC KHOẢN PHẠT ĐI KÈM NẾU CÓ -->
+                        <div class="section-divider">Danh sách khoản phạt phát sinh</div>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-sm text-center align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Mã Phạt</th>
+                                        <th>Số Tiền Phạt</th>
+                                        <th>Lý Do</th>
+                                        <th>Ngày Thanh Toán</th>
+                                        <th>Trạng Thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="f" items="${fines}">
+                                        <tr>
+                                            <td class="fw-semibold">#${f.fine_id}</td>
+                                            <td class="text-danger fw-bold">
+                                                <fmt:formatNumber value="${f.amount}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${f.reason == 'Overdue'}">Quá hạn</c:when>
+                                                    <c:when test="${f.reason == 'Lost Book'}">Mất sách</c:when>
+                                                    <c:when test="${f.reason == 'Damaged Book'}">Hỏng sách</c:when>
+                                                    <c:otherwise>${f.reason}</c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${not empty f.paid_at}">${f.paid_at}</c:when>
+                                                    <c:otherwise><span class="text-muted">—</span></c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${f.status == 'Unpaid'}"><span class="badge bg-danger text-white">Chưa đóng</span></c:when>
+                                                    <c:when test="${f.status == 'Paid'}"><span class="badge bg-success text-white">Đã đóng</span></c:when>
+                                                    <c:when test="${f.status == 'Waived'}"><span class="badge bg-secondary text-white">Miễn giảm</span></c:when>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:if test="${empty fines}">
+                                        <tr>
+                                            <td colspan="5" class="text-muted py-3 text-center">Không phát sinh khoản phạt nào cho lượt mượn này.</td>
+                                        </tr>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Các Nút Điều Hướng -->
+                        <div class="d-flex gap-2 justify-content-end mt-4 border-top pt-3">
+                            <a href="${pageContext.request.contextPath}/borrow-return" class="btn btn-cancel hover-lift">
+                                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+                            </a>
+                            <a href="${pageContext.request.contextPath}/borrow-return/edit?id=${item.borrow_detail_id}" class="btn btn-primary hover-lift">
+                                <i class="fa-solid fa-pen me-1"></i> Chỉnh sửa phiếu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -122,8 +122,10 @@ public class BookServlet extends HttpServlet {
                     Book book = bookDAO.findById(bookId);
                     if (book != null) {
                         List<BookCopy> copies = bookCopyDAO.findCopiesByBookId(bookId);
+                        List<BookCopy> deletedCopies = bookCopyDAO.findDeletedCopiesByBookId(bookId);
                         request.setAttribute("book", book);
                         request.setAttribute("copiesList", copies);
+                        request.setAttribute("deletedCopiesList", deletedCopies);
                         request.getRequestDispatcher("/views/book/copies.jsp").forward(request, response);
                         return;
                     }
@@ -225,6 +227,9 @@ public class BookServlet extends HttpServlet {
                     break;
                 case "deleteCopy":
                     handleDeleteCopy(request, response, userId);
+                    break;
+                case "restoreCopy":
+                    handleRestoreCopy(request, response, userId);
                     break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/books");
@@ -872,6 +877,46 @@ public class BookServlet extends HttpServlet {
         }
 
         response.sendRedirect(request.getContextPath() + "/books?action=copies&id=" + oldCopy.getBookId());
+    }
+
+    private void handleRestoreCopy(HttpServletRequest request, HttpServletResponse response, int userId)
+            throws SQLException, IOException {
+        String copyIdStr = request.getParameter("copyId");
+        if (copyIdStr == null) {
+            setFlashMessage(request, "Mã cuốn sách không hợp lệ!", "danger");
+            response.sendRedirect(request.getContextPath() + "/books");
+            return;
+        }
+
+        int copyId = Integer.parseInt(copyIdStr);
+        BookCopy copyInTrash = bookCopyDAO.findDeletedById(copyId);
+        if (copyInTrash == null) {
+            setFlashMessage(request, "Cuốn sách không tồn tại hoặc đã được khôi phục!", "danger");
+            response.sendRedirect(request.getContextPath() + "/books");
+            return;
+        }
+
+        // Kiểm tra trùng mã vạch với sách đang hoạt động trước khi khôi phục
+        if (bookCopyDAO.existsByBarcode(copyInTrash.getBarcode(), null)) {
+            setFlashMessage(request, "Không thể khôi phục! Mã vạch '" + copyInTrash.getBarcode() + "' đã được sử dụng bởi một cuốn sách khác đang hoạt động.", "danger");
+            response.sendRedirect(request.getContextPath() + "/books?action=copies&id=" + copyInTrash.getBookId());
+            return;
+        }
+
+        if (bookCopyDAO.restore(copyId)) {
+            // Ghi log
+            Map<String, Object> newValues = new HashMap<>();
+            newValues.put("barcode", copyInTrash.getBarcode());
+            newValues.put("status", copyInTrash.getStatus());
+
+            AuditLogger.log(userId, AuditLogger.ActionType.RESTORE, "book_copies", copyId, null, newValues);
+
+            setFlashMessage(request, "Khôi phục cuốn sách '" + copyInTrash.getBarcode() + "' thành công!", "success");
+        } else {
+            setFlashMessage(request, "Khôi phục cuốn sách thất bại!", "danger");
+        }
+
+        response.sendRedirect(request.getContextPath() + "/books?action=copies&id=" + copyInTrash.getBookId());
     }
 
     // ==========================================

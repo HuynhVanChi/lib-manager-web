@@ -71,10 +71,10 @@ public class AuthServlet extends HttpServlet implements Filter {
         }
 
         /// Nếu đã đăng nhập mà truy cập trang chủ / hoặc /index.jsp -> chuyển hướng về /dashboard
-if (path.equals("/index.jsp") || path.equals("/")) {
-    res.sendRedirect(contextPath + "/dashboard");
-    return;
-}
+        if (path.equals("/index.jsp") || path.equals("/")) {
+            res.sendRedirect(contextPath + "/dashboard");
+            return;
+        }
 
         // Chặn Staff truy cập trang quản lý nhân sự và audit log
         if ((path.equals("/accounts") || path.equals("/index.jsp") || path.equals("/") || path.startsWith("/AuditLogs"))
@@ -228,7 +228,7 @@ if (path.equals("/index.jsp") || path.equals("/")) {
         req.setAttribute("search",          search);
         req.setAttribute("roleFilter",      roleFilter);
 
-        req.getRequestDispatcher("/views/security/index.jsp").forward(req, res);
+        req.getRequestDispatcher("/views/security/list.jsp").forward(req, res);
     }
 
     // =========================================================================

@@ -346,33 +346,55 @@ Thanh điều hướng bên trái được thiết kế cố định sát mép t
 
 ---
 
-## 12. Thẻ Thông kê Nhanh (Quick Stats Cards)
-Mẫu thẻ hiển thị các số liệu thống kê nhanh (Quick Stats) được chuẩn hóa về cấu trúc khung, đổ bóng, bo góc và hiệu ứng chuyển động rê chuột trong `style.css`. Tông màu nền và màu biểu tượng không được gộp vào tệp CSS chung để đảm bảo tính tùy biến màu sắc linh hoạt theo nghiệp vụ của từng tính năng.
+## 12. Thẻ Thống kê Nhanh (Quick Stats Cards)
+Mẫu thẻ hiển thị các số liệu thống kê nhanh (Quick Stats) được thiết kế theo 2 phương án bố cục linh hoạt trong `style.css`. Tất cả các thẻ đều dùng nền trắng đồng nhất với bóng đổ xám nhạt dịu nhẹ. Hộp biểu tượng `.stat-icon` và tiêu đề `.stat-label` được đồng bộ màu sắc theo các lớp ngữ cảnh nghiệp vụ.
 
-### Cấu trúc mã HTML mẫu cho Thẻ Thống kê:
+### Thiết kế 1: Dạng Chuẩn (Standard Layout - Grid Card)
+Bố cục thẻ dọc chuẩn thích hợp làm các ô lưới độc lập.
+*   **Card Background**: Màu trắng tinh (`#ffffff`), viền mờ `1px solid rgba(0, 0, 0, 0.05)`, bóng đổ trung tính `box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04)`.
+*   **Icon Box**: Nằm ở góc trên bên phải hoặc bên cạnh tiêu đề, kích thước to hơn (`46x46px`, `font-size: 1.3rem`, bo góc `10px`).
+*   **Contextual Theme Color**: Áp dụng các lớp `.stat-primary`, `.stat-success`, `.stat-danger`, `.stat-warning` lên thẻ cha để tự động đồng bộ màu tiêu đề và màu nền mờ hộp icon.
+
+#### Cấu trúc mã HTML mẫu:
 ```html
-<div class="stat-card [class-mau-tuy-bien] h-100">
-    <div class="d-flex justify-content-between align-items-start w-100 mb-2">
-        <span class="stat-label">[Nhãn Tiêu Đề]</span>
-        <!-- Hộp biểu tượng nhỏ gọn -->
+<div class="stat-card stat-primary h-100">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="stat-label">Tổng lần mượn</span>
+        <!-- Hộp icon tự động nhận nền tint và màu icon đồng bộ từ thẻ cha -->
         <div class="stat-icon m-0">
-            <i class="fa-solid fa-[icon-name]"></i>
+            <i class="fa-solid fa-book-open"></i>
         </div>
     </div>
     <!-- Số liệu chính -->
-    <div class="stat-value">[Giá trị số]</div>
+    <div class="stat-value">1,240</div>
 </div>
 ```
 
-### Cách áp dụng Lớp Màu tùy biến cục bộ (Inline/Style Block của JSP):
-```css
-/* Chỉ cấu hình thuộc tính màu sắc nền và chữ */
-.stat-total    { background: var(--primary-soft); color: var(--primary); }
-.stat-total    .stat-icon { background: rgba(49,46,129,.12); color: var(--primary); }
+### Thiết kế 2: Dạng Gọn Gàng (Compact Row Layout)
+Bố cục thẻ ngang gọn gàng (cao bằng 3/4 thẻ thường), biểu tượng nằm bên trái (được thu nhỏ gọn hơn `36x36px` để cân đối), tiêu đề và số liệu nằm cạnh nhau ở bên phải theo trục dọc.
 
-.stat-active   { background: #F0FDF4; color: #15803D; }
-.stat-active   .stat-icon { background: rgba(21,128,61,.12); color: #15803D; }
+#### Cấu trúc mã HTML mẫu:
+```html
+<div class="stat-card stat-card-compact stat-success">
+    <!-- Icon nằm bên trái -->
+    <div class="stat-icon">
+        <i class="fa-solid fa-book-bookmark"></i>
+    </div>
+    <!-- Nội dung tiêu đề trên, số liệu dưới nằm bên phải -->
+    <div class="stat-content">
+        <span class="stat-label">Đang mượn</span>
+        <span class="stat-value">12</span>
+    </div>
+</div>
 ```
+
+### Các lớp ngữ cảnh đồng bộ màu sắc:
+Áp dụng các lớp sau lên thẻ `.stat-card` để đồng bộ màu sắc của Tiêu đề `.stat-label` và nền mờ của Hộp Icon `.stat-icon`:
+*   `.stat-primary`: Tím Indigo (Nền icon mờ, chữ label & icon màu `#4F46E5`).
+*   `.stat-success`: Xanh lá (Nền icon mờ, chữ label & icon màu `#15803D`).
+*   `.stat-danger`: Đỏ (Nền icon mờ, chữ label & icon màu `#DC2626`).
+*   `.stat-warning`: Vàng hổ phách (Nền icon mờ, chữ label & icon màu `#D97706`).
+*   `.stat-info`: Xanh dương (Nền icon mờ, chữ label & icon màu `#2563EB`).
 
 ---
 

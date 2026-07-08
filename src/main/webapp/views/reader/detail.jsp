@@ -14,19 +14,6 @@
 
     <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" type="text/css">
     <style>
-        /* ── Stat cards colors ── */
-        .stat-total    { background: var(--primary-soft); color: var(--primary); }
-        .stat-total    .stat-icon { background: rgba(49,46,129,.12); color: var(--primary); }
-
-        .stat-active   { background: #F0FDF4; color: #15803D; }
-        .stat-active   .stat-icon { background: rgba(21,128,61,.12); color: #15803D; }
-
-        .stat-overdue  { background: #FEF2F2; color: #DC2626; }
-        .stat-overdue  .stat-icon { background: rgba(220,38,38,.12); color: #DC2626; }
-
-        .stat-fines    { background: #FFFBEB; color: #92400E; }
-        .stat-fines    .stat-icon { background: rgba(146,64,14,.12); color: #92400E; }
-
         /* ── Overdue date highlight ── */
         .date-overdue { color: #DC2626; font-weight: 600; }
     </style>
@@ -144,7 +131,7 @@
             <%-- ════════════════════════════════════════ --%>
             <div class="row g-3 mb-4">
                 <div class="col-6 col-lg-3">
-                    <div class="stat-card stat-total h-100">
+                    <div class="stat-card stat-primary h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Tổng lần mượn</span>
                             <div class="stat-icon m-0"><i class="fa-solid fa-book-open"></i></div>
@@ -153,7 +140,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
-                    <div class="stat-card stat-active h-100">
+                    <div class="stat-card stat-success h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Đang mượn</span>
                             <div class="stat-icon m-0"><i class="fa-solid fa-book-bookmark"></i></div>
@@ -162,7 +149,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
-                    <div class="stat-card stat-overdue h-100">
+                    <div class="stat-card stat-danger h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Quá hạn</span>
                             <div class="stat-icon m-0"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -171,7 +158,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
-                    <div class="stat-card stat-fines h-100">
+                    <div class="stat-card stat-warning h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Phí phạt chưa trả</span>
                             <div class="stat-icon m-0"><i class="fa-solid fa-coins"></i></div>

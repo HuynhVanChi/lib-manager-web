@@ -189,15 +189,15 @@
 
                         <!-- CÁC KHOẢN PHẠT ĐI KÈM NẾU CÓ -->
                         <div class="section-divider">Danh sách khoản phạt phát sinh</div>
-                        <div class="table-responsive mb-4">
-                            <table class="table table-bordered table-sm text-center align-middle">
+                        <div class="w-100 overflow-x-hidden mb-4">
+                            <table class="table table-bordered table-sm text-center align-middle" style="table-layout: fixed; width: 100%;">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Mã Phạt</th>
-                                        <th>Số Tiền Phạt</th>
+                                        <th style="width: 100px;">Mã Phạt</th>
+                                        <th style="width: 140px;">Số Tiền Phạt</th>
                                         <th>Lý Do</th>
-                                        <th>Ngày Thanh Toán</th>
-                                        <th>Trạng Thái</th>
+                                        <th style="width: 180px;">Ngày Thanh Toán</th>
+                                        <th style="width: 150px;">Trạng Thái</th>
                                     </tr>
                                 </thead>
                                 <tbody>

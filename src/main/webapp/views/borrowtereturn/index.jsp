@@ -107,29 +107,6 @@
             transform: none !important;
             opacity: 1 !important;
         }
-        .table-responsive {
-            max-height: 520px;
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            border-bottom: 1px solid var(--border);
-            position: relative;
-        }
-        .table-custom thead th {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background-color: var(--primary-soft) !important;
-            box-shadow: inset 0 -1px 0 var(--border);
-            padding: 10px 12px !important;
-        }
-        .table-custom tbody td {
-            padding: 8px 12px !important;
-        }
-        .btn-success-custom.btn-sm, .btn-danger-custom.btn-sm {
-            padding: 4px 10px !important;
-            font-size: 0.75rem !important;
-            border-radius: 6px !important;
-        }
     </style>
 </head>
 <body class="m-0 p-0 bg-light">
@@ -281,16 +258,16 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
-                                    <table class="table-custom">
+                                <div class="w-100 overflow-x-hidden">
+                                    <table class="table-custom" style="table-layout: fixed; width: 100%;">
                                         <thead>
                                             <tr>
-                                                <th style="width: 80px;">ID</th>
+                                                <th style="width: 70px;">ID</th>
                                                 <th>Độc Giả</th>
                                                 <th>Sách mượn</th>
-                                                <th>Thời hạn mượn</th>
-                                                <th class="text-center">Trạng Thái</th>
-                                                <th class="text-center" style="width: 180px;">Tác vụ</th>
+                                                <th style="width: 150px;">Thời hạn mượn</th>
+                                                <th class="text-center" style="width: 160px;">Trạng Thái</th>
+                                                <th class="text-center" style="width: 170px;">Tác vụ</th>
                                                 <th class="text-center" style="width: 100px;">Hành động</th>
                                             </tr>
                                         </thead>
@@ -337,18 +314,18 @@
                                                             <c:choose>
                                                                  <c:when test="${item.status == 'Returned' || item.status == 'Lost'}">
                                                                      <button type="button" class="btn btn-success-custom btn-sm disabled" disabled>
-                                                                         <i class="fa-solid fa-check"></i> Trả
+                                                                         <i class="fa-solid fa-square-check"></i> Trả
                                                                      </button>
                                                                      <button type="button" class="btn btn-danger-custom btn-sm disabled" disabled>
-                                                                         <i class="fa-solid fa-xmark"></i> Mất
+                                                                         <i class="fa-solid fa-triangle-exclamation"></i> Mất
                                                                      </button>
                                                                  </c:when>
                                                                  <c:otherwise>
                                                                      <button type="button" class="btn btn-success-custom btn-sm" data-bs-toggle="modal" data-bs-target="#returnBookModal" data-id="${item.borrow_detail_id}" data-reader="${item.reader_name}" data-book="${item.book_title}">
-                                                                         <i class="fa-solid fa-check"></i> Trả
+                                                                         <i class="fa-solid fa-square-check"></i> Trả
                                                                      </button>
                                                                      <button type="button" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#lostBookModal" data-id="${item.borrow_detail_id}" data-reader="${item.reader_name}" data-book="${item.book_title}">
-                                                                         <i class="fa-solid fa-xmark"></i> Mất
+                                                                         <i class="fa-solid fa-triangle-exclamation"></i> Mất
                                                                      </button>
                                                                  </c:otherwise>
                                                              </c:choose>
@@ -415,17 +392,17 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
-                                    <table class="table-custom">
+                                <div class="w-100 overflow-x-hidden">
+                                    <table class="table-custom" style="table-layout: fixed; width: 100%;">
                                         <thead>
                                             <tr>
-                                                <th style="width: 80px;">ID</th>
+                                                <th style="width: 70px;">ID</th>
                                                 <th>Độc Giả</th>
                                                 <th>Sách mượn</th>
-                                                <th>Số Tiền Phạt</th>
+                                                <th style="width: 125px;">Số Tiền Phạt</th>
                                                 <th>Lý Do</th>
-                                                <th>Người Thu</th>
-                                                <th class="text-center">Trạng Thái</th>
+                                                <th style="width: 130px;">Người Thu</th>
+                                                <th class="text-center" style="width: 160px;">Trạng Thái</th>
                                                 <th class="text-center" style="width: 180px;">Hành Động</th>
                                             </tr>
                                         </thead>

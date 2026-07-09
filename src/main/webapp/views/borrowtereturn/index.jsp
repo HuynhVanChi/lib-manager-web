@@ -314,18 +314,18 @@
                                                             <c:choose>
                                                                  <c:when test="${item.status == 'Returned' || item.status == 'Lost'}">
                                                                      <button type="button" class="btn btn-success-custom btn-sm disabled" disabled>
-                                                                         <i class="fa-solid fa-square-check"></i> Trả
+                                                                         <i class="fa-solid fa-check"></i> Trả
                                                                      </button>
                                                                      <button type="button" class="btn btn-danger-custom btn-sm disabled" disabled>
-                                                                         <i class="fa-solid fa-triangle-exclamation"></i> Mất
+                                                                         <i class="fa-solid fa-xmark"></i> Mất
                                                                      </button>
                                                                  </c:when>
                                                                  <c:otherwise>
                                                                      <button type="button" class="btn btn-success-custom btn-sm" data-bs-toggle="modal" data-bs-target="#returnBookModal" data-id="${item.borrow_detail_id}" data-reader="${item.reader_name}" data-book="${item.book_title}">
-                                                                         <i class="fa-solid fa-square-check"></i> Trả
+                                                                         <i class="fa-solid fa-check"></i> Trả
                                                                      </button>
                                                                      <button type="button" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#lostBookModal" data-id="${item.borrow_detail_id}" data-reader="${item.reader_name}" data-book="${item.book_title}">
-                                                                         <i class="fa-solid fa-triangle-exclamation"></i> Mất
+                                                                         <i class="fa-solid fa-xmark"></i> Mất
                                                                      </button>
                                                                  </c:otherwise>
                                                              </c:choose>

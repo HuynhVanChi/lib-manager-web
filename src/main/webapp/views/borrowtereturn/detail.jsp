@@ -81,14 +81,14 @@
                             <div class="col-lg-6 col-12 border-end pe-lg-4">
                                 <div class="section-divider mt-0 mb-3">Thông tin độc giả</div>
                                 <table class="table table-borderless table-sm mb-4">
-                                    <tr>
-                                        <td class="text-muted text-nowrap" style="width: 160px;">Họ tên:</td>
-                                        <td class="fw-bold text-dark text-nowrap">${item.reader_name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted text-nowrap">Email:</td>
-                                        <td class="fw-medium">${item.reader_email}</td>
-                                    </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Họ tên:</td>
+                                         <td class="fw-bold text-dark"><span class="text-truncate d-inline-block align-bottom" style="max-width: 250px;" title="${item.reader_name}">${item.reader_name}</span></td>
+                                     </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap">Email:</td>
+                                         <td class="fw-medium"><span class="text-truncate d-inline-block align-bottom" style="max-width: 250px;" title="${item.reader_email}">${item.reader_email}</span></td>
+                                     </tr>
                                     <tr>
                                         <td class="text-muted text-nowrap">Số điện thoại:</td>
                                         <td class="fw-medium">${not empty item.reader_phone ? item.reader_phone : '<span class="text-muted">—</span>'}</td>
@@ -100,10 +100,10 @@
                             <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
                                 <div class="section-divider mt-0 mb-3">Thông tin sách mượn</div>
                                 <table class="table table-borderless table-sm mb-4">
-                                    <tr>
-                                        <td class="text-muted text-nowrap" style="width: 160px;">Tên sách:</td>
-                                        <td class="fw-bold text-dark">${item.book_title}</td>
-                                    </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Tên sách:</td>
+                                         <td class="fw-bold text-dark"><span class="text-truncate d-inline-block align-bottom" style="max-width: 250px;" title="${item.book_title}">${item.book_title}</span></td>
+                                     </tr>
                                     <tr>
                                         <td class="text-muted text-nowrap">Mã sách:</td>
                                         <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>

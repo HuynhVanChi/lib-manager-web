@@ -80,14 +80,14 @@
                             <div class="col-lg-6 col-12 border-end pe-lg-4">
                                 <div class="section-divider mt-0 mb-3">Thông tin độc giả vi phạm</div>
                                 <table class="table table-borderless table-sm">
-                                    <tr>
-                                        <td class="text-muted" style="width: 130px;">Họ tên độc giả:</td>
-                                        <td class="fw-bold text-dark">${item.reader_name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Email độc giả:</td>
-                                        <td class="fw-medium">${item.reader_email}</td>
-                                    </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Họ tên độc giả:</td>
+                                         <td class="fw-bold text-dark"><span class="text-truncate d-inline-block align-bottom" style="max-width: 250px;" title="${item.reader_name}">${item.reader_name}</span></td>
+                                     </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Email độc giả:</td>
+                                         <td class="fw-medium"><span class="text-truncate d-inline-block align-bottom" style="max-width: 250px;" title="${item.reader_email}">${item.reader_email}</span></td>
+                                     </tr>
                                 </table>
                             </div>
 
@@ -95,29 +95,29 @@
                             <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
                                 <div class="section-divider mt-0 mb-3">Thông tin sách liên quan</div>
                                 <table class="table table-borderless table-sm">
-                                    <tr>
-                                        <td class="text-muted" style="width: 130px;">Tên sách:</td>
-                                        <td class="fw-bold text-dark">${item.book_title}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Mã sách:</td>
-                                        <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Mã phiếu mượn:</td>
-                                        <td><a href="${pageContext.request.contextPath}/borrow-return/detail?id=${item.borrow_detail_id}" class="fw-bold text-decoration-none">#${item.borrow_detail_id}</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Ngày mượn:</td>
-                                        <td class="fw-medium">${item.borrow_date}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Hạn trả:</td>
-                                        <td class="fw-medium text-warning">${item.due_date}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Ngày trả:</td>
-                                        <td class="fw-medium text-success">
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Tên sách:</td>
+                                         <td class="fw-bold text-dark"><span class="text-truncate d-inline-block align-bottom" style="max-width: 250px;" title="${item.book_title}">${item.book_title}</span></td>
+                                     </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Mã sách:</td>
+                                         <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>
+                                     </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Mã phiếu mượn:</td>
+                                         <td><a href="${pageContext.request.contextPath}/borrow-return/detail?id=${item.borrow_detail_id}" class="fw-bold text-decoration-none">#${item.borrow_detail_id}</a></td>
+                                     </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Ngày mượn:</td>
+                                         <td class="fw-medium">${item.borrow_date}</td>
+                                     </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Hạn trả:</td>
+                                         <td class="fw-medium text-warning">${item.due_date}</td>
+                                     </tr>
+                                     <tr>
+                                         <td class="text-muted text-nowrap" style="width: 160px;">Ngày trả:</td>
+                                         <td class="fw-medium text-success">
                                             <c:choose>
                                                 <c:when test="${not empty item.return_date}">${item.return_date}</c:when>
                                                 <c:otherwise><span class="text-muted">Chưa trả</span></c:otherwise>
@@ -134,13 +134,13 @@
                                 <div class="section-divider mt-0 mb-3">Thông tin số tiền phạt</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
-                                        <td class="text-muted" style="width: 130px;">Số tiền phạt:</td>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Số tiền phạt:</td>
                                         <td class="fw-bold text-danger" style="font-size: 1.1rem;">
                                             <fmt:formatNumber value="${item.amount}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Lý do phạt:</td>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Lý do phạt:</td>
                                         <td class="fw-bold">
                                             <c:set var="reasonCount" value="0" />
                                             <c:if test="${item.reason.contains('Overdue')}"><c:set var="reasonCount" value="${reasonCount + 1}" /></c:if>
@@ -171,7 +171,7 @@
                                 <div class="section-divider mt-0 mb-3">Thông tin thanh toán</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
-                                        <td class="text-muted text-nowrap" style="width: 130px;">Trạng thái đóng:</td>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Trạng thái đóng:</td>
                                         <td class="text-nowrap">
                                             <c:choose>
                                                 <c:when test="${item.status == 'Unpaid'}"><span class="badge bg-danger text-white px-2.5 py-1 text-nowrap" style="font-size: .8rem;">Chưa đóng</span></c:when>
@@ -181,7 +181,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted text-nowrap">Ngày đóng tiền:</td>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Ngày đóng tiền:</td>
                                         <td class="fw-medium text-success text-nowrap">
                                             <c:choose>
                                                 <c:when test="${not empty item.paid_at}"><i class="fa-regular fa-calendar-check me-1"></i> <fmt:formatDate value="${item.paid_at}" pattern="yyyy-MM-dd"/></c:when>

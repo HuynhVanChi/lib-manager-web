@@ -277,13 +277,13 @@
                                                     <td class="fw-semibold">#${item.borrow_detail_id}</td>
                                                     <td class="text-nowrap">
                                                         <div class="d-flex flex-column">
-                                                            <span class="fw-medium text-dark text-nowrap">${item.reader_name}</span>
-                                                            <span class="text-muted small text-nowrap">${item.reader_email}</span>
+                                                            <span class="fw-medium text-dark text-truncate d-inline-block" style="max-width: 180px;" title="${item.reader_name}">${item.reader_name}</span>
+                                                            <span class="text-muted small text-truncate d-inline-block" style="max-width: 180px;" title="${item.reader_email}">${item.reader_email}</span>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="d-flex flex-column">
-                                                            <span class="fw-medium text-dark">${item.book_title}</span>
+                                                            <span class="fw-medium text-dark text-truncate d-inline-block" style="max-width: 250px;" title="${item.book_title}">${item.book_title}</span>
                                                             <span class="text-muted small">Mã: <code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></span>
                                                         </div>
                                                     </td>
@@ -356,6 +356,17 @@
                                                     </td>
                                                 </tr>
                                             </c:if>
+                                            <tr id="borrowNoResults" style="display: none;">
+                                                <td colspan="7" class="text-center py-4">
+                                                    <div class="empty-state py-4">
+                                                        <div class="icon">
+                                                            <i class="fa-regular fa-face-frown"></i>
+                                                        </div>
+                                                        <h5 class="fw-bold text-dark">Không tìm thấy thông tin</h5>
+                                                        <p class="text-muted small mb-0">Vui lòng thử tìm kiếm với từ khóa khác.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -401,13 +412,13 @@
                                                     <td class="fw-semibold">#${fine.fine_id}</td>
                                                     <td class="text-nowrap">
                                                         <div class="d-flex flex-column">
-                                                            <span class="fw-medium text-dark text-nowrap">${fine.reader_name}</span>
-                                                            <span class="text-muted small text-nowrap">${fine.reader_email}</span>
+                                                            <span class="fw-medium text-dark text-truncate d-inline-block" style="max-width: 180px;" title="${fine.reader_name}">${fine.reader_name}</span>
+                                                            <span class="text-muted small text-truncate d-inline-block" style="max-width: 180px;" title="${fine.reader_email}">${fine.reader_email}</span>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="d-flex flex-column">
-                                                            <span class="fw-medium text-dark">${fine.book_title}</span>
+                                                            <span class="fw-medium text-dark text-truncate d-inline-block" style="max-width: 250px;" title="${fine.book_title}">${fine.book_title}</span>
                                                             <span class="text-muted small">Mã: <code class="text-dark bg-light px-2 py-0.5 rounded border small">${fine.barcode}</code></span>
                                                         </div>
                                                     </td>
@@ -462,9 +473,6 @@
                                                     </td>
                                                     <td class="text-center text-nowrap">
                                                         <div class="d-flex justify-content-center gap-1">
-                                                            <a href="${pageContext.request.contextPath}/borrow-return/fine-detail?id=${fine.fine_id}" class="btn-action" title="Xem chi tiết">
-                                                                <i class="fa-solid fa-eye"></i>
-                                                            </a>
                                                             <c:choose>
                                                                 <c:when test="${fine.status == 'Unpaid'}">
                                                                     <button type="button" class="btn btn-success-custom btn-sm" data-bs-toggle="modal" data-bs-target="#collectFineModal" data-id="${fine.fine_id}" data-reader="${fine.reader_name}" data-book="${fine.book_title}" data-amount="${fine.amount}">
@@ -472,11 +480,14 @@
                                                                     </button>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#undoFineModal" data-id="${fine.fine_id}" data-reader="${fine.reader_name}" data-amount="${fine.amount}">
+                                                                    <button type="button" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#undoFineModal" data-id="${fine.fine_id}" data-reader="${fine.reader_name}" data-amount="${fine.amount}">
                                                                         <i class="fa-solid fa-rotate-left"></i> Hoàn tác
                                                                     </button>
                                                                 </c:otherwise>
                                                             </c:choose>
+                                                            <a href="${pageContext.request.contextPath}/borrow-return/fine-detail?id=${fine.fine_id}" class="btn-action" title="Xem chi tiết">
+                                                                <i class="fa-solid fa-eye"></i>
+                                                            </a>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -494,6 +505,17 @@
                                                     </td>
                                                 </tr>
                                             </c:if>
+                                            <tr id="finesNoResults" style="display: none;">
+                                                <td colspan="8" class="text-center py-4">
+                                                    <div class="empty-state py-4">
+                                                        <div class="icon">
+                                                            <i class="fa-regular fa-face-frown"></i>
+                                                        </div>
+                                                        <h5 class="fw-bold text-dark">Không tìm thấy thông tin</h5>
+                                                        <p class="text-muted small mb-0">Vui lòng thử tìm kiếm với từ khóa khác.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -792,6 +814,7 @@
             function filterBorrowTable() {
                 const query = borrowSearch.value.toLowerCase().trim();
                 const statusVal = borrowStatusFilter.value;
+                let visibleCount = 0;
 
                 borrowRows.forEach(row => {
                     const text = row.textContent.toLowerCase();
@@ -802,10 +825,16 @@
 
                     if (matchesQuery && matchesStatus) {
                         row.style.display = "";
+                        visibleCount++;
                     } else {
                         row.style.display = "none";
                     }
                 });
+
+                const noResultsRow = document.getElementById("borrowNoResults");
+                if (noResultsRow) {
+                    noResultsRow.style.display = (visibleCount === 0) ? "" : "none";
+                }
             }
 
             const btnFilterBorrow = document.getElementById("btnFilterBorrow");
@@ -816,6 +845,8 @@
                         filterBorrowTable();
                     }
                 });
+                // Listen to input change event for real-time response
+                borrowSearch.addEventListener("input", filterBorrowTable);
             }
 
             // Bộ tìm kiếm và lọc tab Phí phạt
@@ -826,6 +857,7 @@
             function filterFinesTable() {
                 const query = finesSearch.value.toLowerCase().trim();
                 const statusVal = finesStatusFilter.value;
+                let visibleCount = 0;
 
                 fineRows.forEach(row => {
                     const text = row.textContent.toLowerCase();
@@ -836,10 +868,16 @@
 
                     if (matchesQuery && matchesStatus) {
                         row.style.display = "";
+                        visibleCount++;
                     } else {
                         row.style.display = "none";
                     }
                 });
+
+                const noResultsRow = document.getElementById("finesNoResults");
+                if (noResultsRow) {
+                    noResultsRow.style.display = (visibleCount === 0) ? "" : "none";
+                }
             }
 
             const btnFilterFines = document.getElementById("btnFilterFines");
@@ -850,6 +888,8 @@
                         filterFinesTable();
                     }
                 });
+                // Listen to input change event for real-time response
+                finesSearch.addEventListener("input", filterFinesTable);
             }
 
             // Cấu hình modal xóa động

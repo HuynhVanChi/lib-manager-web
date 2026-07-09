@@ -31,10 +31,10 @@
             <jsp:include page="/views/layout/header.jsp"/>
 
             <!-- VÙNG ĐỆM NỘI DUNG -->
-            <div class="container-fluid p-4 flex-grow-1">
+            <div class="container-fluid p-4">
 
-                <!-- Breadcrumbs điều hướng -->
-                <div class="mb-3">
+                <%-- ── TIÊU ĐỀ + BREADCRUMB ── --%>
+                <div class="mb-4">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
@@ -44,101 +44,133 @@
                             </li>
                             <li class="breadcrumb-item">
                                 <a href="${pageContext.request.contextPath}/borrow-return/detail?id=${item.borrow_detail_id}">
-                                    <i class="fa-solid fa-file-invoice me-1"></i>Chi tiết #${item.borrow_detail_id}
+                                    Chi tiết #${item.borrow_detail_id}
                                 </a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <i class="fa-solid fa-pen me-1"></i>Chỉnh sửa
-                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
                         </ol>
                     </nav>
+                    <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">
+                        Chỉnh sửa phiếu mượn #${item.borrow_detail_id}
+                    </h1>
                 </div>
 
-                <!-- BIỂU MẪU NHẬP LIỆU CHUẨN HÓA -->
-                <div class="card form-card mx-auto shadow-sm" style="max-width: 800px;">
-                    <div class="card-header form-card-header text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-bold"><i class="fa-solid fa-file-signature me-2"></i>Chỉnh Sửa Phiếu Mượn</h5>
+                <%-- ── FORM CARD ── --%>
+                <div class="form-card bg-white">
+
+                    <%-- Header card --%>
+                    <div class="form-card-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                 style="width:44px;height:44px;background:rgba(255,255,255,.2);flex-shrink:0;">
+                                <i class="fa-solid fa-file-signature text-white fs-5"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white fw-bold mb-0">Chỉnh Sửa Phiếu Mượn</h5>
+                                <p class="text-white mb-0" style="opacity:.75;font-size:.82rem;">
+                                    Cập nhật thông tin chi tiết phiếu mượn sách
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
-                        <form action="${pageContext.request.contextPath}/borrow-return/edit" method="POST" class="m-0">
+
+                    <%-- Body form --%>
+                    <div class="p-4">
+                        <form action="${pageContext.request.contextPath}/borrow-return/edit" method="POST" class="m-0" id="form-edit-borrow">
                             <input type="hidden" name="borrowDetailId" value="${item.borrow_detail_id}">
                             
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <label class="form-label text-muted">Độc giả:</label>
-                                    <input type="text" class="form-control bg-light text-muted" value="${item.reader_name} (${item.reader_email})" disabled style="opacity: 0.7;">
+                            <div class="row">
+                                <%-- CỘT TRÁI: THÔNG TIN MƯỢN TRẢ --%>
+                                <div class="col-lg-6 col-12 border-end pe-lg-4">
+                                    <div class="section-divider">
+                                        <i class="fa-solid fa-id-card me-2"></i>Thông tin mượn trả
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Độc giả</label>
+                                        <input type="text" class="form-control bg-light text-muted" value="${item.reader_name} (${item.reader_email})" disabled style="opacity: 0.7;">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Sách mượn</label>
+                                        <input type="text" class="form-control bg-light text-muted" value="${item.barcode} - ${item.book_title}" disabled style="opacity: 0.7;">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="borrowDate" class="form-label">Ngày Mượn <span class="required-mark">*</span></label>
+                                        <input type="date" class="form-control" name="borrowDate" id="borrowDate" value="${item.borrow_date}" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="dueDate" class="form-label">Hạn Phải Trả <span class="required-mark">*</span></label>
+                                        <input type="date" class="form-control" name="dueDate" id="dueDate" value="${item.due_date}" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="returnDate" class="form-label">Ngày Thực Trả</label>
+                                        <input type="date" class="form-control" name="returnDate" id="returnDate" value="${item.return_date}">
+                                        <div class="form-hint">Để trống nếu độc giả chưa trả sách.</div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label text-muted">Sách mượn:</label>
-                                    <input type="text" class="form-control bg-light text-muted" value="${item.barcode} - ${item.book_title}" disabled style="opacity: 0.7;">
+                                
+                                <%-- CỘT PHẢI: TRẠNG THÁI & HIỆN TRẠNG --%>
+                                <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
+                                    <div class="section-divider">
+                                        <i class="fa-solid fa-gears me-2"></i>Trạng thái & Hiện trạng
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label">Trạng Thái Phiếu Mượn <span class="required-mark">*</span></label>
+                                        <select class="form-select" name="status" id="status" required>
+                                            <option value="Borrowing" ${item.status == 'Borrowing' ? 'selected' : ''}>Đang mượn</option>
+                                            <option value="Returned" ${item.status == 'Returned' ? 'selected' : ''}>Đã trả</option>
+                                            <option value="Overdue" ${item.status == 'Overdue' ? 'selected' : ''}>Quá hạn</option>
+                                            <option value="Lost" ${item.status == 'Lost' ? 'selected' : ''}>Báo mất</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="bookCondition" class="form-label">Hiện Trạng Sách Khi Trả <span class="required-mark">*</span></label>
+                                        <select class="form-select" name="bookCondition" id="bookCondition" required>
+                                            <option value="Bình thường" ${item.book_condition == 'Bình thường' || empty item.book_condition ? 'selected' : ''}>Bình thường (Không phạt)</option>
+                                            <option value="Rách nhẹ" ${item.book_condition == 'Rách nhẹ' ? 'selected' : ''}>Rách nhẹ (Phạt 20% giá sách, tối thiểu 15k)</option>
+                                            <option value="Rách nặng" ${item.book_condition == 'Rách nặng' ? 'selected' : ''}>Rách nặng (Phạt 80% giá sách)</option>
+                                            <option value="Mất sách" ${item.book_condition == 'Mất sách' ? 'selected' : ''}>Mất sách (Phạt Giá sách + 20k)</option>
+                                        </select>
+                                        <div class="form-hint">Chọn hiện trạng thực tế của sách để hệ thống tự động ghi nhận biên bản phạt (nếu có vi phạm).</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="notes" class="form-label">Ghi Chú</label>
+                                        <textarea class="form-control" name="notes" id="notes" rows="3" placeholder="Nhập ghi chú hoặc thông tin chi tiết về hiện trạng sách/vi phạm...">${item.notes}</textarea>
+                                    </div>
+
+                                    <div class="alert alert-info mb-0" style="font-size: 0.85rem;">
+                                        <strong><i class="fa-solid fa-circle-info"></i> Quy định phạt vi phạm:</strong>
+                                        <ul class="mb-0 mt-1 ps-3">
+                                             <li><strong>Trễ hạn trả sách:</strong> Phạt 5.000đ/ngày, giới hạn tối đa bằng giá tiền sách.</li>
+                                             <li><strong>Hỏng sách nhẹ:</strong> Phạt 20% giá sách, tối thiểu 15.000đ.</li>
+                                             <li><strong>Hỏng sách nặng:</strong> Phạt 80% giá sách.</li>
+                                             <li><strong>Mất sách:</strong> Phạt Giá sách + 20.000đ (Không cộng dồn trễ hạn).</li>
+                                             <li><strong>Giới hạn:</strong> Tổng tiền phạt trễ + hỏng không vượt quá số tiền phạt mất sách (Giá sách + 20.000đ).</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="section-divider">Thông tin mượn sách</div>
-
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label for="borrowDate" class="form-label">Ngày Mượn <span class="required-mark">*</span></label>
-                                    <input type="date" class="form-control" name="borrowDate" id="borrowDate" value="${item.borrow_date}" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="dueDate" class="form-label">Hạn Phải Trả <span class="required-mark">*</span></label>
-                                    <input type="date" class="form-control" name="dueDate" id="dueDate" value="${item.due_date}" required>
-                                </div>
-                            </div>
-
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <label for="returnDate" class="form-label">Ngày Thực Trả</label>
-                                    <input type="date" class="form-control" name="returnDate" id="returnDate" value="${item.return_date}">
-                                    <div class="form-hint">Để trống nếu độc giả chưa trả sách.</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="status" class="form-label">Trạng Thái Phiếu Mượn <span class="required-mark">*</span></label>
-                                    <select class="form-select" name="status" id="status" required>
-                                        <option value="Borrowing" ${item.status == 'Borrowing' ? 'selected' : ''}>Đang mượn</option>
-                                        <option value="Returned" ${item.status == 'Returned' ? 'selected' : ''}>Đã trả</option>
-                                        <option value="Overdue" ${item.status == 'Overdue' ? 'selected' : ''}>Quá hạn</option>
-                                        <option value="Lost" ${item.status == 'Lost' ? 'selected' : ''}>Báo mất</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="section-divider">Hiện trạng sách & Phạt</div>
-
-                            <div class="mb-4">
-                                <label for="bookCondition" class="form-label">Hiện Trạng Sách Khi Trả <span class="required-mark">*</span></label>
-                                <select class="form-select" name="bookCondition" id="bookCondition" required>
-                                    <option value="Bình thường" ${item.book_condition == 'Bình thường' || empty item.book_condition ? 'selected' : ''}>Bình thường (Không phạt)</option>
-                                    <option value="Rách nhẹ" ${item.book_condition == 'Rách nhẹ' ? 'selected' : ''}>Rách nhẹ (Phạt 20% giá sách, tối thiểu 15k)</option>
-                                    <option value="Rách nặng" ${item.book_condition == 'Rách nặng' ? 'selected' : ''}>Rách nặng (Phạt 80% giá sách)</option>
-                                    <option value="Mất sách" ${item.book_condition == 'Mất sách' ? 'selected' : ''}>Mất sách (Phạt Giá sách + 20k)</option>
-                                </select>
-                                <div class="form-hint">Chọn hiện trạng thực tế của sách để hệ thống tự động ghi nhận biên bản phạt (nếu có vi phạm).</div>
-                                <div class="alert alert-info mt-3 mb-0" style="font-size: 0.85rem;">
-                                    <strong><i class="fa-solid fa-circle-info"></i> Quy định phạt vi phạm:</strong>
-                                    <ul class="mb-0 mt-1 ps-3">
-                                         <li><strong>Trễ hạn trả sách:</strong> Phạt 5.000đ/ngày, giới hạn tối đa bằng giá tiền sách.</li>
-                                         <li><strong>Hỏng sách nhẹ:</strong> Phạt 20% giá sách, tối thiểu 15.000đ.</li>
-                                         <li><strong>Hỏng sách nặng:</strong> Phạt 80% giá sách.</li>
-                                         <li><strong>Mất sách:</strong> Phạt Giá sách + 20.000đ (Không cộng dồn trễ hạn).</li>
-                                         <li><strong>Giới hạn:</strong> Tổng tiền phạt trễ + hỏng không vượt quá số tiền phạt mất sách (Giá sách + 20.000đ).</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="notes" class="form-label">Ghi Chú</label>
-                                <textarea class="form-control" name="notes" id="notes" rows="3" placeholder="Nhập ghi chú hoặc thông tin chi tiết về hiện trạng sách/vi phạm...">${item.notes}</textarea>
-                            </div>
-
-                            <div class="d-flex gap-2 justify-content-end mt-4 border-top pt-3">
-                                <a href="${pageContext.request.contextPath}/borrow-return" class="btn btn-cancel hover-lift">
-                                    <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
-                                </a>
-                                <button type="submit" class="btn btn-save hover-lift">
-                                    <i class="fa-solid fa-floppy-disk me-1"></i> Lưu thay đổi
+                            
+                            <%-- ── FOOTER: Nút hành động ── --%>
+                            <div class="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
+                                <button type="submit" id="btn-save" class="btn btn-save hover-lift">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Lưu thay đổi
                                 </button>
+                                <a href="${pageContext.request.contextPath}/borrow-return"
+                                   id="btn-cancel"
+                                   class="btn btn-cancel text-decoration-none hover-lift">
+                                    <i class="fa-solid fa-arrow-left me-2"></i>Hủy
+                                </a>
+                                <span class="text-muted ms-auto" style="font-size:.78rem;">
+                                    <span class="required-mark">*</span> Trường bắt buộc
+                                </span>
                             </div>
                         </form>
                     </div>
@@ -150,5 +182,13 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ── Hiệu ứng loading khi submit ──
+        document.getElementById('form-edit-borrow').addEventListener('submit', function () {
+            const btn = document.getElementById('btn-save');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Đang lưu...';
+        });
+    </script>
 </body>
 </html>

@@ -420,19 +420,22 @@
                                                         <c:set var="translatedReason" value="${fn:replace(translatedReason, 'Damaged Book', 'Hỏng sách')}" />
                                                         <c:set var="translatedReason" value="${fn:replace(translatedReason, 'Lost Book', 'Mất sách')}" />
                                                         <c:choose>
-                                                            <c:when test="${translatedReason == 'Quá hạn'}">
-                                                                <span class="text-warning fw-medium text-nowrap">Quá hạn</span>
-                                                            </c:when>
-                                                            <c:when test="${translatedReason == 'Mất sách'}">
-                                                                <span class="text-danger fw-medium text-nowrap">Mất sách</span>
-                                                            </c:when>
-                                                            <c:when test="${translatedReason == 'Hỏng sách'}">
-                                                                <span class="text-danger fw-medium text-nowrap">Hỏng sách</span>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span class="text-secondary fw-medium text-nowrap">${translatedReason}</span>
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                             <c:when test="${fn:contains(translatedReason, ',')}">
+                                                                 <span class="text-danger fw-medium text-nowrap">${translatedReason}</span>
+                                                             </c:when>
+                                                             <c:when test="${translatedReason == 'Quá hạn'}">
+                                                                 <span class="text-warning fw-medium text-nowrap">Quá hạn</span>
+                                                             </c:when>
+                                                             <c:when test="${translatedReason == 'Mất sách'}">
+                                                                 <span class="text-danger fw-medium text-nowrap">Mất sách</span>
+                                                             </c:when>
+                                                             <c:when test="${translatedReason == 'Hỏng sách'}">
+                                                                 <span class="text-danger fw-medium text-nowrap">Hỏng sách</span>
+                                                             </c:when>
+                                                             <c:otherwise>
+                                                                 <span class="text-secondary fw-medium text-nowrap">${translatedReason}</span>
+                                                             </c:otherwise>
+                                                         </c:choose>
                                                     </td>
                                                     <td>
                                                         <c:choose>

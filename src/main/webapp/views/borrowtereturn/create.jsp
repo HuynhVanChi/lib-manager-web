@@ -78,10 +78,10 @@
             <jsp:include page="/views/layout/header.jsp"/>
 
             <!-- VÙNG ĐỆM NỘI DUNG -->
-            <div class="container-fluid p-4 flex-grow-1">
+            <div class="container-fluid p-4">
 
-                <!-- Breadcrumbs điều hướng -->
-                <div class="mb-3">
+                <%-- ── TIÊU ĐỀ + BREADCRUMB ── --%>
+                <div class="mb-4">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
@@ -89,94 +89,135 @@
                                     <i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm
                                 </a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <i class="fa-solid fa-file-invoice me-1"></i>Tạo phiếu mượn
-                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Tạo phiếu mượn</li>
                         </ol>
                     </nav>
+                    <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">
+                        Tạo phiếu mượn sách mới
+                    </h1>
                 </div>
 
-                <!-- BIỂU MẪU NHẬP LIỆU CHUẨN HÓA -->
-                <div class="card form-card mx-auto shadow-sm">
-                    <div class="card-header form-card-header text-white">
-                        <h5 class="mb-0 fw-bold"><i class="fa-solid fa-file-invoice me-2"></i>Tạo Phiếu Mượn Sách Mới</h5>
+                <%-- ── FORM CARD ── --%>
+                <div class="form-card bg-white">
+
+                    <%-- Header card --%>
+                    <div class="form-card-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                 style="width:44px;height:44px;background:rgba(255,255,255,.2);flex-shrink:0;">
+                                <i class="fa-solid fa-file-invoice text-white fs-5"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white fw-bold mb-0">Tạo Phiếu Mượn Sách Mới</h5>
+                                <p class="text-white mb-0" style="opacity:.75;font-size:.82rem;">
+                                    Điền đầy đủ thông tin để tạo phiếu mượn sách mới
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
-                        <form action="${pageContext.request.contextPath}/borrow-return/create" method="POST" class="m-0">
+
+                    <%-- Body form --%>
+                    <div class="p-4">
+                        <form action="${pageContext.request.contextPath}/borrow-return/create" method="POST" class="m-0" id="form-create-borrow">
                             
-                            <div class="section-divider">Thông tin phiếu mượn</div>
-                            
-                            <div class="mb-3">
-                                <label for="readerSearch" class="form-label fw-medium">Chọn Độc Giả <span class="required-mark">*</span></label>
-                                <div class="position-relative">
-                                    <input type="text" id="readerSearch" class="form-control" placeholder="Tìm kiếm độc giả theo tên, mã, email, số điện thoại..." autocomplete="off" required>
-                                    <input type="hidden" name="readerId" id="readerId" required>
-                                    <div id="readerDropdown" class="search-dropdown-menu shadow-sm border">
-                                        <c:forEach var="r" items="${readerList}">
-                                            <button type="button" class="search-dropdown-item reader-option" 
-                                                    data-id="${r.reader_id}" 
-                                                    data-name="${r.full_name}" 
-                                                    data-email="${r.email}" 
-                                                    data-phone="${r.phone}">
-                                                <div class="fw-semibold text-dark">${r.full_name}</div>
-                                                <div class="text-muted small">Mã: #${r.reader_id} | Email: ${r.email} ${not empty r.phone ? ' | SĐT: '.concat(r.phone) : ''}</div>
-                                            </button>
-                                        </c:forEach>
+                            <div class="row">
+                                <%-- CỘT TRÁI: THÔNG TIN ĐỘC GIẢ --%>
+                                <div class="col-lg-6 col-12 border-end pe-lg-4">
+                                    <div class="section-divider">
+                                        <i class="fa-solid fa-id-card me-2"></i>Thông tin độc giả
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="readerSearch" class="form-label">Chọn Độc Giả <span class="required-mark">*</span></label>
+                                        <div class="position-relative">
+                                            <input type="text" id="readerSearch" class="form-control" placeholder="Tìm kiếm độc giả theo tên, mã, email, số điện thoại..." autocomplete="off" required>
+                                            <input type="hidden" name="readerId" id="readerId" required>
+                                            <div id="readerDropdown" class="search-dropdown-menu shadow-sm border">
+                                                <c:forEach var="r" items="${readerList}">
+                                                    <button type="button" class="search-dropdown-item reader-option" 
+                                                            data-id="${r.reader_id}" 
+                                                            data-name="${r.full_name}" 
+                                                            data-email="${r.email}" 
+                                                            data-phone="${r.phone}">
+                                                        <div class="fw-semibold text-dark">${r.full_name}</div>
+                                                        <div class="text-muted small">Mã: #${r.reader_id} | Email: ${r.email} ${not empty r.phone ? ' | SĐT: '.concat(r.phone) : ''}</div>
+                                                    </button>
+                                                </c:forEach>
+                                            </div>
+                                        </div>
+                                        <div class="form-hint">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            Nhấp vào ô và gõ để lọc nhanh độc giả.
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-hint">Nhấp vào ô và gõ để lọc nhanh độc giả.</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="copySearch" class="form-label fw-medium">Chọn Sách Cần Mượn <span class="required-mark">*</span></label>
-                                <div class="position-relative">
-                                    <input type="text" id="copySearch" class="form-control" placeholder="Tìm kiếm sách theo mã bản sao, tên sách..." autocomplete="off" required>
-                                    <input type="hidden" name="copyId" id="copyId" required>
-                                    <div id="copyDropdown" class="search-dropdown-menu shadow-sm border">
-                                        <c:forEach var="c" items="${availableCopies}">
-                                            <button type="button" class="search-dropdown-item copy-option" 
-                                                    data-id="${c.copy_id}" 
-                                                    data-title="${c.title}" 
-                                                    data-barcode="${c.barcode}">
-                                                <div class="fw-semibold text-dark">${c.title}</div>
-                                                <div class="text-muted small">Mã bản sao: ${c.barcode}</div>
-                                            </button>
-                                        </c:forEach>
+                                
+                                <%-- CỘT PHẢI: THÔNG TIN MƯỢN SÁCH --%>
+                                <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
+                                    <div class="section-divider">
+                                        <i class="fa-solid fa-book me-2"></i>Thông tin mượn sách
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="copySearch" class="form-label">Chọn Sách Cần Mượn <span class="required-mark">*</span></label>
+                                        <div class="position-relative">
+                                            <input type="text" id="copySearch" class="form-control" placeholder="Tìm kiếm sách theo mã bản sao, tên sách..." autocomplete="off" required>
+                                            <input type="hidden" name="copyId" id="copyId" required>
+                                            <div id="copyDropdown" class="search-dropdown-menu shadow-sm border">
+                                                <c:forEach var="c" items="${availableCopies}">
+                                                    <button type="button" class="search-dropdown-item copy-option" 
+                                                            data-id="${c.copy_id}" 
+                                                            data-title="${c.title}" 
+                                                            data-barcode="${c.barcode}">
+                                                        <div class="fw-semibold text-dark">${c.title}</div>
+                                                        <div class="text-muted small">Mã bản sao: ${c.barcode}</div>
+                                                    </button>
+                                                </c:forEach>
+                                            </div>
+                                        </div>
+                                        <div class="form-hint">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            Nhấp vào ô và gõ để tìm theo mã hoặc tiêu đề sách.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Thời hạn mượn (tối đa 3 tháng) <span class="required-mark">*</span></label>
+                                        <div class="d-flex gap-2 align-items-center mb-2">
+                                            <input type="number" id="durationValue" class="form-control" style="width: 100px;" min="1" max="90" value="14" required>
+                                            <select id="durationUnit" class="form-select" style="width: 120px;">
+                                                <option value="days" selected>Ngày</option>
+                                                <option value="months">Tháng</option>
+                                            </select>
+                                            <input type="hidden" name="durationDays" id="durationDays" value="14">
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="7" data-unit="days">7 ngày</button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="14" data-unit="days">14 ngày</button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="1" data-unit="months">1 tháng</button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="3" data-unit="months">3 tháng</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-hint">Nhấp vào ô và gõ để tìm theo mã hoặc tiêu đề sách.</div>
                             </div>
                             
-                            <div class="mb-4" style="max-width: 450px;">
-                                <label class="form-label fw-medium">Thời hạn mượn (tối đa 3 tháng) <span class="required-mark">*</span></label>
-                                <div class="d-flex gap-2 align-items-center mb-2">
-                                    <input type="number" id="durationValue" class="form-control" style="width: 100px;" min="1" max="90" value="14" required>
-                                    <select id="durationUnit" class="form-select" style="width: 120px;">
-                                        <option value="days" selected>Ngày</option>
-                                        <option value="months">Tháng</option>
-                                    </select>
-                                    <input type="hidden" name="durationDays" id="durationDays" value="14">
-                                </div>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="7" data-unit="days">7 ngày</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="14" data-unit="days">14 ngày</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="1" data-unit="months">1 tháng</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="3" data-unit="months">3 tháng</button>
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex gap-2 justify-content-end mt-4">
-                                <a href="${pageContext.request.contextPath}/borrow-return" class="btn btn-cancel hover-lift">
-                                    <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
-                                </a>
-                                <button type="submit" class="btn btn-save hover-lift">
-                                    <i class="fa-solid fa-floppy-disk me-1"></i> Tạo phiếu mượn
+                            <%-- ── FOOTER: Nút hành động ── --%>
+                            <div class="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
+                                <button type="submit" id="btn-save" class="btn btn-save hover-lift">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Tạo phiếu mượn
                                 </button>
+                                <a href="${pageContext.request.contextPath}/borrow-return"
+                                   id="btn-cancel"
+                                   class="btn btn-cancel text-decoration-none hover-lift">
+                                    <i class="fa-solid fa-arrow-left me-2"></i>Hủy
+                                </a>
+                                <span class="text-muted ms-auto" style="font-size:.78rem;">
+                                    <span class="required-mark">*</span> Trường bắt buộc
+                                </span>
                             </div>
                         </form>
                     </div>
                 </div>
-
             </div>
         </main>
     </div>
@@ -334,6 +375,13 @@
                     }
                     updateDurationDays();
                 });
+            });
+
+            // ── Hiệu ứng loading khi submit ──
+            document.getElementById('form-create-borrow').addEventListener('submit', function () {
+                const btn = document.getElementById('btn-save');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Đang tạo...';
             });
         });
     </script>

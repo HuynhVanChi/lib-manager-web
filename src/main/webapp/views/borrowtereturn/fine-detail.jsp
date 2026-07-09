@@ -32,29 +32,52 @@
             <jsp:include page="/views/layout/header.jsp"/>
 
             <!-- VÙNG ĐỆM NỘI DUNG -->
-            <div class="container-fluid p-4 flex-grow-1">
+            <div class="container-fluid p-4">
 
-                <!-- Breadcrumbs điều hướng -->
-                <div class="mb-3">
+                <%-- ── TIÊU ĐỀ + BREADCRUMB ── --%>
+                <div class="mb-4">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return?tab=fines"><i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><i class="fa-solid fa-file-invoice me-1"></i>Chi tiết khoản phạt #${item.fine_id}</li>
+                            <li class="breadcrumb-item">
+                                <a href="${pageContext.request.contextPath}/borrow-return?tab=fines">
+                                    <i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Chi tiết khoản phạt #${item.fine_id}</li>
                         </ol>
                     </nav>
+                    <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">
+                        Chi tiết khoản phạt #${item.fine_id}
+                    </h1>
                 </div>
 
-                <!-- KHUNG THÔNG TIN CHI TIẾT -->
-                <div class="card form-card mx-auto shadow-sm" style="max-width: 800px;">
-                    <div class="card-header form-card-header text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-bold"><i class="fa-solid fa-receipt me-2"></i>Chi Tiết Khoản Phạt Vi Phạm</h5>
-                        <span class="badge bg-white text-primary fw-bold px-3 py-1.5 rounded">#${item.fine_id}</span>
+                <%-- ── FORM CARD ── --%>
+                <div class="form-card bg-white">
+
+                    <%-- Header card --%>
+                    <div class="form-card-header">
+                        <div class="d-flex align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                     style="width:44px;height:44px;background:rgba(255,255,255,.2);flex-shrink:0;">
+                                    <i class="fa-solid fa-receipt text-white fs-5"></i>
+                                </div>
+                                <div>
+                                    <h5 class="text-white fw-bold mb-0">Chi Tiết Khoản Phạt Vi Phạm</h5>
+                                    <p class="text-white mb-0" style="opacity:.75;font-size:.82rem;">
+                                        Thông tin chi tiết biên bản vi phạm và mức phạt
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="badge bg-white text-primary fw-bold px-3 py-1.5 rounded">#${item.fine_id}</span>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
+
+                    <div class="p-4">
                         
-                        <div class="row g-4 mb-4">
+                        <div class="row mb-4">
                             <!-- Độc Giả -->
-                            <div class="col-md-6 border-end">
+                            <div class="col-lg-6 col-12 border-end pe-lg-4">
                                 <div class="section-divider mt-0 mb-3">Thông tin độc giả vi phạm</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
@@ -69,7 +92,7 @@
                             </div>
 
                             <!-- Sách -->
-                            <div class="col-md-6">
+                            <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
                                 <div class="section-divider mt-0 mb-3">Thông tin sách liên quan</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
@@ -105,9 +128,9 @@
                             </div>
                         </div>
 
-                        <div class="row g-4 mb-4">
+                        <div class="row mb-4">
                             <!-- Chi tiết phạt -->
-                            <div class="col-md-6 border-end">
+                            <div class="col-lg-6 col-12 border-end pe-lg-4">
                                 <div class="section-divider mt-0 mb-3">Thông tin số tiền phạt</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
@@ -119,9 +142,14 @@
                                     <tr>
                                         <td class="text-muted">Lý do phạt:</td>
                                         <td class="fw-bold">
+                                            <c:set var="reasonCount" value="0" />
+                                            <c:if test="${item.reason.contains('Overdue')}"><c:set var="reasonCount" value="${reasonCount + 1}" /></c:if>
+                                            <c:if test="${item.reason.contains('Damaged Book')}"><c:set var="reasonCount" value="${reasonCount + 1}" /></c:if>
+                                            <c:if test="${item.reason.contains('Lost Book')}"><c:set var="reasonCount" value="${reasonCount + 1}" /></c:if>
+
                                             <c:set var="firstReason" value="true" />
                                             <c:if test="${item.reason.contains('Overdue')}">
-                                                <span class="text-warning">Quá hạn</span>
+                                                <span class="${reasonCount >= 2 ? 'text-danger' : 'text-warning'}">Quá hạn</span>
                                                 <c:set var="firstReason" value="false" />
                                             </c:if>
                                             <c:if test="${item.reason.contains('Damaged Book')}">
@@ -139,7 +167,7 @@
                             </div>
 
                             <!-- Trạng thái phạt -->
-                            <div class="col-md-6">
+                            <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
                                 <div class="section-divider mt-0 mb-3">Thông tin thanh toán</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
@@ -173,13 +201,16 @@
                             </div>
                         </c:if>
 
-                        <!-- Các Nút Điều Hướng -->
-                        <div class="d-flex gap-2 justify-content-end mt-4 border-top pt-3">
-                            <a href="${pageContext.request.contextPath}/borrow-return?tab=fines" class="btn btn-cancel hover-lift">
-                                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+                        <%-- ── FOOTER: Nút hành động ── --%>
+                        <div class="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
+                            <a href="${pageContext.request.contextPath}/borrow-return/fine-edit?id=${item.fine_id}"
+                               class="btn btn-save text-decoration-none hover-lift">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Chỉnh sửa khoản phạt
                             </a>
-                            <a href="${pageContext.request.contextPath}/borrow-return/fine-edit?id=${item.fine_id}" class="btn btn-primary hover-lift">
-                                <i class="fa-solid fa-pen-to-square me-1"></i> Chỉnh sửa khoản phạt
+                            <a href="${pageContext.request.contextPath}/borrow-return?tab=fines"
+                               id="btn-cancel"
+                               class="btn btn-cancel text-decoration-none hover-lift">
+                                <i class="fa-solid fa-arrow-left me-2"></i>Hủy
                             </a>
                         </div>
                     </div>

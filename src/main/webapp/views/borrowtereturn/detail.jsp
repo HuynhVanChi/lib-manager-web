@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -32,10 +33,10 @@
             <jsp:include page="/views/layout/header.jsp"/>
 
             <!-- VÙNG ĐỆM NỘI DUNG -->
-            <div class="container-fluid p-4 flex-grow-1">
+            <div class="container-fluid p-4">
 
-                <!-- Breadcrumbs điều hướng -->
-                <div class="mb-3">
+                <%-- ── TIÊU ĐỀ + BREADCRUMB ── --%>
+                <div class="mb-4">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
@@ -43,24 +44,41 @@
                                     <i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm
                                 </a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <i class="fa-solid fa-file-invoice me-1"></i>Chi tiết phiếu mượn #${item.borrow_detail_id}
-                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Chi tiết phiếu mượn #${item.borrow_detail_id}</li>
                         </ol>
                     </nav>
+                    <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">
+                        Chi tiết phiếu mượn #${item.borrow_detail_id}
+                    </h1>
                 </div>
 
-                <!-- KHUNG THÔNG TIN CHI TIẾT -->
-                <div class="card form-card mx-auto shadow-sm" style="max-width: 900px;">
-                    <div class="card-header form-card-header text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-bold"><i class="fa-solid fa-circle-info me-2"></i>Chi Tiết Phiếu Mượn Sách</h5>
-                        <span class="badge bg-white text-primary fw-bold px-3 py-1.5 rounded">#${item.borrow_detail_id}</span>
+                <%-- ── FORM CARD ── --%>
+                <div class="form-card bg-white">
+
+                    <%-- Header card --%>
+                    <div class="form-card-header">
+                        <div class="d-flex align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                     style="width:44px;height:44px;background:rgba(255,255,255,.2);flex-shrink:0;">
+                                    <i class="fa-solid fa-circle-info text-white fs-5"></i>
+                                </div>
+                                <div>
+                                    <h5 class="text-white fw-bold mb-0">Chi Tiết Phiếu Mượn Sách</h5>
+                                    <p class="text-white mb-0" style="opacity:.75;font-size:.82rem;">
+                                        Thông tin đầy đủ của lượt mượn sách
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="badge bg-white text-primary fw-bold px-3 py-1.5 rounded">#${item.borrow_detail_id}</span>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
+
+                    <div class="p-4">
                         
-                        <div class="row g-4 mb-4">
+                        <div class="row mb-4">
                             <!-- Cột bên trái: Độc giả & Lịch trình -->
-                            <div class="col-md-6 border-end pe-md-4">
+                            <div class="col-lg-6 col-12 border-end pe-lg-4">
                                 <div class="section-divider mt-0 mb-3">Thông tin độc giả</div>
                                 <table class="table table-borderless table-sm mb-4">
                                     <tr>
@@ -104,7 +122,7 @@
                             </div>
 
                             <!-- Cột bên phải: Sách & Vận hành -->
-                            <div class="col-md-6 ps-md-4">
+                            <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
                                 <div class="section-divider mt-0 mb-3">Thông tin sách mượn</div>
                                 <table class="table table-borderless table-sm mb-4">
                                     <tr>
@@ -181,14 +199,29 @@
                                             <td class="text-danger fw-bold">
                                                 <fmt:formatNumber value="${f.amount}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                             </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${f.reason == 'Overdue'}">Quá hạn</c:when>
-                                                    <c:when test="${f.reason == 'Lost Book'}">Mất sách</c:when>
-                                                    <c:when test="${f.reason == 'Damaged Book'}">Hỏng sách</c:when>
-                                                    <c:otherwise>${f.reason}</c:otherwise>
-                                                </c:choose>
-                                            </td>
+                                             <td>
+                                                 <c:set var="translatedReason" value="${f.reason}" />
+                                                 <c:set var="translatedReason" value="${fn:replace(translatedReason, 'Overdue', 'Quá hạn')}" />
+                                                 <c:set var="translatedReason" value="${fn:replace(translatedReason, 'Damaged Book', 'Hỏng sách')}" />
+                                                 <c:set var="translatedReason" value="${fn:replace(translatedReason, 'Lost Book', 'Mất sách')}" />
+                                                 <c:choose>
+                                                     <c:when test="${fn:contains(translatedReason, ',')}">
+                                                         <span class="text-danger fw-medium">${translatedReason}</span>
+                                                     </c:when>
+                                                     <c:when test="${translatedReason == 'Quá hạn'}">
+                                                         <span class="text-warning fw-medium">Quá hạn</span>
+                                                     </c:when>
+                                                     <c:when test="${translatedReason == 'Mất sách'}">
+                                                         <span class="text-danger fw-medium">Mất sách</span>
+                                                     </c:when>
+                                                     <c:when test="${translatedReason == 'Hỏng sách'}">
+                                                         <span class="text-danger fw-medium">Hỏng sách</span>
+                                                     </c:when>
+                                                     <c:otherwise>
+                                                         <span class="text-secondary fw-medium">${translatedReason}</span>
+                                                     </c:otherwise>
+                                                 </c:choose>
+                                             </td>
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${not empty f.paid_at}">${f.paid_at}</c:when>
@@ -213,13 +246,16 @@
                             </table>
                         </div>
 
-                        <!-- Các Nút Điều Hướng -->
-                        <div class="d-flex gap-2 justify-content-end mt-4 border-top pt-3">
-                            <a href="${pageContext.request.contextPath}/borrow-return" class="btn btn-cancel hover-lift">
-                                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+                        <%-- ── FOOTER: Nút hành động ── --%>
+                        <div class="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
+                            <a href="${pageContext.request.contextPath}/borrow-return/edit?id=${item.borrow_detail_id}"
+                               class="btn btn-save text-decoration-none hover-lift">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Chỉnh sửa phiếu
                             </a>
-                            <a href="${pageContext.request.contextPath}/borrow-return/edit?id=${item.borrow_detail_id}" class="btn btn-primary hover-lift">
-                                <i class="fa-solid fa-pen me-1"></i> Chỉnh sửa phiếu
+                            <a href="${pageContext.request.contextPath}/borrow-return"
+                               id="btn-cancel"
+                               class="btn btn-cancel text-decoration-none hover-lift">
+                                <i class="fa-solid fa-arrow-left me-2"></i>Hủy
                             </a>
                         </div>
                     </div>

@@ -183,6 +183,31 @@
                                             </c:choose>
                                         </td>
                                     </tr>
+                                    <c:if test="${not empty fines}">
+                                        <tr>
+                                            <td class="text-muted text-nowrap">Trạng thái phạt:</td>
+                                            <td class="text-nowrap">
+                                                <c:choose>
+                                                    <c:when test="${fines[0].status == 'Unpaid'}"><span class="badge bg-danger text-white px-2.5 py-1 fw-semibold text-nowrap" style="font-size: .8rem; border-radius: 4px;">Chưa đóng</span></c:when>
+                                                    <c:when test="${fines[0].status == 'Paid'}"><span class="badge bg-success text-white px-2.5 py-1 fw-semibold text-nowrap" style="font-size: .8rem; border-radius: 4px;">Đã đóng</span></c:when>
+                                                    <c:when test="${fines[0].status == 'Waived'}"><span class="badge bg-secondary text-white px-2.5 py-1 fw-semibold text-nowrap" style="font-size: .8rem; border-radius: 4px;">Miễn giảm</span></c:when>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted text-nowrap">Ngày đóng phạt:</td>
+                                            <td class="fw-medium text-nowrap">
+                                                <c:choose>
+                                                    <c:when test="${not empty fines[0].paid_at}">
+                                                        <i class="fa-regular fa-calendar-check me-1 text-success"></i> <fmt:formatDate value="${fines[0].paid_at}" pattern="dd/MM/yyyy HH:mm:ss"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="text-muted">—</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:if>
                                 </table>
                             </div>
                         </div>
@@ -193,17 +218,13 @@
                             <table class="table table-bordered table-sm text-center align-middle" style="table-layout: fixed; width: 100%;">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 100px;">Mã Phạt</th>
-                                        <th style="width: 140px;">Số Tiền Phạt</th>
+                                        <th style="width: 200px;">Số Tiền Phạt</th>
                                         <th>Lý Do</th>
-                                        <th style="width: 180px;">Ngày Thanh Toán</th>
-                                        <th style="width: 150px;">Trạng Thái</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach var="f" items="${fines}">
                                         <tr>
-                                            <td class="fw-semibold">#${f.fine_id}</td>
                                             <td class="text-danger fw-bold">
                                                 <fmt:formatNumber value="${f.amount}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                             </td>
@@ -230,24 +251,11 @@
                                                      </c:otherwise>
                                                  </c:choose>
                                              </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty f.paid_at}">${f.paid_at}</c:when>
-                                                    <c:otherwise><span class="text-muted">—</span></c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${f.status == 'Unpaid'}"><span class="badge bg-danger text-white">Chưa đóng</span></c:when>
-                                                    <c:when test="${f.status == 'Paid'}"><span class="badge bg-success text-white">Đã đóng</span></c:when>
-                                                    <c:when test="${f.status == 'Waived'}"><span class="badge bg-secondary text-white">Miễn giảm</span></c:when>
-                                                </c:choose>
-                                            </td>
                                         </tr>
                                     </c:forEach>
                                     <c:if test="${empty fines}">
                                         <tr>
-                                            <td colspan="5" class="text-muted py-3 text-center">Không phát sinh khoản phạt nào cho lượt mượn này.</td>
+                                            <td colspan="2" class="text-muted py-3 text-center">Không phát sinh khoản phạt nào cho lượt mượn này.</td>
                                         </tr>
                                     </c:if>
                                 </tbody>

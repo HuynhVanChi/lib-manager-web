@@ -184,7 +184,7 @@
                                         <td class="text-muted text-nowrap" style="width: 160px;">Ngày đóng tiền:</td>
                                         <td class="fw-medium text-success text-nowrap">
                                             <c:choose>
-                                                <c:when test="${not empty item.paid_at}"><i class="fa-regular fa-calendar-check me-1"></i> <fmt:formatDate value="${item.paid_at}" pattern="yyyy-MM-dd"/></c:when>
+                                                <c:when test="${not empty item.paid_at}"><i class="fa-regular fa-calendar-check me-1"></i> <fmt:formatDate value="${item.paid_at}" pattern="dd/MM/yyyy HH:mm:ss"/></c:when>
                                                 <c:otherwise><span class="text-muted">—</span></c:otherwise>
                                             </c:choose>
                                         </td>

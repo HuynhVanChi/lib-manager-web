@@ -464,10 +464,10 @@
                                                                 <span class="badge-status badge-danger-custom text-nowrap">Chưa đóng</span>
                                                             </c:when>
                                                             <c:when test="${fine.status == 'Paid'}">
-                                                                <span class="badge-status badge-active text-nowrap">Đã đóng - <fmt:formatDate value="${fine.paid_at}" pattern="yyyy-MM-dd"/></span>
+                                                                <span class="badge-status badge-active text-nowrap">Đã đóng - <fmt:formatDate value="${fine.paid_at}" pattern="dd/MM/yyyy"/></span>
                                                             </c:when>
                                                             <c:when test="${fine.status == 'Waived'}">
-                                                                <span class="badge-status badge-info-custom text-nowrap">Đã miễn giảm - <fmt:formatDate value="${fine.paid_at}" pattern="yyyy-MM-dd"/></span>
+                                                                <span class="badge-status badge-info-custom text-nowrap">Đã miễn giảm - <fmt:formatDate value="${fine.paid_at}" pattern="dd/MM/yyyy"/></span>
                                                             </c:when>
                                                         </c:choose>
                                                     </td>

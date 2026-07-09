@@ -37,9 +37,19 @@
                 <div class="mb-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return">Mượn trả & Vi phạm</a></li>
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return/detail?id=${item.borrow_detail_id}">Chi tiết #${item.borrow_detail_id}</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
+                            <li class="breadcrumb-item">
+                                <a href="${pageContext.request.contextPath}/borrow-return">
+                                    <i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="${pageContext.request.contextPath}/borrow-return/detail?id=${item.borrow_detail_id}">
+                                    <i class="fa-solid fa-file-invoice me-1"></i>Chi tiết #${item.borrow_detail_id}
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <i class="fa-solid fa-pen me-1"></i>Chỉnh sửa
+                            </li>
                         </ol>
                     </nav>
                 </div>
@@ -48,9 +58,6 @@
                 <div class="card form-card mx-auto shadow-sm" style="max-width: 800px;">
                     <div class="card-header form-card-header text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 fw-bold"><i class="fa-solid fa-file-signature me-2"></i>Chỉnh Sửa Phiếu Mượn</h5>
-                        <button type="button" class="btn btn-success btn-sm hover-lift px-3 fw-bold" id="btnConfirmReturn">
-                            <i class="fa-solid fa-square-check me-1"></i> Xác nhận trả sách
-                        </button>
                     </div>
                     <div class="card-body p-4">
                         <form action="${pageContext.request.contextPath}/borrow-return/edit" method="POST" class="m-0">
@@ -59,11 +66,11 @@
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
                                     <label class="form-label text-muted">Độc giả:</label>
-                                    <input type="text" class="form-control bg-light" value="${item.reader_name} (${item.reader_email})" readonly>
+                                    <input type="text" class="form-control bg-light text-muted" value="${item.reader_name} (${item.reader_email})" disabled style="opacity: 0.7;">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-muted">Sách mượn:</label>
-                                    <input type="text" class="form-control bg-light" value="${item.barcode} - ${item.book_title}" readonly>
+                                    <input type="text" class="form-control bg-light text-muted" value="${item.barcode} - ${item.book_title}" disabled style="opacity: 0.7;">
                                 </div>
                             </div>
 
@@ -102,18 +109,20 @@
                             <div class="mb-4">
                                 <label for="bookCondition" class="form-label">Hiện Trạng Sách Khi Trả <span class="required-mark">*</span></label>
                                 <select class="form-select" name="bookCondition" id="bookCondition" required>
-                                    <option value="Bình thường" ${item.book_condition == 'Bình thường' || empty item.book_condition ? 'selected' : ''}>Bình thường (Sẵn sàng cho mượn lại)</option>
-                                    <option value="Rách nhẹ" ${item.book_condition == 'Rách nhẹ' ? 'selected' : ''}>Rách nhẹ (Phạt 50.000đ)</option>
-                                    <option value="Rách nặng" ${item.book_condition == 'Rách nặng' ? 'selected' : ''}>Rách nặng (Phạt 100.000đ & Chuyển trạng thái hỏng)</option>
-                                    <option value="Mất sách" ${item.book_condition == 'Mất sách' ? 'selected' : ''}>Mất sách (Phạt 200.000đ & Khóa bản sao)</option>
+                                    <option value="Bình thường" ${item.book_condition == 'Bình thường' || empty item.book_condition ? 'selected' : ''}>Bình thường (Không phạt)</option>
+                                    <option value="Rách nhẹ" ${item.book_condition == 'Rách nhẹ' ? 'selected' : ''}>Rách nhẹ (Phạt 20% giá sách, tối thiểu 15k)</option>
+                                    <option value="Rách nặng" ${item.book_condition == 'Rách nặng' ? 'selected' : ''}>Rách nặng (Phạt 80% giá sách)</option>
+                                    <option value="Mất sách" ${item.book_condition == 'Mất sách' ? 'selected' : ''}>Mất sách (Phạt Giá sách + 20k)</option>
                                 </select>
                                 <div class="form-hint">Chọn hiện trạng thực tế của sách để hệ thống tự động ghi nhận biên bản phạt (nếu có vi phạm).</div>
                                 <div class="alert alert-info mt-3 mb-0" style="font-size: 0.85rem;">
                                     <strong><i class="fa-solid fa-circle-info"></i> Quy định phạt vi phạm:</strong>
                                     <ul class="mb-0 mt-1 ps-3">
-                                        <li><strong>Trễ hạn trả sách:</strong> Trễ 1-3 ngày: 15.000đ/ngày; Trễ 3-5 ngày: 20.000đ/ngày; Trễ trên 5 ngày: 30.000đ/ngày.</li>
-                                        <li><strong>Hỏng sách:</strong> Rách nhẹ: Phạt 50.000đ; Rách nặng: Phạt 100.000đ.</li>
-                                        <li><strong>Mất sách:</strong> Phạt 200.000đ.</li>
+                                         <li><strong>Trễ hạn trả sách:</strong> Phạt 5.000đ/ngày, giới hạn tối đa bằng giá tiền sách.</li>
+                                         <li><strong>Hỏng sách nhẹ:</strong> Phạt 20% giá sách, tối thiểu 15.000đ.</li>
+                                         <li><strong>Hỏng sách nặng:</strong> Phạt 80% giá sách.</li>
+                                         <li><strong>Mất sách:</strong> Phạt Giá sách + 20.000đ (Không cộng dồn trễ hạn).</li>
+                                         <li><strong>Giới hạn:</strong> Tổng tiền phạt trễ + hỏng không vượt quá số tiền phạt mất sách (Giá sách + 20.000đ).</li>
                                     </ul>
                                 </div>
                             </div>
@@ -138,30 +147,6 @@
             </div>
         </main>
     </div>
-
-    <!-- Script tự động trả sách thông minh -->
-    <script>
-        document.getElementById('btnConfirmReturn').addEventListener('click', function() {
-            const statusSelect = document.getElementById('status');
-            const returnDateInput = document.getElementById('returnDate');
-            
-            // Cập nhật trạng thái
-            statusSelect.value = 'Returned';
-            
-            // Cập nhật ngày hôm nay
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            returnDateInput.value = `${year}-${month}-${day}`;
-            
-            // Thay đổi màu viền để báo hiệu thay đổi
-            statusSelect.style.borderColor = '#10B981';
-            returnDateInput.style.borderColor = '#10B981';
-            
-            alert('Đã điền thông tin: Ngày trả hôm nay và Trạng thái "Đã trả".\nVui lòng kiểm tra "Hiện trạng sách" và bấm "Lưu thay đổi" để xác nhận!');
-        });
-    </script>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

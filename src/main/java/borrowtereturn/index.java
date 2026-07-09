@@ -45,6 +45,16 @@ public class index extends HttpServlet {
             } catch (SQLException e) {
                 // Tắt lỗi nếu cột đã tồn tại
             }
+            try {
+                stmt.executeUpdate("ALTER TABLE books ADD COLUMN price DECIMAL(10,2) DEFAULT 100000.00");
+            } catch (SQLException e) {
+                // Tắt lỗi nếu cột đã tồn tại
+            }
+            try {
+                stmt.executeUpdate("ALTER TABLE fines ADD COLUMN original_amount DECIMAL(10,2) DEFAULT NULL");
+            } catch (SQLException e) {
+                // Tắt lỗi nếu cột đã tồn tại
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,7 +110,18 @@ public class index extends HttpServlet {
                     map.put("borrow_date", rs.getDate("borrow_date"));
                     map.put("due_date", rs.getDate("due_date"));
                     map.put("return_date", rs.getDate("return_date"));
-                    map.put("status", rs.getString("detail_status"));
+                    
+                    String detailStatus = rs.getString("detail_status");
+                    Date dueDate = rs.getDate("due_date");
+                    if ("Borrowing".equals(detailStatus) && dueDate != null) {
+                        LocalDate today = LocalDate.now();
+                        LocalDate due = dueDate.toLocalDate();
+                        if (today.isAfter(due)) {
+                            detailStatus = "Overdue";
+                        }
+                    }
+                    map.put("status", detailStatus);
+                    
                     map.put("reader_name", rs.getString("reader_name"));
                     map.put("reader_email", rs.getString("reader_email"));
                     map.put("book_title", rs.getString("book_title"));
@@ -110,8 +131,8 @@ public class index extends HttpServlet {
             }
 
             // 2. Fetch fines
-            String fineSql = "SELECT f.fine_id, f.borrow_detail_id, f.amount, f.reason, f.status AS fine_status, " +
-                           "f.paid_at, u.full_name AS receiver_name, r.full_name AS reader_name, b.title AS book_title " +
+            String fineSql = "SELECT f.fine_id, f.borrow_detail_id, f.amount, f.original_amount, f.reason, f.status AS fine_status, " +
+                           "f.paid_at, u.full_name AS receiver_name, r.full_name AS reader_name, r.email AS reader_email, b.title AS book_title, c.barcode " +
                            "FROM fines f " +
                            "JOIN borrow_details bd ON f.borrow_detail_id = bd.borrow_detail_id " +
                            "JOIN borrow_records br ON bd.borrow_record_id = br.borrow_record_id " +
@@ -127,12 +148,15 @@ public class index extends HttpServlet {
                     map.put("fine_id", rs.getInt("fine_id"));
                     map.put("borrow_detail_id", rs.getInt("borrow_detail_id"));
                     map.put("amount", rs.getBigDecimal("amount"));
+                    map.put("original_amount", rs.getBigDecimal("original_amount"));
                     map.put("reason", rs.getString("reason"));
                     map.put("status", rs.getString("fine_status"));
                     map.put("paid_at", rs.getTimestamp("paid_at"));
                     map.put("receiver_name", rs.getString("receiver_name"));
                     map.put("reader_name", rs.getString("reader_name"));
+                    map.put("reader_email", rs.getString("reader_email"));
                     map.put("book_title", rs.getString("book_title"));
+                    map.put("barcode", rs.getString("barcode"));
                     fineList.add(map);
                 }
             }
@@ -223,6 +247,9 @@ public class index extends HttpServlet {
                 break;
             case "/waive-fine":
                 handleWaiveFine(request, response, currentUserId);
+                break;
+            case "/undo-fine":
+                handleUndoFine(request, response, currentUserId);
                 break;
             case "/delete":
                 handleDeleteBorrow(request, response, currentUserId);
@@ -333,7 +360,12 @@ public class index extends HttpServlet {
     private void handleReturn(HttpServletRequest request, HttpServletResponse response, int userId) 
             throws IOException {
         int borrowDetailId = Integer.parseInt(request.getParameter("borrowDetailId"));
-        
+        String bookCondition = request.getParameter("bookCondition");
+        String notes = request.getParameter("notes");
+        if (bookCondition == null || bookCondition.trim().isEmpty()) {
+            bookCondition = "Bình thường";
+        }
+
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
@@ -361,33 +393,129 @@ public class index extends HttpServlet {
                 throw new SQLException("Sách này đã được trả từ trước.");
             }
 
-            // 2. Cập nhật chi tiết mượn sang 'Returned'
+            // Lấy giá sách từ bảng books
+            double bookPrice = 100000.00;
+            String priceSql = "SELECT b.price FROM borrow_details bd " +
+                              "JOIN book_copies c ON bd.copy_id = c.copy_id " +
+                              "JOIN books b ON c.book_id = b.book_id " +
+                              "WHERE bd.borrow_detail_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(priceSql)) {
+                stmt.setInt(1, borrowDetailId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        bookPrice = rs.getDouble("price");
+                    }
+                }
+            }
+
             LocalDate returnDate = LocalDate.now();
-            String updateDetailSql = "UPDATE borrow_details SET return_date = ?, status = 'Returned' WHERE borrow_detail_id = ?";
+            String newStatus = "Returned";
+            if ("Mất sách".equals(bookCondition)) {
+                newStatus = "Lost";
+            }
+
+            // 2. Cập nhật chi tiết mượn sang 'Returned' hoặc 'Lost'
+            String updateDetailSql = "UPDATE borrow_details SET return_date = ?, status = ?, book_condition = ?, notes = ? WHERE borrow_detail_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(updateDetailSql)) {
-                stmt.setDate(1, Date.valueOf(returnDate));
-                stmt.setInt(2, borrowDetailId);
+                if ("Lost".equals(newStatus)) {
+                    stmt.setNull(1, java.sql.Types.DATE);
+                } else {
+                    stmt.setDate(1, Date.valueOf(returnDate));
+                }
+                stmt.setString(2, newStatus);
+                stmt.setString(3, bookCondition);
+                stmt.setString(4, notes);
+                stmt.setInt(5, borrowDetailId);
                 stmt.executeUpdate();
             }
 
-            // 3. Cập nhật trạng thái sách thành 'Available'
-            String updateCopySql = "UPDATE book_copies SET status = 'Available' WHERE copy_id = ?";
+            // 3. Cập nhật trạng thái sách thành 'Available', 'Damaged', hoặc 'Lost'
+            String copyStatus = "Available";
+            if ("Mất sách".equals(bookCondition) || "Lost".equals(newStatus)) {
+                copyStatus = "Lost";
+            } else if ("Rách nặng".equals(bookCondition)) {
+                copyStatus = "Damaged";
+            }
+            String updateCopySql = "UPDATE book_copies SET status = ? WHERE copy_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(updateCopySql)) {
-                stmt.setInt(1, copyId);
+                stmt.setString(1, copyStatus);
+                stmt.setInt(2, copyId);
                 stmt.executeUpdate();
             }
 
-            // 4. Tính toán phí phạt quá hạn (nếu có)
-            LocalDate localDueDate = dueDate.toLocalDate();
-            if (returnDate.isAfter(localDueDate)) {
-                long daysOverdue = ChronoUnit.DAYS.between(localDueDate, returnDate);
-                double fineAmount = daysOverdue * 5000.0; // Phạt 5.000đ mỗi ngày quá hạn
+            // 4. Tính toán phí phạt theo quy tắc mới
+            double fineAmount = 0;
+            List<String> reasonsList = new ArrayList<>();
 
-                String insertFineSql = "INSERT INTO fines (borrow_detail_id, amount, reason, status) VALUES (?, ?, 'Overdue', 'Unpaid')";
-                try (PreparedStatement stmt = conn.prepareStatement(insertFineSql)) {
+            if ("Mất sách".equals(bookCondition) || "Lost".equals(newStatus)) {
+                fineAmount = bookPrice + 20000.0;
+                reasonsList.add("Lost Book");
+            } else {
+                // Kiểm tra trễ hạn
+                LocalDate localDueDate = dueDate.toLocalDate();
+                long daysOverdue = ChronoUnit.DAYS.between(localDueDate, returnDate);
+                double overdueFine = 0;
+                if (daysOverdue > 0) {
+                    overdueFine = daysOverdue * 5000.0;
+                    if (overdueFine > bookPrice) {
+                        overdueFine = bookPrice;
+                    }
+                    reasonsList.add("Overdue");
+                }
+
+                // Kiểm tra hư hỏng
+                double damageFine = 0;
+                if ("Rách nhẹ".equals(bookCondition)) {
+                    damageFine = bookPrice * 0.20;
+                    if (damageFine < 15000.0) {
+                        damageFine = 15000.0;
+                    }
+                    reasonsList.add("Damaged Book");
+                } else if ("Rách nặng".equals(bookCondition)) {
+                    damageFine = bookPrice * 0.80;
+                    reasonsList.add("Damaged Book");
+                }
+
+                fineAmount = overdueFine + damageFine;
+                double maxFine = bookPrice + 20000.0;
+                if (fineAmount > maxFine) {
+                    fineAmount = maxFine;
+                }
+            }
+
+            if (fineAmount > 0) {
+                String combinedReason = String.join(", ", reasonsList);
+                
+                // Kiểm tra xem đã có bản ghi phạt nào chưa
+                boolean fineExists = false;
+                String checkFineSql = "SELECT fine_id FROM fines WHERE borrow_detail_id = ?";
+                int existingFineId = 0;
+                try (PreparedStatement stmt = conn.prepareStatement(checkFineSql)) {
                     stmt.setInt(1, borrowDetailId);
-                    stmt.setDouble(2, fineAmount);
-                    stmt.executeUpdate();
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            fineExists = true;
+                            existingFineId = rs.getInt("fine_id");
+                        }
+                    }
+                }
+
+                if (fineExists) {
+                    String updateFineSql = "UPDATE fines SET amount = ?, reason = ?, status = 'Unpaid' WHERE fine_id = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(updateFineSql)) {
+                        stmt.setDouble(1, fineAmount);
+                        stmt.setString(2, combinedReason);
+                        stmt.setInt(3, existingFineId);
+                        stmt.executeUpdate();
+                    }
+                } else {
+                    String insertFineSql = "INSERT INTO fines (borrow_detail_id, amount, reason, status) VALUES (?, ?, ?, 'Unpaid')";
+                    try (PreparedStatement stmt = conn.prepareStatement(insertFineSql)) {
+                        stmt.setInt(1, borrowDetailId);
+                        stmt.setDouble(2, fineAmount);
+                        stmt.setString(3, combinedReason);
+                        stmt.executeUpdate();
+                    }
                 }
             }
 
@@ -395,8 +523,9 @@ public class index extends HttpServlet {
             Map<String, Object> oldLogData = new HashMap<>();
             oldLogData.put("status", status);
             Map<String, Object> newLogData = new HashMap<>();
-            newLogData.put("status", "Returned");
+            newLogData.put("status", newStatus);
             newLogData.put("return_date", returnDate.toString());
+            newLogData.put("book_condition", bookCondition);
 
             AuditLogger.log(conn, userId, AuditLogger.ActionType.UPDATE, "borrow_details", borrowDetailId, oldLogData, newLogData);
 
@@ -446,8 +575,23 @@ public class index extends HttpServlet {
                 throw new SQLException("Sách này đã được trả.");
             }
 
+            // Lấy giá sách từ bảng books
+            double bookPrice = 100000.00;
+            String priceSql = "SELECT b.price FROM borrow_details bd " +
+                              "JOIN book_copies c ON bd.copy_id = c.copy_id " +
+                              "JOIN books b ON c.book_id = b.book_id " +
+                              "WHERE bd.borrow_detail_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(priceSql)) {
+                stmt.setInt(1, borrowDetailId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        bookPrice = rs.getDouble("price");
+                    }
+                }
+            }
+
             // 1. Cập nhật chi tiết mượn sang 'Lost'
-            String updateDetailSql = "UPDATE borrow_details SET status = 'Lost' WHERE borrow_detail_id = ?";
+            String updateDetailSql = "UPDATE borrow_details SET status = 'Lost', book_condition = 'Mất sách' WHERE borrow_detail_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(updateDetailSql)) {
                 stmt.setInt(1, borrowDetailId);
                 stmt.executeUpdate();
@@ -460,11 +604,36 @@ public class index extends HttpServlet {
                 stmt.executeUpdate();
             }
 
-            // 3. Tạo khoản phạt mất sách (mặc định 100.000đ)
-            String insertFineSql = "INSERT INTO fines (borrow_detail_id, amount, reason, status) VALUES (?, 100000.00, 'Lost Book', 'Unpaid')";
-            try (PreparedStatement stmt = conn.prepareStatement(insertFineSql)) {
+            // 3. Tạo khoản phạt mất sách (Giá sách + 20.000đ)
+            double fineAmount = bookPrice + 20000.0;
+            
+            boolean fineExists = false;
+            String checkFineSql = "SELECT fine_id FROM fines WHERE borrow_detail_id = ?";
+            int existingFineId = 0;
+            try (PreparedStatement stmt = conn.prepareStatement(checkFineSql)) {
                 stmt.setInt(1, borrowDetailId);
-                stmt.executeUpdate();
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        fineExists = true;
+                        existingFineId = rs.getInt("fine_id");
+                    }
+                }
+            }
+
+            if (fineExists) {
+                String updateFineSql = "UPDATE fines SET amount = ?, reason = 'Lost Book', status = 'Unpaid' WHERE fine_id = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(updateFineSql)) {
+                    stmt.setDouble(1, fineAmount);
+                    stmt.setInt(2, existingFineId);
+                    stmt.executeUpdate();
+                }
+            } else {
+                String insertFineSql = "INSERT INTO fines (borrow_detail_id, amount, reason, status) VALUES (?, ?, 'Lost Book', 'Unpaid')";
+                try (PreparedStatement stmt = conn.prepareStatement(insertFineSql)) {
+                    stmt.setInt(1, borrowDetailId);
+                    stmt.setDouble(2, fineAmount);
+                    stmt.executeUpdate();
+                }
             }
 
             // Ghi Audit Log
@@ -496,24 +665,60 @@ public class index extends HttpServlet {
     private void handlePayFine(HttpServletRequest request, HttpServletResponse response, int userId) 
             throws IOException {
         int fineId = Integer.parseInt(request.getParameter("fineId"));
+        int discountRate = 0;
+        try {
+            discountRate = Integer.parseInt(request.getParameter("discountRate"));
+        } catch (Exception e) {
+            // Mặc định không giảm giá
+        }
 
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
 
-            String updateFineSql = "UPDATE fines SET status = 'Paid', paid_at = CURRENT_TIMESTAMP, received_by = ? WHERE fine_id = ?";
+            // 1. Lấy thông tin số tiền phạt và trạng thái hiện tại
+            double amount = 0;
+            String status = "";
+            String selectSql = "SELECT amount, status FROM fines WHERE fine_id = ? FOR UPDATE";
+            try (PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+                stmt.setInt(1, fineId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        amount = rs.getDouble("amount");
+                        status = rs.getString("status");
+                    }
+                }
+            }
+
+            if ("Paid".equals(status) || "Waived".equals(status)) {
+                throw new SQLException("Khoản phạt này đã được thanh toán hoặc miễn giảm từ trước.");
+            }
+
+            double finalAmount = amount * (1.0 - discountRate / 100.0);
+            String newStatus = (discountRate == 100) ? "Waived" : "Paid";
+
+            // 2. Cập nhật fines: lưu số tiền phạt thực thu, số tiền gốc và ghi chú miễn giảm
+            String updateFineSql = "UPDATE fines SET amount = ?, original_amount = ?, status = ?, paid_at = CURRENT_TIMESTAMP, received_by = ?, notes = CONCAT(IFNULL(notes, ''), ?) WHERE fine_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(updateFineSql)) {
-                stmt.setInt(1, userId);
-                stmt.setInt(2, fineId);
+                stmt.setDouble(1, finalAmount);
+                stmt.setDouble(2, amount);
+                stmt.setString(3, newStatus);
+                stmt.setInt(4, userId);
+                String discountNote = "\n[Thu tiền] Áp dụng miễn giảm " + discountRate + "%. Số tiền gốc: " + amount + "đ.";
+                stmt.setString(5, discountNote);
+                stmt.setInt(6, fineId);
                 stmt.executeUpdate();
             }
 
             // Ghi Audit Log
             Map<String, Object> oldLog = new HashMap<>();
-            oldLog.put("status", "Unpaid");
+            oldLog.put("status", status);
+            oldLog.put("amount", amount);
             Map<String, Object> newLog = new HashMap<>();
-            newLog.put("status", "Paid");
+            newLog.put("status", newStatus);
+            newLog.put("amount", finalAmount);
+            newLog.put("discount_rate", discountRate);
 
             AuditLogger.log(conn, userId, AuditLogger.ActionType.UPDATE, "fines", fineId, oldLog, newLog);
 
@@ -524,7 +729,7 @@ public class index extends HttpServlet {
             }
             e.printStackTrace();
             request.getSession().setAttribute("errorMsg", "Lỗi: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/borrow-return");
+            response.sendRedirect(request.getContextPath() + "/borrow-return?tab=fines");
             return;
         } finally {
             if (conn != null) {
@@ -532,7 +737,7 @@ public class index extends HttpServlet {
             }
         }
         request.getSession().setAttribute("successMsg", "Thanh toán phí phạt thành công!");
-        response.sendRedirect(request.getContextPath() + "/borrow-return");
+        response.sendRedirect(request.getContextPath() + "/borrow-return?tab=fines");
     }
 
     private void handleWaiveFine(HttpServletRequest request, HttpServletResponse response, int userId) 
@@ -566,7 +771,7 @@ public class index extends HttpServlet {
             }
             e.printStackTrace();
             request.getSession().setAttribute("errorMsg", "Lỗi: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/borrow-return");
+            response.sendRedirect(request.getContextPath() + "/borrow-return?tab=fines");
             return;
         } finally {
             if (conn != null) {
@@ -574,8 +779,83 @@ public class index extends HttpServlet {
             }
         }
         request.getSession().setAttribute("successMsg", "Đã miễn giảm phí phạt thành công!");
-        response.sendRedirect(request.getContextPath() + "/borrow-return");
+        response.sendRedirect(request.getContextPath() + "/borrow-return?tab=fines");
     }
+
+    private void handleUndoFine(HttpServletRequest request, HttpServletResponse response, int userId) 
+            throws IOException {
+        int fineId = Integer.parseInt(request.getParameter("fineId"));
+        String undoReason = request.getParameter("undoReason");
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            // 1. Lấy thông tin số tiền phạt, số tiền gốc và trạng thái hiện tại
+            double currentAmount = 0;
+            Double originalAmount = null;
+            String status = "";
+            String selectSql = "SELECT amount, original_amount, status FROM fines WHERE fine_id = ? FOR UPDATE";
+            try (PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+                stmt.setInt(1, fineId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        currentAmount = rs.getDouble("amount");
+                        double orig = rs.getDouble("original_amount");
+                        if (!rs.wasNull()) {
+                            originalAmount = orig;
+                        }
+                        status = rs.getString("status");
+                    }
+                }
+            }
+
+            if (!"Paid".equals(status) && !"Waived".equals(status)) {
+                throw new SQLException("Chỉ có thể hoàn tác khoản phạt đã đóng hoặc đã miễn giảm.");
+            }
+
+            double restoredAmount = (originalAmount != null) ? originalAmount : currentAmount;
+
+            // 2. Khôi phục trạng thái phạt về Unpaid, trả lại số tiền phạt gốc
+            String updateSql = "UPDATE fines SET status = 'Unpaid', amount = ?, original_amount = NULL, paid_at = NULL, received_by = NULL, notes = CONCAT(IFNULL(notes, ''), ?) WHERE fine_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+                stmt.setDouble(1, restoredAmount);
+                String undoNote = "\n[Hoàn tác] Lý do: " + undoReason + " (Người thực hiện: User #" + userId + ")";
+                stmt.setString(2, undoNote);
+                stmt.setInt(3, fineId);
+                stmt.executeUpdate();
+            }
+
+            // Ghi Audit Log với hành động RESTORE
+            Map<String, Object> oldLog = new HashMap<>();
+            oldLog.put("status", status);
+            oldLog.put("amount", currentAmount);
+            Map<String, Object> newLog = new HashMap<>();
+            newLog.put("status", "Unpaid");
+            newLog.put("amount", restoredAmount);
+            newLog.put("undo_reason", undoReason);
+
+            AuditLogger.log(conn, userId, AuditLogger.ActionType.RESTORE, "fines", fineId, oldLog, newLog);
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            request.getSession().setAttribute("errorMsg", "Lỗi hoàn tác: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/borrow-return?tab=fines");
+            return;
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+        }
+        request.getSession().setAttribute("successMsg", "Đã hoàn tác trạng thái khoản phạt thành công!");
+        response.sendRedirect(request.getContextPath() + "/borrow-return?tab=fines");
+    }
+
 
     private void handleDeleteBorrow(HttpServletRequest request, HttpServletResponse response, int userId) 
             throws IOException {
@@ -779,7 +1059,22 @@ public class index extends HttpServlet {
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false);
             try {
-                // 1. Update borrow_details
+                // 1. Lấy giá sách từ bảng books
+                double bookPrice = 100000.00;
+                String priceSql = "SELECT b.price FROM borrow_details bd " +
+                                  "JOIN book_copies c ON bd.copy_id = c.copy_id " +
+                                  "JOIN books b ON c.book_id = b.book_id " +
+                                  "WHERE bd.borrow_detail_id = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(priceSql)) {
+                    stmt.setInt(1, id);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            bookPrice = rs.getDouble("price");
+                        }
+                    }
+                }
+
+                // 2. Cập nhật chi tiết mượn
                 String sql = "UPDATE borrow_details SET borrow_date = ?, due_date = ?, return_date = ?, status = ?, book_condition = ?, notes = ? WHERE borrow_detail_id = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setDate(1, java.sql.Date.valueOf(borrowDateStr));
@@ -796,7 +1091,7 @@ public class index extends HttpServlet {
                     stmt.executeUpdate();
                 }
 
-                // 2. Update book copy status based on borrow detail status and condition
+                // 3. Cập nhật trạng thái sách trong bản sao
                 int copyId = 0;
                 String getCopySql = "SELECT copy_id FROM borrow_details WHERE borrow_detail_id = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(getCopySql)) {
@@ -812,7 +1107,7 @@ public class index extends HttpServlet {
                     String copyStatus = "Available";
                     if ("Lost".equals(status) || "Mất sách".equals(bookCondition)) {
                         copyStatus = "Lost";
-                    } else if ("Borrowing".equals(status)) {
+                    } else if ("Borrowing".equals(status) || "Overdue".equals(status)) {
                         copyStatus = "Borrowed";
                     } else if ("Rách nặng".equals(bookCondition)) {
                         copyStatus = "Damaged";
@@ -826,50 +1121,58 @@ public class index extends HttpServlet {
                     }
                 }
 
-                // 3 & 4. Calculate fines and combine them into a single record
-                double damageLostAmount = 0;
-                String damageLostReason = "";
-                if ("Mất sách".equals(bookCondition) || "Lost".equals(status)) {
-                    damageLostAmount = 200000.0;
-                    damageLostReason = "Lost Book";
-                } else if ("Rách nặng".equals(bookCondition)) {
-                    damageLostAmount = 100000.0;
-                    damageLostReason = "Damaged Book";
-                } else if ("Rách nhẹ".equals(bookCondition)) {
-                    damageLostAmount = 50000.0;
-                    damageLostReason = "Damaged Book";
-                }
+                // 4. Tính toán phí phạt theo quy tắc mới
+                double fineAmount = 0;
+                List<String> reasonsList = new ArrayList<>();
 
-                double overdueAmount = 0;
-                String overdueReason = "";
-                if (returnDateStr != null && !returnDateStr.trim().isEmpty()) {
-                    try {
-                        java.time.LocalDate due = java.time.LocalDate.parse(dueDateStr);
-                        java.time.LocalDate ret = java.time.LocalDate.parse(returnDateStr);
-                        long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(due, ret);
-                        if (daysBetween > 0) {
-                            overdueReason = "Overdue";
-                            if (daysBetween <= 3) {
-                                overdueAmount = daysBetween * 15000;
-                            } else if (daysBetween <= 5) {
-                                overdueAmount = daysBetween * 20000;
-                            } else {
-                                overdueAmount = daysBetween * 30000;
+                if ("Lost".equals(status) || "Mất sách".equals(bookCondition)) {
+                    fineAmount = bookPrice + 20000.0;
+                    reasonsList.add("Lost Book");
+                } else {
+                    // Kiểm tra quá hạn
+                    if (returnDateStr != null && !returnDateStr.trim().isEmpty()) {
+                        try {
+                            java.time.LocalDate due = java.time.LocalDate.parse(dueDateStr);
+                            java.time.LocalDate ret = java.time.LocalDate.parse(returnDateStr);
+                            long daysOverdue = java.time.temporal.ChronoUnit.DAYS.between(due, ret);
+                            if (daysOverdue > 0) {
+                                double overdueFine = daysOverdue * 5000.0;
+                                if (overdueFine > bookPrice) {
+                                    overdueFine = bookPrice;
+                                }
+                                reasonsList.add("Overdue");
+                                fineAmount += overdueFine;
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    }
+
+                    // Kiểm tra hư hỏng
+                    double damageFine = 0;
+                    if ("Rách nhẹ".equals(bookCondition)) {
+                        damageFine = bookPrice * 0.20;
+                        if (damageFine < 15000.0) {
+                            damageFine = 15000.0;
+                        }
+                        reasonsList.add("Damaged Book");
+                        fineAmount += damageFine;
+                    } else if ("Rách nặng".equals(bookCondition)) {
+                        damageFine = bookPrice * 0.80;
+                        reasonsList.add("Damaged Book");
+                        fineAmount += damageFine;
+                    }
+
+                    double maxFine = bookPrice + 20000.0;
+                    if (fineAmount > maxFine) {
+                        fineAmount = maxFine;
                     }
                 }
 
-                double totalFineAmount = damageLostAmount + overdueAmount;
-                if (totalFineAmount > 0) {
-                    List<String> reasonsList = new ArrayList<>();
-                    if (!damageLostReason.isEmpty()) reasonsList.add(damageLostReason);
-                    if (!overdueReason.isEmpty()) reasonsList.add(overdueReason);
+                if (fineAmount > 0) {
                     String combinedReason = String.join(", ", reasonsList);
 
-                    // Check if any fine already exists for this borrow detail
+                    // Kiểm tra xem đã có bản ghi phạt nào chưa
                     boolean fineExists = false;
                     String checkFineSql = "SELECT fine_id FROM fines WHERE borrow_detail_id = ?";
                     int existingFineId = 0;
@@ -886,7 +1189,7 @@ public class index extends HttpServlet {
                     if (fineExists) {
                         String updateFineSql = "UPDATE fines SET amount = ?, reason = ?, notes = ? WHERE fine_id = ?";
                         try (PreparedStatement stmt = conn.prepareStatement(updateFineSql)) {
-                            stmt.setDouble(1, totalFineAmount);
+                            stmt.setDouble(1, fineAmount);
                             stmt.setString(2, combinedReason);
                             stmt.setString(3, notes);
                             stmt.setInt(4, existingFineId);
@@ -896,7 +1199,7 @@ public class index extends HttpServlet {
                         String insertFineSql = "INSERT INTO fines (borrow_detail_id, amount, reason, status, notes) VALUES (?, ?, ?, 'Unpaid', ?)";
                         try (PreparedStatement stmt = conn.prepareStatement(insertFineSql)) {
                             stmt.setInt(1, id);
-                            stmt.setDouble(2, totalFineAmount);
+                            stmt.setDouble(2, fineAmount);
                             stmt.setString(3, combinedReason);
                             stmt.setString(4, notes);
                             stmt.executeUpdate();

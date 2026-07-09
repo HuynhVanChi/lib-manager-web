@@ -37,9 +37,9 @@
                 <div class="mb-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return?tab=fines">Mượn trả & Vi phạm</a></li>
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return/fine-detail?id=${item.fine_id}">Chi tiết phạt #${item.fine_id}</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa khoản phạt</li>
+                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return?tab=fines"><i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm</a></li>
+                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return/fine-detail?id=${item.fine_id}"><i class="fa-solid fa-file-invoice me-1"></i>Chi tiết phạt #${item.fine_id}</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><i class="fa-solid fa-pen me-1"></i>Chỉnh sửa khoản phạt</li>
                         </ol>
                     </nav>
                 </div>

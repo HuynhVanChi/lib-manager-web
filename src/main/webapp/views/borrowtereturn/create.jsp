@@ -16,35 +16,50 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom dropdown styles */
-        .dropdown-menu {
-            border: 1px solid #E5E7EB !important;
-            border-radius: 8px !important;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important;
+        /* Custom dropdown styles to avoid bootstrap conflict */
+        .search-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
             display: none;
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
             max-height: 250px;
             overflow-y: auto;
+            padding: 0;
+            margin-top: 4px;
         }
-        .dropdown-item {
-            transition: background-color 0.2s !important;
-            cursor: pointer;
+        .search-dropdown-item {
+            width: 100%;
+            padding: 10px 16px;
+            text-align: left;
+            background: none;
+            border: none;
             border-bottom: 1px solid #F3F4F6;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            display: block;
         }
-        .dropdown-item:last-child {
+        .search-dropdown-item:last-child {
             border-bottom: none;
         }
-        .dropdown-item:hover {
-            background-color: #F3F4F6 !important;
+        .search-dropdown-item:hover {
+            background-color: #F3F4F6;
         }
-        .dropdown-item:active {
-            background-color: var(--primary) !important;
-            color: white !important;
+        .preset-btn {
+            border-radius: 6px;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            transition: all 0.2s ease;
         }
-        .dropdown-item:active .text-dark {
-            color: white !important;
-        }
-        .dropdown-item:active .text-muted {
-            color: rgba(255,255,255,0.8) !important;
+        .preset-btn:hover {
+            background-color: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
         }
     </style>
 </head>
@@ -69,8 +84,14 @@
                 <div class="mb-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return">Mượn trả & Vi phạm</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Tạo phiếu mượn</li>
+                            <li class="breadcrumb-item">
+                                <a href="${pageContext.request.contextPath}/borrow-return">
+                                    <i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <i class="fa-solid fa-file-invoice me-1"></i>Tạo phiếu mượn
+                            </li>
                         </ol>
                     </nav>
                 </div>
@@ -86,13 +107,13 @@
                             <div class="section-divider">Thông tin phiếu mượn</div>
                             
                             <div class="mb-3">
-                                <label for="readerSearch" class="form-label">Chọn Độc Giả <span class="required-mark">*</span></label>
+                                <label for="readerSearch" class="form-label fw-medium">Chọn Độc Giả <span class="required-mark">*</span></label>
                                 <div class="position-relative">
                                     <input type="text" id="readerSearch" class="form-control" placeholder="Tìm kiếm độc giả theo tên, mã, email, số điện thoại..." autocomplete="off" required>
                                     <input type="hidden" name="readerId" id="readerId" required>
-                                    <div id="readerDropdown" class="dropdown-menu w-100 shadow-sm border p-0 overflow-auto">
+                                    <div id="readerDropdown" class="search-dropdown-menu shadow-sm border">
                                         <c:forEach var="r" items="${readerList}">
-                                            <button type="button" class="dropdown-item py-2 border-bottom reader-option text-start d-block w-100" 
+                                            <button type="button" class="search-dropdown-item reader-option" 
                                                     data-id="${r.reader_id}" 
                                                     data-name="${r.full_name}" 
                                                     data-email="${r.email}" 
@@ -107,13 +128,13 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="copySearch" class="form-label">Chọn Sách Cần Mượn <span class="required-mark">*</span></label>
+                                <label for="copySearch" class="form-label fw-medium">Chọn Sách Cần Mượn <span class="required-mark">*</span></label>
                                 <div class="position-relative">
                                     <input type="text" id="copySearch" class="form-control" placeholder="Tìm kiếm sách theo mã bản sao, tên sách..." autocomplete="off" required>
                                     <input type="hidden" name="copyId" id="copyId" required>
-                                    <div id="copyDropdown" class="dropdown-menu w-100 shadow-sm border p-0 overflow-auto">
+                                    <div id="copyDropdown" class="search-dropdown-menu shadow-sm border">
                                         <c:forEach var="c" items="${availableCopies}">
-                                            <button type="button" class="dropdown-item py-2 border-bottom copy-option text-start d-block w-100" 
+                                            <button type="button" class="search-dropdown-item copy-option" 
                                                     data-id="${c.copy_id}" 
                                                     data-title="${c.title}" 
                                                     data-barcode="${c.barcode}">
@@ -126,17 +147,22 @@
                                 <div class="form-hint">Nhấp vào ô và gõ để tìm theo mã hoặc tiêu đề sách.</div>
                             </div>
                             
-                            <div class="mb-4">
-                                <label for="durationDays" class="form-label">Thời Hạn Mượn <span class="required-mark">*</span></label>
-                                <select class="form-select" name="durationDays" id="durationDays" required>
-                                    <option value="3">3 Ngày (Mượn ngắn hạn)</option>
-                                    <option value="5">5 Ngày</option>
-                                    <option value="7">7 Ngày</option>
-                                    <option value="14" selected>14 Ngày (Mặc định)</option>
-                                    <option value="30">30 Ngày</option>
-                                    <option value="60">60 Ngày (Học tập chuyên sâu)</option>
-                                </select>
-                                <div class="form-hint">Chọn thời hạn mượn phù hợp. Quá thời gian này sẽ tự động tính phí phạt quá hạn.</div>
+                            <div class="mb-4" style="max-width: 450px;">
+                                <label class="form-label fw-medium">Thời hạn mượn (tối đa 3 tháng) <span class="required-mark">*</span></label>
+                                <div class="d-flex gap-2 align-items-center mb-2">
+                                    <input type="number" id="durationValue" class="form-control" style="width: 100px;" min="1" max="90" value="14" required>
+                                    <select id="durationUnit" class="form-select" style="width: 120px;">
+                                        <option value="days" selected>Ngày</option>
+                                        <option value="months">Tháng</option>
+                                    </select>
+                                    <input type="hidden" name="durationDays" id="durationDays" value="14">
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="7" data-unit="days">7 ngày</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="14" data-unit="days">14 ngày</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="1" data-unit="months">1 tháng</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm preset-btn" data-val="3" data-unit="months">3 tháng</button>
+                                </div>
                             </div>
                             
                             <div class="d-flex gap-2 justify-content-end mt-4">
@@ -202,7 +228,7 @@
                     e.preventDefault();
                     e.stopPropagation();
                     const id = this.getAttribute("data-id");
-                    const name = this.querySelector(".fw-semibold").textContent;
+                    const name = this.getAttribute("data-name");
                     readerSearch.value = name;
                     readerId.value = id;
                     readerDropdown.style.display = "none";
@@ -239,9 +265,9 @@
                     e.preventDefault();
                     e.stopPropagation();
                     const id = this.getAttribute("data-id");
-                    const name = this.querySelector(".fw-semibold").textContent;
+                    const title = this.getAttribute("data-title");
                     const barcode = this.getAttribute("data-barcode");
-                    copySearch.value = barcode + " - " + name;
+                    copySearch.value = barcode + " - " + title;
                     copyId.value = id;
                     copyDropdown.style.display = "none";
                 });
@@ -255,6 +281,59 @@
                 if (!copySearch.contains(e.target) && !copyDropdown.contains(e.target)) {
                     copyDropdown.style.display = "none";
                 }
+            });
+
+            // --- 3. XỬ LÝ THỜI HẠN MƯỢN ---
+            const durationValue = document.getElementById("durationValue");
+            const durationUnit = document.getElementById("durationUnit");
+            const durationDays = document.getElementById("durationDays");
+            const presetBtns = document.querySelectorAll(".preset-btn");
+
+            function updateDurationDays() {
+                let val = parseInt(durationValue.value) || 1;
+                const unit = durationUnit.value;
+                if (unit === "months") {
+                    if (val > 3) {
+                        val = 3;
+                        durationValue.value = 3;
+                    }
+                    durationDays.value = val * 30;
+                } else {
+                    if (val > 90) {
+                        val = 90;
+                        durationValue.value = 90;
+                    }
+                    durationDays.value = val;
+                }
+            }
+
+            durationValue.addEventListener("input", updateDurationDays);
+            durationUnit.addEventListener("change", function() {
+                const unit = durationUnit.value;
+                if (unit === "months") {
+                    durationValue.setAttribute("max", "3");
+                    if (parseInt(durationValue.value) > 3) {
+                        durationValue.value = 3;
+                    }
+                } else {
+                    durationValue.setAttribute("max", "90");
+                }
+                updateDurationDays();
+            });
+
+            presetBtns.forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const val = this.getAttribute("data-val");
+                    const unit = this.getAttribute("data-unit");
+                    durationValue.value = val;
+                    durationUnit.value = unit;
+                    if (unit === "months") {
+                        durationValue.setAttribute("max", "3");
+                    } else {
+                        durationValue.setAttribute("max", "90");
+                    }
+                    updateDurationDays();
+                });
             });
         });
     </script>

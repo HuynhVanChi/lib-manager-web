@@ -51,6 +51,62 @@
             border-bottom: 3px solid var(--primary);
             font-weight: 600;
         }
+
+        /* Nút tác vụ nhanh tùy biến */
+        .btn-success-custom {
+            background-color: #10B981 !important;
+            border-color: #10B981 !important;
+            color: #fff !important;
+            border-radius: 8px;
+            font-size: .8rem !important;
+            font-weight: 600;
+            transition: all .2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+        .btn-success-custom:hover {
+            background-color: #059669 !important;
+            border-color: #059669 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+        }
+        .btn-danger-custom {
+            background-color: #EF4444 !important;
+            border-color: #EF4444 !important;
+            color: #fff !important;
+            border-radius: 8px;
+            font-size: .8rem !important;
+            font-weight: 600;
+            transition: all .2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+        .btn-danger-custom:hover {
+            background-color: #DC2626 !important;
+            border-color: #DC2626 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+        }
+        .btn-success-custom:disabled, .btn-danger-custom:disabled,
+        .btn-success-custom.disabled, .btn-danger-custom.disabled {
+            background-color: #E5E7EB !important;
+            border-color: #E5E7EB !important;
+            color: #9CA3AF !important;
+            pointer-events: none;
+            box-shadow: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body class="m-0 p-0 bg-light">
@@ -174,45 +230,45 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="card-body p-4">
+                    <div class="card-body p-0">
                         <div class="tab-content" id="libraryTabsContent">
                             
                             <!-- TAB 1: MƯỢN TRẢ SÁCH -->
                             <div class="tab-pane fade show active" id="borrow-content" role="tabpanel" aria-labelledby="borrow-tab">
-                                <div class="toolbar d-flex align-items-center flex-wrap gap-2 mb-4">
-                                    <div class="search-wrapper">
-                                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                                        <input type="text" id="borrowSearch" class="search-input" placeholder="Tìm theo độc giả, email, mã sách...">
+                                <div class="p-3 border-bottom bg-white rounded-top-3">
+                                    <div class="toolbar d-flex align-items-center flex-wrap gap-2 m-0">
+                                        <div class="search-wrapper">
+                                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                            <input type="text" id="borrowSearch" class="search-input" placeholder="Tìm theo độc giả, email, mã sách...">
+                                        </div>
+                                        <select id="borrowStatusFilter" class="filter-select" style="width: 180px;">
+                                            <option value="">Tất cả trạng thái</option>
+                                            <option value="Borrowing">Đang mượn</option>
+                                            <option value="Returned">Đã trả</option>
+                                            <option value="Overdue">Quá hạn</option>
+                                            <option value="Lost">Báo mất</option>
+                                        </select>
+                                        <button type="button" id="btnFilterBorrow" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow" style="height: 40px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa-solid fa-filter me-1"></i> Lọc
+                                        </button>
+                                        <a href="${pageContext.request.contextPath}/borrow-return/create" class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift ms-auto text-decoration-none" style="height: 40px;">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Tạo Phiếu Mượn</span>
+                                        </a>
                                     </div>
-                                    <select id="borrowStatusFilter" class="filter-select" style="width: 180px;">
-                                        <option value="">Tất cả trạng thái</option>
-                                        <option value="Borrowing">Đang mượn</option>
-                                        <option value="Returned">Đã trả</option>
-                                        <option value="Overdue">Quá hạn</option>
-                                        <option value="Lost">Báo mất</option>
-                                    </select>
-                                    <button type="button" id="btnFilterBorrow" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow" style="height: 40px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fa-solid fa-filter me-1"></i> Lọc
-                                    </button>
-                                    <a href="${pageContext.request.contextPath}/borrow-return/create" class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift ms-auto text-decoration-none" style="height: 40px;">
-                                        <i class="fa-solid fa-plus"></i>
-                                        <span>Tạo Phiếu Mượn</span>
-                                    </a>
                                 </div>
 
                                 <div class="table-responsive">
                                     <table class="table-custom">
                                         <thead>
                                             <tr>
-                                                <th style="width: 100px;">Mã Phiếu</th>
+                                                <th style="width: 80px;">ID</th>
                                                 <th>Độc Giả</th>
-                                                <th>Tên Sách</th>
-                                                <th class="text-nowrap">Mã sách</th>
-                                                <th>Ngày Mượn</th>
-                                                <th>Hạn Trả</th>
-                                                <th>Ngày Trả</th>
-                                                <th>Trạng Thái</th>
-                                                <th class="text-end">Hành Động</th>
+                                                <th>Sách mượn</th>
+                                                <th>Thời hạn mượn</th>
+                                                <th class="text-center">Trạng Thái</th>
+                                                <th class="text-center" style="width: 180px;">Tác vụ</th>
+                                                <th class="text-center" style="width: 100px;">Hành động</th>
                                             </tr>
                                         </thead>
                                         <tbody id="borrowTableBody">
@@ -225,54 +281,71 @@
                                                             <span class="text-muted small text-nowrap">${item.reader_email}</span>
                                                         </div>
                                                     </td>
-                                                    <td style="max-width: 250px;" class="text-truncate fw-medium">${item.book_title}</td>
-                                                    <td class="text-nowrap"><code class="text-dark bg-light px-2 py-1 rounded border small">${item.barcode}</code></td>
-                                                    <td class="text-nowrap">${item.borrow_date}</td>
-                                                    <td class="text-nowrap">${item.due_date}</td>
-                                                    <td class="text-nowrap">
-                                                        <c:choose>
-                                                            <c:when test="${not empty item.return_date}">
-                                                                ${item.return_date}
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span class="text-muted">—</span>
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                    <td>
+                                                        <div class="d-flex flex-column">
+                                                            <span class="fw-medium text-dark">${item.book_title}</span>
+                                                            <span class="text-muted small">Mã: <code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></span>
+                                                        </div>
                                                     </td>
                                                     <td class="text-nowrap">
-                                                        <c:choose>
-                                                            <c:when test="${item.status == 'Borrowing'}">
-                                                                <span class="badge-status badge-suspended text-nowrap">Đang mượn</span>
-                                                            </c:when>
-                                                            <c:when test="${item.status == 'Returned'}">
-                                                                <span class="badge-status badge-active text-nowrap">Đã trả</span>
-                                                            </c:when>
-                                                            <c:when test="${item.status == 'Overdue'}">
-                                                                <span class="badge-status badge-danger-custom text-nowrap">Quá hạn</span>
-                                                            </c:when>
-                                                            <c:when test="${item.status == 'Lost'}">
-                                                                <span class="badge-status badge-expired text-nowrap">Báo mất</span>
-                                                            </c:when>
-                                                        </c:choose>
+                                                        <div class="d-flex flex-column">
+                                                            <span>${item.borrow_date}</span>
+                                                            <span class="text-muted small">Hạn: ${item.due_date}</span>
+                                                        </div>
                                                     </td>
-                                                    <td class="text-end text-nowrap">
-                                                        <div class="d-flex justify-content-end gap-1">
+                                                    <td class="text-nowrap text-center">
+                                                        <c:choose>
+                                                             <c:when test="${item.status == 'Borrowing'}">
+                                                                 <span class="badge-status badge-suspended text-nowrap">Đang mượn</span>
+                                                             </c:when>
+                                                             <c:when test="${item.status == 'Returned'}">
+                                                                 <span class="badge-status badge-active text-nowrap">Đã trả - ${item.return_date}</span>
+                                                             </c:when>
+                                                             <c:when test="${item.status == 'Overdue'}">
+                                                                 <span class="badge-status badge-danger-custom text-nowrap">Quá hạn</span>
+                                                             </c:when>
+                                                             <c:when test="${item.status == 'Lost'}">
+                                                                 <span class="badge-status badge-expired text-nowrap">Báo mất</span>
+                                                             </c:when>
+                                                         </c:choose>
+                                                    </td>
+                                                    <td class="text-center text-nowrap">
+                                                        <div class="d-flex justify-content-center gap-2">
+                                                            <c:choose>
+                                                                 <c:when test="${item.status == 'Returned' || item.status == 'Lost'}">
+                                                                     <button type="button" class="btn btn-success-custom btn-sm disabled" disabled>
+                                                                         <i class="fa-solid fa-square-check"></i> Trả
+                                                                     </button>
+                                                                     <button type="button" class="btn btn-danger-custom btn-sm disabled" disabled>
+                                                                         <i class="fa-solid fa-triangle-exclamation"></i> Mất
+                                                                     </button>
+                                                                 </c:when>
+                                                                 <c:otherwise>
+                                                                     <button type="button" class="btn btn-success-custom btn-sm" data-bs-toggle="modal" data-bs-target="#returnBookModal" data-id="${item.borrow_detail_id}" data-reader="${item.reader_name}" data-book="${item.book_title}">
+                                                                         <i class="fa-solid fa-square-check"></i> Trả
+                                                                     </button>
+                                                                     <button type="button" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#lostBookModal" data-id="${item.borrow_detail_id}" data-reader="${item.reader_name}" data-book="${item.book_title}">
+                                                                         <i class="fa-solid fa-triangle-exclamation"></i> Mất
+                                                                     </button>
+                                                                 </c:otherwise>
+                                                             </c:choose>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center text-nowrap">
+                                                        <div class="d-flex justify-content-center gap-1">
                                                             <a href="${pageContext.request.contextPath}/borrow-return/detail?id=${item.borrow_detail_id}" class="btn-action" title="Xem chi tiết">
                                                                 <i class="fa-solid fa-eye"></i>
                                                             </a>
                                                             <a href="${pageContext.request.contextPath}/borrow-return/edit?id=${item.borrow_detail_id}" class="btn-action" title="Chỉnh sửa">
                                                                 <i class="fa-solid fa-pen"></i>
                                                             </a>
-                                                            <button type="button" class="btn-action" title="Xóa" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${item.borrow_detail_id}" data-name="Phiếu mượn #${item.borrow_detail_id}" data-type="borrow">
-                                                                <i class="fa-solid fa-trash text-muted"></i>
-                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
                                             </c:forEach>
                                             <c:if test="${empty borrowList}">
                                                 <tr>
-                                                    <td colspan="9" class="text-center py-4">
+                                                    <td colspan="7" class="text-center py-4">
                                                         <div class="empty-state py-4">
                                                             <div class="icon">
                                                                 <i class="fa-regular fa-folder-open"></i>
@@ -290,43 +363,54 @@
                             
                             <!-- TAB 2: QUẢN LÝ VI PHẠM & PHÍ PHẠT -->
                             <div class="tab-pane fade" id="fines-content" role="tabpanel" aria-labelledby="fines-tab">
-                                <div class="toolbar d-flex align-items-center flex-wrap gap-2 mb-4">
-                                    <div class="search-wrapper">
-                                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                                        <input type="text" id="finesSearch" class="search-input" placeholder="Tìm theo tên độc giả, lý do phạt...">
+                                <div class="p-3 border-bottom bg-white rounded-top-3">
+                                    <div class="toolbar d-flex align-items-center flex-wrap gap-2 m-0">
+                                        <div class="search-wrapper">
+                                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                            <input type="text" id="finesSearch" class="search-input" placeholder="Tìm theo tên độc giả, lý do phạt...">
+                                        </div>
+                                        <select id="finesStatusFilter" class="filter-select" style="width: 220px;">
+                                            <option value="">Tất cả trạng thái phạt</option>
+                                            <option value="Unpaid">Chưa đóng phạt</option>
+                                            <option value="Paid">Đã đóng phạt</option>
+                                            <option value="Waived">Đã miễn giảm</option>
+                                        </select>
+                                        <button type="button" id="btnFilterFines" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow" style="height: 40px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa-solid fa-filter me-1"></i> Lọc
+                                        </button>
                                     </div>
-                                    <select id="finesStatusFilter" class="filter-select" style="width: 220px;">
-                                        <option value="">Tất cả trạng thái phạt</option>
-                                        <option value="Unpaid">Chưa đóng phạt</option>
-                                        <option value="Paid">Đã đóng phạt</option>
-                                        <option value="Waived">Đã miễn giảm</option>
-                                    </select>
-                                    <button type="button" id="btnFilterFines" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow" style="height: 40px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fa-solid fa-filter me-1"></i> Lọc
-                                    </button>
                                 </div>
 
                                 <div class="table-responsive">
                                     <table class="table-custom">
                                         <thead>
                                             <tr>
-                                                <th style="width: 100px;">Mã Phạt</th>
+                                                <th style="width: 80px;">ID</th>
                                                 <th>Độc Giả</th>
-                                                <th>Tên Sách</th>
+                                                <th>Sách mượn</th>
                                                 <th>Số Tiền Phạt</th>
                                                 <th>Lý Do</th>
-                                                <th>Ngày Đóng</th>
                                                 <th>Người Thu</th>
-                                                <th>Trạng Thái</th>
-                                                <th class="text-end">Hành Động</th>
+                                                <th class="text-center">Trạng Thái</th>
+                                                <th class="text-center" style="width: 180px;">Hành Động</th>
                                             </tr>
                                         </thead>
                                         <tbody id="finesTableBody">
                                             <c:forEach var="fine" items="${fineList}">
                                                 <tr class="fine-row" data-status="${fine.status}">
                                                     <td class="fw-semibold">#${fine.fine_id}</td>
-                                                    <td class="text-nowrap"><span class="fw-medium text-dark text-nowrap">${fine.reader_name}</span></td>
-                                                    <td style="max-width: 220px;" class="text-truncate fw-medium">${fine.book_title}</td>
+                                                    <td class="text-nowrap">
+                                                        <div class="d-flex flex-column">
+                                                            <span class="fw-medium text-dark text-nowrap">${fine.reader_name}</span>
+                                                            <span class="text-muted small text-nowrap">${fine.reader_email}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex flex-column">
+                                                            <span class="fw-medium text-dark">${fine.book_title}</span>
+                                                            <span class="text-muted small">Mã: <code class="text-dark bg-light px-2 py-0.5 rounded border small">${fine.barcode}</code></span>
+                                                        </div>
+                                                    </td>
                                                     <td class="text-danger fw-bold">
                                                         <fmt:formatNumber value="${fine.amount}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                                     </td>
@@ -350,16 +434,6 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </td>
-                                                    <td class="text-nowrap">
-                                                        <c:choose>
-                                                            <c:when test="${not empty fine.paid_at}">
-                                                                <fmt:formatDate value="${fine.paid_at}" pattern="yyyy-MM-dd"/>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span class="text-muted">—</span>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </td>
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${not empty fine.receiver_name}">
@@ -370,37 +444,43 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </td>
-                                                    <td class="text-nowrap">
+                                                    <td class="text-nowrap text-center">
                                                         <c:choose>
                                                             <c:when test="${fine.status == 'Unpaid'}">
                                                                 <span class="badge-status badge-danger-custom text-nowrap">Chưa đóng</span>
                                                             </c:when>
                                                             <c:when test="${fine.status == 'Paid'}">
-                                                                <span class="badge-status badge-active text-nowrap">Đã đóng</span>
+                                                                <span class="badge-status badge-active text-nowrap">Đã đóng - <fmt:formatDate value="${fine.paid_at}" pattern="yyyy-MM-dd"/></span>
                                                             </c:when>
                                                             <c:when test="${fine.status == 'Waived'}">
-                                                                <span class="badge-status badge-info-custom text-nowrap">Đã miễn giảm</span>
+                                                                <span class="badge-status badge-info-custom text-nowrap">Đã miễn giảm - <fmt:formatDate value="${fine.paid_at}" pattern="yyyy-MM-dd"/></span>
                                                             </c:when>
                                                         </c:choose>
                                                     </td>
-                                                    <td class="text-end text-nowrap">
-                                                        <div class="d-flex justify-content-end gap-1">
+                                                    <td class="text-center text-nowrap">
+                                                        <div class="d-flex justify-content-center gap-1">
                                                             <a href="${pageContext.request.contextPath}/borrow-return/fine-detail?id=${fine.fine_id}" class="btn-action" title="Xem chi tiết">
                                                                 <i class="fa-solid fa-eye"></i>
                                                             </a>
-                                                            <a href="${pageContext.request.contextPath}/borrow-return/fine-edit?id=${fine.fine_id}" class="btn-action" title="Chỉnh sửa">
-                                                                <i class="fa-solid fa-pen"></i>
-                                                            </a>
-                                                            <button type="button" class="btn-action" title="Xóa" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${fine.fine_id}" data-name="Khoản phạt #${fine.fine_id}" data-type="fine">
-                                                                <i class="fa-solid fa-trash text-muted"></i>
-                                                            </button>
+                                                            <c:choose>
+                                                                <c:when test="${fine.status == 'Unpaid'}">
+                                                                    <button type="button" class="btn btn-success-custom btn-sm" data-bs-toggle="modal" data-bs-target="#collectFineModal" data-id="${fine.fine_id}" data-reader="${fine.reader_name}" data-book="${fine.book_title}" data-amount="${fine.amount}">
+                                                                        <i class="fa-solid fa-coins"></i> Thu tiền
+                                                                    </button>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#undoFineModal" data-id="${fine.fine_id}" data-reader="${fine.reader_name}" data-amount="${fine.amount}">
+                                                                        <i class="fa-solid fa-rotate-left"></i> Hoàn tác
+                                                                    </button>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </div>
                                                     </td>
                                                 </tr>
                                             </c:forEach>
                                             <c:if test="${empty fineList}">
                                                 <tr>
-                                                    <td colspan="9" class="text-center py-4">
+                                                    <td colspan="8" class="text-center py-4">
                                                         <div class="empty-state py-4">
                                                             <div class="icon">
                                                                 <i class="fa-regular fa-folder-open"></i>
@@ -415,7 +495,6 @@
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -509,6 +588,178 @@
                         </button>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TRẢ SÁCH NHANH -->
+    <div class="modal fade" id="returnBookModal" tabindex="-1" aria-labelledby="returnBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="${pageContext.request.contextPath}/borrow-return/return" method="POST" class="m-0">
+                    <input type="hidden" name="borrowDetailId" id="return-detail-id" value="">
+                    <div class="modal-header d-flex align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                <i class="fa-solid fa-square-check"></i>
+                            </div>
+                            <h6 class="modal-title fw-bold m-0" id="returnBookModalLabel">Trả Sách & Đánh Giá Hiện Trạng</h6>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <p class="mb-1 text-muted small">Độc gia:</p>
+                            <p class="fw-semibold text-dark mb-2" id="return-reader-name">—</p>
+                            <p class="mb-1 text-muted small">Sách mượn:</p>
+                            <p class="fw-semibold text-dark mb-3" id="return-book-title">—</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bookCondition" class="form-label fw-medium">Tình trạng sách khi trả <span class="required-mark">*</span></label>
+                            <select class="form-select" name="bookCondition" id="bookCondition" required>
+                                <option value="Bình thường" selected>Bình thường (Không phạt)</option>
+                                <option value="Rách nhẹ">Rách nhẹ (Phạt 20% giá sách, tối thiểu 15k)</option>
+                                <option value="Rách nặng">Rách nặng (Phạt 80% giá sách)</option>
+                                <option value="Mất sách">Báo mất sách (Phạt Giá sách + 20k)</option>
+                            </select>
+                        </div>
+                        <div class="mb-0">
+                            <label for="returnNotes" class="form-label fw-medium">Ghi chú thêm</label>
+                            <textarea class="form-control" name="notes" id="returnNotes" rows="2" placeholder="Nhập ghi chú chi tiết về hiện trạng..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-success-custom hover-lift">
+                            <i class="fa-solid fa-check me-1"></i> Xác Nhận Trả Sách
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BÁO MẤT SÁCH NHANH -->
+    <div class="modal fade" id="lostBookModal" tabindex="-1" aria-labelledby="lostBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="${pageContext.request.contextPath}/borrow-return/lost" method="POST" class="m-0">
+                    <input type="hidden" name="borrowDetailId" id="lost-detail-id" value="">
+                    <div class="modal-header d-flex align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <h6 class="modal-title fw-bold m-0" id="lostBookModalLabel">Xác nhận báo mất sách</h6>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-1" style="font-size: .9rem;">Bạn có chắc chắn muốn báo mất cuốn sách này?</p>
+                        <p class="fw-bold mb-1 text-dark" id="lost-book-title">—</p>
+                        <p class="text-muted small mb-3">Người mượn: <span class="fw-semibold text-dark" id="lost-reader-name">—</span></p>
+                        <div class="rounded-3 p-3" style="background: #FEF2F2; border: 1px solid #FECACA; font-size: .82rem; color: #991B1B;">
+                            <i class="fa-solid fa-circle-info me-1"></i> Độc giả sẽ bị phạt <strong>Giá sách + 20.000đ</strong>. Hệ thống sẽ tự động tạo một khoản phí phạt ở trạng thái Chưa thanh toán.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger hover-lift">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> Xác Nhận Báo Mất
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THU TIỀN PHẠT NHANH -->
+    <div class="modal fade" id="collectFineModal" tabindex="-1" aria-labelledby="collectFineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="${pageContext.request.contextPath}/borrow-return/pay-fine" method="POST" class="m-0">
+                    <input type="hidden" name="fineId" id="collect-fine-id" value="">
+                    <div class="modal-header d-flex align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <h6 class="modal-title fw-bold m-0" id="collectFineModalLabel">Thu Tiền Phạt Vi Phạm</h6>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <p class="mb-1 text-muted small">Độc giả:</p>
+                            <p class="fw-semibold text-dark mb-2" id="collect-reader-name">—</p>
+                            <p class="mb-1 text-muted small">Sách liên quan:</p>
+                            <p class="fw-semibold text-dark mb-2" id="collect-book-title">—</p>
+                            <p class="mb-1 text-muted small">Số tiền phạt gốc:</p>
+                            <p class="fw-bold text-danger mb-3" style="font-size: 1.15rem;" id="collect-original-amount">—</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="discountRate" class="form-label fw-medium">Chính sách miễn giảm / Chiết khấu <span class="required-mark">*</span></label>
+                            <select class="form-select" name="discountRate" id="discountRate" required>
+                                <option value="0" selected>0% - Thu đúng số tiền gốc</option>
+                                <option value="20">20% - Giảm 20% số tiền gốc</option>
+                                <option value="50">50% - Giảm nửa giá trị phạt</option>
+                                <option value="100">100% - Miễn đóng phạt hoàn toàn</option>
+                            </select>
+                        </div>
+                        <div class="rounded-3 p-3 bg-light border">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-medium text-secondary">Số tiền thực tế thu:</span>
+                                <span class="fw-bold text-success" style="font-size: 1.25rem;" id="collect-final-amount">—</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-success-custom hover-lift">
+                            <i class="fa-solid fa-coins me-1"></i> Xác Nhận Thu Tiền
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL HOÀN TÁC ĐÓNG PHẠT -->
+    <div class="modal fade" id="undoFineModal" tabindex="-1" aria-labelledby="undoFineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="${pageContext.request.contextPath}/borrow-return/undo-fine" method="POST" class="m-0">
+                    <input type="hidden" name="fineId" id="undo-fine-id" value="">
+                    <div class="modal-header d-flex align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </div>
+                            <h6 class="modal-title fw-bold m-0" id="undoFineModalLabel">Hoàn Tác Thanh Toán Phạt</h6>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <p class="mb-1" style="font-size: .9rem;">Bạn có chắc chắn muốn hoàn tác việc thu tiền phạt của độc giả:</p>
+                            <p class="fw-bold mb-2 text-dark" id="undo-reader-name">—</p>
+                            <p class="text-muted small">Số tiền phạt: <strong class="text-danger" id="undo-fine-amount">—</strong></p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="undoReason" class="form-label fw-medium">Lý do hoàn tác <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" name="undoReason" id="undoReason" placeholder="Nhập lý do hoàn tác (bắt buộc)..." required>
+                        </div>
+                        <div class="rounded-3 p-3" style="background: #FFF7ED; border: 1px solid #FED7AA; font-size: .82rem; color: #C2410C;">
+                            <i class="fa-solid fa-circle-info me-1"></i> Khoản phạt này sẽ được khôi phục về trạng thái <strong>Chưa thanh toán</strong> và khôi phục số tiền gốc ban đầu. Giao dịch này sẽ được ghi nhận vào nhật ký hệ thống.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger hover-lift">
+                            <i class="fa-solid fa-rotate-left me-1"></i> Xác Nhận Hoàn Tác
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -619,6 +870,88 @@
                     } else {
                         deleteForm.action = '${pageContext.request.contextPath}/borrow-return/delete';
                     }
+                });
+            }
+
+            // Cấu hình modal trả sách nhanh
+            const returnBookModalEl = document.getElementById('returnBookModal');
+            if (returnBookModalEl) {
+                returnBookModalEl.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const id = button.getAttribute('data-id');
+                    const reader = button.getAttribute('data-reader');
+                    const book = button.getAttribute('data-book');
+                    
+                    returnBookModalEl.querySelector('#return-detail-id').value = id;
+                    returnBookModalEl.querySelector('#return-reader-name').textContent = reader;
+                    returnBookModalEl.querySelector('#return-book-title').textContent = book;
+                    returnBookModalEl.querySelector('#bookCondition').value = "Bình thường";
+                    returnBookModalEl.querySelector('#returnNotes').value = "";
+                });
+            }
+
+            // Cấu hình modal báo mất sách nhanh
+            const lostBookModalEl = document.getElementById('lostBookModal');
+            if (lostBookModalEl) {
+                lostBookModalEl.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const id = button.getAttribute('data-id');
+                    const reader = button.getAttribute('data-reader');
+                    const book = button.getAttribute('data-book');
+                    
+                    lostBookModalEl.querySelector('#lost-detail-id').value = id;
+                    lostBookModalEl.querySelector('#lost-reader-name').textContent = reader;
+                    lostBookModalEl.querySelector('#lost-book-title').textContent = book;
+                });
+            }
+
+            // Cấu hình modal thu tiền phạt nhanh
+            const collectFineModalEl = document.getElementById('collectFineModal');
+            if (collectFineModalEl) {
+                let baseAmount = 0;
+                const discountRateSelect = collectFineModalEl.querySelector('#discountRate');
+                const finalAmountSpan = collectFineModalEl.querySelector('#collect-final-amount');
+                
+                function updateFinalAmount() {
+                    const discount = parseInt(discountRateSelect.value) || 0;
+                    const finalAmount = baseAmount * (1 - discount / 100);
+                    finalAmountSpan.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(finalAmount);
+                }
+                
+                collectFineModalEl.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const id = button.getAttribute('data-id');
+                    const reader = button.getAttribute('data-reader');
+                    const book = button.getAttribute('data-book');
+                    const amountAttr = button.getAttribute('data-amount');
+                    
+                    baseAmount = parseFloat(amountAttr) || 0;
+                    
+                    collectFineModalEl.querySelector('#collect-fine-id').value = id;
+                    collectFineModalEl.querySelector('#collect-reader-name').textContent = reader;
+                    collectFineModalEl.querySelector('#collect-book-title').textContent = book;
+                    collectFineModalEl.querySelector('#collect-original-amount').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(baseAmount);
+                    discountRateSelect.value = "0";
+                    updateFinalAmount();
+                });
+                
+                discountRateSelect.addEventListener('change', updateFinalAmount);
+            }
+
+            // Cấu hình modal hoàn tác đóng phạt
+            const undoFineModalEl = document.getElementById('undoFineModal');
+            if (undoFineModalEl) {
+                undoFineModalEl.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const id = button.getAttribute('data-id');
+                    const reader = button.getAttribute('data-reader');
+                    const amountAttr = button.getAttribute('data-amount');
+                    const amount = parseFloat(amountAttr) || 0;
+                    
+                    undoFineModalEl.querySelector('#undo-fine-id').value = id;
+                    undoFineModalEl.querySelector('#undo-reader-name').textContent = reader;
+                    undoFineModalEl.querySelector('#undo-fine-amount').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+                    undoFineModalEl.querySelector('#undoReason').value = "";
                 });
             }
         });

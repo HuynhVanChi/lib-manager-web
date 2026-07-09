@@ -36,6 +36,7 @@ CREATE TABLE books (
     author VARCHAR(255),
     publisher VARCHAR(255),
     publish_year INT,
+    price DECIMAL(10,2) NOT NULL DEFAULT 100000.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
@@ -129,6 +130,7 @@ CREATE TABLE fines (
     fine_id INT AUTO_INCREMENT PRIMARY KEY,
     borrow_detail_id INT NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
+    original_amount DECIMAL(10,2) DEFAULT NULL,
     reason VARCHAR(100) NOT NULL, -- 'Overdue' (Trễ hạn), 'Lost Book' (Mất sách), 'Damaged Book' (Hỏng sách)
     status VARCHAR(50) DEFAULT 'Unpaid', -- 'Unpaid' (Chưa đóng), 'Paid' (Đã đóng), 'Waived' (Miễn giảm)
     paid_at TIMESTAMP NULL DEFAULT NULL,

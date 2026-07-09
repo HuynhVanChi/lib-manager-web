@@ -26,11 +26,11 @@ INSERT INTO categories (category_id, name, description) VALUES
 (3, 'Kinh tế & Kinh doanh', 'Sách về quản trị, tài chính, khởi nghiệp, marketing...');
 
 -- 2. Dữ liệu Đầu sách (Không còn cột quantity vì đã chuyển xuống bản sao)
-INSERT INTO books (book_id, category_id, title, author, publisher, publish_year) VALUES
-(1, 1, 'Lập trình JWDa Web căn bản', 'Nguyễn Văn B', 'NXB Giáo Dục', 2024),
-(2, 1, 'Cấu trúc dữ liệu và Giải thuật', 'Trần Minh C', 'NXB Khoa Học', 2023),
-(3, 2, 'Số đỏ', 'Vũ Trọng Phụng', 'NXB Văn Học', 2020),
-(4, 3, 'Nghĩ giàu và Làm giàu', 'Napoleon Hill', 'NXB Trẻ', 2021);
+INSERT INTO books (book_id, category_id, title, author, publisher, publish_year, price) VALUES
+(1, 1, 'Lập trình JWDa Web căn bản', 'Nguyễn Văn B', 'NXB Giáo Dục', 2024, 120000.00),
+(2, 1, 'Cấu trúc dữ liệu và Giải thuật', 'Trần Minh C', 'NXB Khoa Học', 2023, 150000.00),
+(3, 2, 'Số đỏ', 'Vũ Trọng Phụng', 'NXB Văn Học', 2020, 80000.00),
+(4, 3, 'Nghĩ giàu và Làm giàu', 'Napoleon Hill', 'NXB Trẻ', 2021, 95000.00);
 
 -- 3. Dữ liệu Bản sao sách cụ thể (Mỗi đầu sách có nhiều bản sao vật lý trên kệ)
 INSERT INTO book_copies (copy_id, book_id, barcode, status, location_shelf) VALUES

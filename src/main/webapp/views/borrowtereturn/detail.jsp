@@ -38,8 +38,14 @@
                 <div class="mb-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/borrow-return">Mượn trả & Vi phạm</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Chi tiết phiếu mượn #${item.borrow_detail_id}</li>
+                            <li class="breadcrumb-item">
+                                <a href="${pageContext.request.contextPath}/borrow-return">
+                                    <i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <i class="fa-solid fa-file-invoice me-1"></i>Chi tiết phiếu mượn #${item.borrow_detail_id}
+                            </li>
                         </ol>
                     </nav>
                 </div>
@@ -53,13 +59,13 @@
                     <div class="card-body p-4">
                         
                         <div class="row g-4 mb-4">
-                            <!-- Cột Độc Giả -->
-                            <div class="col-md-6 border-end">
+                            <!-- Cột bên trái: Độc giả & Lịch trình -->
+                            <div class="col-md-6 border-end pe-md-4">
                                 <div class="section-divider mt-0 mb-3">Thông tin độc giả</div>
-                                <table class="table table-borderless table-sm">
+                                <table class="table table-borderless table-sm mb-4">
                                     <tr>
                                         <td class="text-muted" style="width: 130px;">Họ tên:</td>
-                                        <td class="fw-bold text-dark">${item.reader_name}</td>
+                                        <td class="fw-bold text-dark text-nowrap">${item.reader_name}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Email:</td>
@@ -70,40 +76,20 @@
                                         <td class="fw-medium">${not empty item.reader_phone ? item.reader_phone : '<span class="text-muted">—</span>'}</td>
                                     </tr>
                                 </table>
-                            </div>
 
-                            <!-- Cột Sách -->
-                            <div class="col-md-6">
-                                <div class="section-divider mt-0 mb-3">Thông tin sách mượn</div>
-                                <table class="table table-borderless table-sm">
-                                    <tr>
-                                        <td class="text-muted" style="width: 130px;">Tên sách:</td>
-                                        <td class="fw-bold text-dark">${item.book_title}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Mã sách:</td>
-                                        <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="row g-4 mb-4">
-                            <!-- Tiến trình mượn trả -->
-                            <div class="col-md-6 border-end">
-                                <div class="section-divider mt-0 mb-3">Lịch trình thời gian</div>
+                                <div class="section-divider mb-3">Lịch trình thời gian</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
                                         <td class="text-muted" style="width: 130px;">Ngày mượn:</td>
-                                        <td class="fw-medium"><i class="fa-regular fa-calendar-check me-1"></i> ${item.borrow_date}</td>
+                                        <td class="fw-medium text-nowrap"><i class="fa-regular fa-calendar-check me-1"></i> ${item.borrow_date}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Hạn phải trả:</td>
-                                        <td class="fw-medium text-warning"><i class="fa-regular fa-clock me-1"></i> ${item.due_date}</td>
+                                        <td class="fw-medium text-warning text-nowrap"><i class="fa-regular fa-clock me-1"></i> ${item.due_date}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Ngày thực trả:</td>
-                                        <td class="fw-medium text-success">
+                                        <td class="fw-medium text-success text-nowrap">
                                             <c:choose>
                                                 <c:when test="${not empty item.return_date}">
                                                     <i class="fa-regular fa-calendar-plus me-1"></i> ${item.return_date}
@@ -117,44 +103,56 @@
                                 </table>
                             </div>
 
-                            <!-- Trạng thái & Hiện trạng -->
-                            <div class="col-md-6">
-                                <div class="section-divider mt-0 mb-3">Trạng thái vận hành</div>
+                            <!-- Cột bên phải: Sách & Vận hành -->
+                            <div class="col-md-6 ps-md-4">
+                                <div class="section-divider mt-0 mb-3">Thông tin sách mượn</div>
+                                <table class="table table-borderless table-sm mb-4">
+                                    <tr>
+                                        <td class="text-muted" style="width: 130px;">Tên sách:</td>
+                                        <td class="fw-bold text-dark">${item.book_title}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mã sách:</td>
+                                        <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>
+                                    </tr>
+                                </table>
+
+                                <div class="section-divider mb-3">Trạng thái vận hành</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
                                         <td class="text-muted" style="width: 130px;">Trạng thái phiếu:</td>
-                                        <td>
+                                        <td class="text-nowrap">
                                             <c:choose>
                                                 <c:when test="${item.status == 'Borrowing'}">
-                                                    <span class="badge-status badge-suspended">Đang mượn</span>
+                                                    <span class="badge-status badge-suspended text-nowrap">Đang mượn</span>
                                                 </c:when>
                                                 <c:when test="${item.status == 'Returned'}">
-                                                    <span class="badge-status badge-active">Đã trả</span>
+                                                    <span class="badge-status badge-active text-nowrap">Đã trả</span>
                                                 </c:when>
                                                 <c:when test="${item.status == 'Overdue'}">
-                                                    <span class="badge-status badge-danger-custom">Quá hạn</span>
+                                                    <span class="badge-status badge-danger-custom text-nowrap">Quá hạn</span>
                                                 </c:when>
                                                 <c:when test="${item.status == 'Lost'}">
-                                                    <span class="badge-status badge-danger-custom">Báo mất</span>
+                                                    <span class="badge-status badge-danger-custom text-nowrap">Báo mất</span>
                                                 </c:when>
                                             </c:choose>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Hiện trạng sách:</td>
-                                        <td>
+                                        <td class="text-nowrap">
                                             <c:choose>
                                                 <c:when test="${item.book_condition == 'Mất sách'}">
-                                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Mất sách</span>
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1 fw-semibold text-nowrap" style="font-size: .8rem;">Mất sách</span>
                                                 </c:when>
                                                 <c:when test="${item.book_condition == 'Rách nặng'}">
-                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Rách nặng</span>
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1 fw-semibold text-nowrap" style="font-size: .8rem;">Rách nặng</span>
                                                 </c:when>
                                                 <c:when test="${item.book_condition == 'Rách nhẹ'}">
-                                                    <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Rách nhẹ</span>
+                                                    <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2.5 py-1 fw-semibold text-nowrap" style="font-size: .8rem;">Rách nhẹ</span>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1 fw-semibold" style="font-size: .8rem;">Bình thường</span>
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1 fw-semibold text-nowrap" style="font-size: .8rem;">Bình thường</span>
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>

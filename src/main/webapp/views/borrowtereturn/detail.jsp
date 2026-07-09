@@ -77,36 +77,56 @@
                     <div class="p-4">
                         
                         <div class="row mb-4">
-                            <!-- Cột bên trái: Độc giả & Lịch trình -->
+                            <!-- Hàng 1, Cột bên trái: Độc giả -->
                             <div class="col-lg-6 col-12 border-end pe-lg-4">
                                 <div class="section-divider mt-0 mb-3">Thông tin độc giả</div>
                                 <table class="table table-borderless table-sm mb-4">
                                     <tr>
-                                        <td class="text-muted" style="width: 130px;">Họ tên:</td>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Họ tên:</td>
                                         <td class="fw-bold text-dark text-nowrap">${item.reader_name}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Email:</td>
+                                        <td class="text-muted text-nowrap">Email:</td>
                                         <td class="fw-medium">${item.reader_email}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Số điện thoại:</td>
+                                        <td class="text-muted text-nowrap">Số điện thoại:</td>
                                         <td class="fw-medium">${not empty item.reader_phone ? item.reader_phone : '<span class="text-muted">—</span>'}</td>
                                     </tr>
                                 </table>
+                            </div>
 
-                                <div class="section-divider mb-3">Lịch trình thời gian</div>
-                                <table class="table table-borderless table-sm">
+                            <!-- Hàng 1, Cột bên phải: Sách mượn -->
+                            <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
+                                <div class="section-divider mt-0 mb-3">Thông tin sách mượn</div>
+                                <table class="table table-borderless table-sm mb-4">
                                     <tr>
-                                        <td class="text-muted" style="width: 130px;">Ngày mượn:</td>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Tên sách:</td>
+                                        <td class="fw-bold text-dark">${item.book_title}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted text-nowrap">Mã sách:</td>
+                                        <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <!-- Hàng 2, Cột bên trái: Lịch trình thời gian -->
+                            <div class="col-lg-6 col-12 border-end pe-lg-4">
+                                <div class="section-divider mt-0 mb-3">Lịch trình thời gian</div>
+                                <table class="table table-borderless table-sm mb-4 mb-lg-0">
+                                    <tr>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Ngày mượn:</td>
                                         <td class="fw-medium text-nowrap"><i class="fa-regular fa-calendar-check me-1"></i> ${item.borrow_date}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Hạn phải trả:</td>
+                                        <td class="text-muted text-nowrap">Hạn phải trả:</td>
                                         <td class="fw-medium text-warning text-nowrap"><i class="fa-regular fa-clock me-1"></i> ${item.due_date}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Ngày thực trả:</td>
+                                        <td class="text-muted text-nowrap">Ngày thực trả:</td>
                                         <td class="fw-medium text-success text-nowrap">
                                             <c:choose>
                                                 <c:when test="${not empty item.return_date}">
@@ -121,24 +141,12 @@
                                 </table>
                             </div>
 
-                            <!-- Cột bên phải: Sách & Vận hành -->
+                            <!-- Hàng 2, Cột bên phải: Trạng thái vận hành -->
                             <div class="col-lg-6 col-12 ps-lg-4 mt-4 mt-lg-0">
-                                <div class="section-divider mt-0 mb-3">Thông tin sách mượn</div>
-                                <table class="table table-borderless table-sm mb-4">
-                                    <tr>
-                                        <td class="text-muted" style="width: 130px;">Tên sách:</td>
-                                        <td class="fw-bold text-dark">${item.book_title}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Mã sách:</td>
-                                        <td><code class="text-dark bg-light px-2 py-0.5 rounded border small">${item.barcode}</code></td>
-                                    </tr>
-                                </table>
-
-                                <div class="section-divider mb-3">Trạng thái vận hành</div>
+                                <div class="section-divider mt-0 mb-3">Trạng thái vận hành</div>
                                 <table class="table table-borderless table-sm">
                                     <tr>
-                                        <td class="text-muted" style="width: 130px;">Trạng thái phiếu:</td>
+                                        <td class="text-muted text-nowrap" style="width: 160px;">Trạng thái phiếu:</td>
                                         <td class="text-nowrap">
                                             <c:choose>
                                                 <c:when test="${item.status == 'Borrowing'}">
@@ -157,7 +165,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Hiện trạng sách:</td>
+                                        <td class="text-muted text-nowrap">Hiện trạng sách:</td>
                                         <td class="text-nowrap">
                                             <c:choose>
                                                 <c:when test="${item.book_condition == 'Mất sách'}">

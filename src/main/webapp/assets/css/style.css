@@ -17,6 +17,9 @@
     --error:         #DC2626;  /* Màu đỏ lỗi */
     --error-bg:      #FEF2F2;
     --error-border:  #FECACA;
+    --success:       #15803D;  /* Màu xanh thành công */
+    --success-bg:    #DCFCE7;
+    --success-border:#86EFAC;
     --radius:        10px;     /* Bo góc card & bảng */
 }
 
@@ -125,6 +128,31 @@ body {
     background: var(--primary-soft) !important;
     border-color: var(--primary-light) !important;
     color: var(--primary-light) !important;
+}
+
+/* Nút xóa bộ lọc trên toolbar */
+.btn-clear-filter {
+    border: 1.5px solid var(--text-muted) !important;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: .875rem !important;
+    color: var(--text-muted) !important;
+    background: #fff !important;
+    transition: all .2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    box-sizing: border-box;
+    height: 40px;
+}
+.btn-clear-filter:hover {
+    background: #F3F4F6 !important;
+    color: var(--text-dark) !important;
+    border-color: var(--text-muted) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Utility Hover Motions (Tùy biến cực cao theo class) */

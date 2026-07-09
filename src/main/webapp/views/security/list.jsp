@@ -47,12 +47,10 @@
                 <span class="toast-icon">
                     <i class="fa-solid <%=iconCls%>"></i>
                 </span>
-                <span style="font-size:.875rem;font-weight:500;flex:1;">
-                    <%=toastMsg%>
-                </span>
-                <button type="button" class="toast-close" onclick="closeToast()" aria-label="Đóng">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+            <div class="toast-body small fw-medium m-0">
+                <%=toastMsg%>
+            </div>
+            <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
             </div>
             <% } %>
 
@@ -68,7 +66,7 @@
                     <%-- NÚT THÙNG RÁC (Được tích hợp từ list.jsp) --%>
                     <button type="button"
                             id="btn-open-archive"
-                            class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                            class="btn btn-slate hover-lift"
                             data-bs-toggle="modal"
                             data-bs-target="#archiveModal">
                         <i class="fa-solid fa-trash-can"></i>
@@ -78,7 +76,7 @@
                     <%-- NÚT THÊM TÀI KHOẢN --%>
                     <a href="${pageContext.request.contextPath}/accounts?action=add"
                        id="btn-add-account"
-                       class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift text-decoration-none">
+                       class="btn btn-primary hover-lift text-decoration-none">
                         <i class="fa-solid fa-user-plus"></i>
                         <span>Thêm tài khoản</span>
                     </a>
@@ -112,7 +110,7 @@
                             <option value="Staff"  <%="Staff".equals(roleFilter)  ? "selected":""%>>Thủ thư (Staff)</option>
                         </select>
 
-                        <button type="submit" id="btn-filter" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow">
+                        <button type="submit" id="btn-filter" class="btn btn-primary hover-glow">
                             <i class="fa-solid fa-filter me-1"></i> Lọc
                         </button>
 
@@ -120,7 +118,7 @@
                         <% if (!search.isEmpty() || !roleFilter.isEmpty()) { %>
                             <a href="${pageContext.request.contextPath}/accounts"
                                id="btn-reset"
-                               class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none">
+                               class="btn-clear-filter ms-2">
                                 <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
                             </a>
                         <% } %>
@@ -155,13 +153,13 @@
                         %>
                             <tr>
                                 <td colspan="6">
-                                    <div class="empty-state">
-                                        <div class="icon"><i class="fa-solid fa-users-slash"></i></div>
-                                        <h5 class="fw-semibold text-dark mb-1">Không tìm thấy tài khoản nào</h5>
-                                        <p class="mb-3" style="font-size:.875rem;">
-                                            Không có kết quả phù hợp với bộ lọc hiện tại.
-                                        </p>
-                                    </div>
+                                     <div class="empty-state">
+                                         <div class="icon"><i class="fa-solid fa-users-slash"></i></div>
+                                         <h5 class="fw-bold text-dark mb-1">Không tìm thấy tài khoản nào</h5>
+                                         <p class="text-muted small mb-4">
+                                             Không có kết quả phù hợp với bộ lọc hiện tại.
+                                         </p>
+                                     </div>
                                 </td>
                             </tr>
                         <%
@@ -221,7 +219,7 @@
 <%-- ========== MODAL XÓA TÀI KHOẢN ========== --%>
 <div class="modal fade" id="modalDel" tabindex="-1" aria-labelledby="modalDelLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content border-0 shadow rounded-3">
             <div class="modal-header d-flex align-items-center">
                 <div class="d-flex align-items-center gap-2">
                     <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
@@ -256,7 +254,7 @@
 <%-- ── MODAL DANH SÁCH TÀI KHOẢN ĐÃ XÓA (Thùng rác tích hợp từ list.jsp) ── --%>
 <div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
+        <div class="modal-content border-0 shadow rounded-3">
             <div class="modal-header d-flex align-items-center">
                 <div class="d-flex align-items-center gap-2">
                     <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
@@ -286,7 +284,7 @@
                                             : "<span class='badge-status badge-info-custom'><i class='fa-solid fa-user-tie me-1' style='font-size:.65rem;'></i>Thủ thư</span>";
                                     %>
                                         <tr>
-                                            <td>#<%=delTk.getUserId()%></td>
+                                            <td class="text-muted fw-medium">#<%=delTk.getUserId()%></td>
                                             <td><span class="fw-semibold text-dark"><%=delTk.getUsername()%></span></td>
                                             <td><%=delTk.getFullName()%></td>
                                             <td><%=delBadge%></td>
@@ -295,9 +293,9 @@
                                                 <form method="POST" action="${pageContext.request.contextPath}/accounts" class="m-0 d-inline">
                                                     <input type="hidden" name="action" value="restore"/>
                                                     <input type="hidden" name="userId" value="<%=delTk.getUserId()%>"/>
-                                                    <button type="submit" class="btn-action hover-lift" title="Khôi phục tài khoản" style="color: #15803D !important; border-color: #86EFAC !important;">
-                                                        <i class="fa-solid fa-trash-can-arrow-up"></i>
-                                                    </button>
+                                                     <button type="submit" class="btn-action" title="Khôi phục tài khoản" style="color: var(--success) !important; border-color: var(--success-border) !important;">
+                                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                     </button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -306,9 +304,10 @@
                             </table>
                         </div>
                 <% } else { %>
-                        <div class="text-center py-5 text-muted">
-                            <i class="fa-regular fa-folder-open fs-2 mb-2 opacity-50"></i>
-                            <p class="small m-0">Thùng rác trống. Không có tài khoản nào đã xóa.</p>
+                        <div class="empty-state py-5">
+                            <div class="icon"><i class="fa-regular fa-folder-open text-muted"></i></div>
+                            <h5 class="fw-bold text-dark mb-1">Thùng rác trống</h5>
+                            <p class="text-muted small mb-4">Không có tài khoản nào đã xóa.</p>
                         </div>
                 <% } %>
             </div>

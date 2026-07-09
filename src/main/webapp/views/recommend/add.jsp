@@ -52,7 +52,7 @@
             <div class="card form-card">
 
                 <%-- Header card --%>
-                <div class="card-header form-card-header text-white">
+                <div class="card-header form-card-header text-white d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
                              style="width:44px;height:44px;background:rgba(255,255,255,.2);flex-shrink:0;">

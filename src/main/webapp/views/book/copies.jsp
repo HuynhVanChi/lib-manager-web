@@ -78,13 +78,13 @@
                     <div class="d-flex gap-2">
                         <button type="button"
                                 id="btn-open-archive"
-                                class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                                class="btn btn-slate hover-lift"
                                 data-bs-toggle="modal"
                                 data-bs-target="#archiveCopyModal">
                             <i class="fa-solid fa-trash-can"></i>
                             <span>Thùng rác</span>
                         </button>
-                        <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn-back hover-lift">
+                        <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn btn-back hover-lift">
                             <i class="fa-solid fa-arrow-left"></i> Quay lại chi tiết
                         </a>
                     </div>
@@ -93,46 +93,46 @@
                 <!-- Thống kê nhanh bản sao của đầu sách này -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
-                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
-                            <div>
+                        <div class="stat-card stat-card-compact stat-primary">
+                            <div class="stat-content">
                                 <span class="text-muted small fw-medium d-block">Tổng số cuốn sách</span>
-                                <span class="fs-4 fw-bold text-dark mt-1 d-block">${book.totalCopies}</span>
+                                <div class="stat-value">${book.totalCopies}</div>
                             </div>
-                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-light text-primary" style="width:48px;height:48px;">
-                                <i class="fa-solid fa-copy fs-5"></i>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-copy"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
-                            <div>
+                        <div class="stat-card stat-card-compact stat-success">
+                            <div class="stat-content">
                                 <span class="text-muted small fw-medium d-block">Sẵn có (Available)</span>
-                                <span class="fs-4 fw-bold text-success mt-1 d-block">${book.availableCopies}</span>
+                                <div class="stat-value text-success">${book.availableCopies}</div>
                             </div>
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:rgba(34,197,94,0.1);color:#15803d;">
-                                <i class="fa-solid fa-circle-check fs-5"></i>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-circle-check"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
-                            <div>
+                        <div class="stat-card stat-card-compact stat-warning">
+                            <div class="stat-content">
                                 <span class="text-muted small fw-medium d-block">Đang cho mượn</span>
-                                <span class="fs-4 fw-bold text-warning mt-1 d-block">${borrowedCount}</span>
+                                <div class="stat-value text-warning">${borrowedCount}</div>
                             </div>
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:rgba(245,158,11,0.1);color:#b45309;">
-                                <i class="fa-solid fa-book-open fs-5"></i>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-book-open"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="card card-main bg-white p-3 border-0 d-flex flex-row align-items-center justify-content-between">
-                            <div>
+                        <div class="stat-card stat-card-compact stat-danger">
+                            <div class="stat-content">
                                 <span class="text-muted small fw-medium d-block">Hỏng / Mất / Hủy</span>
-                                <span class="fs-4 fw-bold text-danger mt-1 d-block">${damagedCount + lostCount}</span>
+                                <div class="stat-value text-danger">${damagedCount + lostCount}</div>
                             </div>
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:rgba(239,68,68,0.1);color:#b91c1c;">
-                                <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
                         </div>
                     </div>
@@ -142,10 +142,10 @@
                 <div class="row g-4">
                     <!-- Cột 1: Danh sách bản sao (8/12) -->
                     <div class="col-12 col-lg-8">
-                        <div class="form-card bg-white h-100">
+                        <div class="card detail-card bg-white h-100">
                             
                             <%-- Header Card --%>
-                            <div class="form-card-header">
+                            <div class="detail-card-header">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="fa-solid fa-list-check fs-5 text-white"></i>
                                     <h5 class="text-white fw-bold mb-0" style="font-size:1rem;">Danh sách cuốn sách hiện tại</h5>
@@ -157,8 +157,8 @@
                                     <c:when test="${empty copiesList}">
                                         <div class="empty-state p-5">
                                             <div class="icon"><i class="fa-solid fa-box-open text-muted"></i></div>
-                                            <h5 class="fw-semibold text-dark mb-1">Chưa có cuốn sách nào</h5>
-                                            <p class="text-muted small mb-0">Đầu sách này hiện chưa có cuốn sách vật lý nào trong kho. Hãy nhập cuốn sách mới ở khung bên cạnh.</p>
+                                            <h5 class="fw-bold text-dark mb-1">Chưa có cuốn sách nào</h5>
+                                            <p class="text-muted small mb-4">Đầu sách này hiện chưa có cuốn sách vật lý nào trong kho. Hãy nhập cuốn sách mới ở khung bên cạnh.</p>
                                         </div>
                                     </c:when>
                                     <c:otherwise>
@@ -166,7 +166,7 @@
                                             <table class="table-custom m-0">
                                                 <thead>
                                                      <tr>
-                                                         <th class="ps-4" style="width: 80px;">#</th>
+                                                         <th class="ps-4" style="width: 80px;">ID</th>
                                                          <th>Mã vạch & ID</th>
                                                          <th>Giá nhập</th>
                                                          <th>Vị trí kệ sách</th>
@@ -177,7 +177,7 @@
                                                 <tbody>
                                                     <c:forEach var="c" items="${copiesList}" varStatus="loop">
                                                         <tr id="row-copy-${c.copyId}" style="transition: background-color 0.3s ease;">
-                                                            <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                            <td class="ps-4 text-muted fw-medium">#${c.copyId}</td>
                                                             <td>
                                                                 <span class="font-monospace fw-bold text-dark">${c.barcode}</span>
                                                                 <div class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">ID: #${c.copyId}</div>
@@ -188,35 +188,35 @@
                                                             <td>${empty c.locationShelf ? 'Chưa xếp kệ' : c.locationShelf}</td>
                                                             <td>
                                                                 <c:choose>
-                                                                    <c:when test="${c.status == 'Available'}">
-                                                                        <span class="badge-status badge-success">
-                                                                            <i class="fa-solid fa-circle-check me-1" style="font-size:.65rem;"></i>Sẵn có
-                                                                        </span>
-                                                                    </c:when>
-                                                                    <c:when test="${c.status == 'Borrowed'}">
-                                                                        <span class="badge-status badge-info">
-                                                                            <i class="fa-solid fa-book-open me-1" style="font-size:.65rem;"></i>Đang mượn
-                                                                        </span>
-                                                                    </c:when>
-                                                                    <c:when test="${c.status == 'Damaged'}">
-                                                                        <span class="badge-status badge-warning">
-                                                                            <i class="fa-solid fa-triangle-exclamation me-1" style="font-size:.65rem;"></i>Bị hỏng
-                                                                        </span>
-                                                                    </c:when>
-                                                                    <c:when test="${c.status == 'Lost'}">
-                                                                        <span class="badge-status badge-danger">
-                                                                            <i class="fa-solid fa-circle-question me-1" style="font-size:.65rem;"></i>Bị mất
-                                                                        </span>
-                                                                    </c:when>
-                                                                    <c:when test="${c.status == 'Decommissioned'}">
-                                                                        <span class="badge-status badge-secondary">
-                                                                            <i class="fa-solid fa-box-archive me-1" style="font-size:.65rem;"></i>Thanh lý
-                                                                        </span>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <span class="badge-status badge-secondary">${c.status}</span>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                     <c:when test="${c.status == 'Available'}">
+                                                                         <span class="badge-status badge-active">
+                                                                             <i class="fa-solid fa-circle-check me-1" style="font-size:.65rem;"></i>Sẵn có
+                                                                         </span>
+                                                                     </c:when>
+                                                                     <c:when test="${c.status == 'Borrowed'}">
+                                                                         <span class="badge-status badge-info-custom">
+                                                                             <i class="fa-solid fa-book-open me-1" style="font-size:.65rem;"></i>Đang mượn
+                                                                         </span>
+                                                                     </c:when>
+                                                                     <c:when test="${c.status == 'Damaged'}">
+                                                                         <span class="badge-status badge-suspended">
+                                                                             <i class="fa-solid fa-triangle-exclamation me-1" style="font-size:.65rem;"></i>Bị hỏng
+                                                                         </span>
+                                                                     </c:when>
+                                                                     <c:when test="${c.status == 'Lost'}">
+                                                                         <span class="badge-status badge-danger-custom">
+                                                                             <i class="fa-solid fa-circle-question me-1" style="font-size:.65rem;"></i>Bị mất
+                                                                         </span>
+                                                                     </c:when>
+                                                                     <c:when test="${c.status == 'Decommissioned'}">
+                                                                         <span class="badge-status badge-expired">
+                                                                             <i class="fa-solid fa-box-archive me-1" style="font-size:.65rem;"></i>Thanh lý
+                                                                         </span>
+                                                                     </c:when>
+                                                                     <c:otherwise>
+                                                                         <span class="badge-status badge-expired">${c.status}</span>
+                                                                     </c:otherwise>
+                                                                 </c:choose>
                                                             </td>
                                                             <td class="text-center">
                                                                  <div class="d-flex justify-content-center gap-1">
@@ -260,10 +260,10 @@
                     
                     <!-- Cột 2: Khung nhập/sửa bản sao (4/12) -->
                     <div class="col-12 col-lg-4">
-                        <div class="form-card bg-white" id="copyFormCard" style="transition: all 0.3s ease; border: 1px solid rgba(0,0,0,.08);">
+                        <div class="card form-card bg-white" id="copyFormCard" style="transition: all 0.3s ease; border: 1px solid rgba(0,0,0,.08);">
                             
                             <%-- Header Card --%>
-                            <div class="form-card-header" id="copyFormHeader" style="transition: all 0.3s ease;">
+                            <div class="card-header form-card-header text-white d-flex align-items-center justify-content-between" id="copyFormHeader" style="transition: all 0.3s ease;">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="fa-solid fa-circle-plus fs-5 text-white" id="copyFormIcon"></i>
                                     <h5 class="text-white fw-bold mb-0" id="copyFormTitle" style="font-size:1rem;">Nhập nhanh cuốn sách mới</h5>
@@ -310,7 +310,7 @@
                                     </div>
 
                                     <div class="d-flex gap-2 mt-4">
-                                        <button type="button" id="btnCancelEdit" class="btn btn-secondary hover-lift flex-grow-1 py-2.5 d-none">
+                                         <button type="button" id="btnCancelEdit" class="btn btn-cancel hover-lift flex-grow-1 py-2.5 d-none">
                                             Hủy bỏ
                                         </button>
                                         <button type="submit" id="btnSubmitForm" class="btn btn-save hover-lift flex-grow-1 py-2.5">
@@ -337,12 +337,12 @@
     <!-- Modal phụ: Xác nhận xóa cuốn sách -->
     <div class="modal fade" id="deleteCopyModal" tabindex="-1" aria-labelledby="deleteCopyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border-0 shadow-lg rounded-3">
+                <div class="modal-header border-0 pb-0">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:40px;height:40px;background:#FEE2E2;flex-shrink:0;">
-                            <i class="fa-solid fa-triangle-exclamation" style="color:#DC2626;"></i>
+                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:36px;height:36px;flex-shrink:0;">
+                            <i class="fa-solid fa-trash-can"></i>
                         </div>
                         <h6 class="modal-title fw-bold m-0" id="deleteCopyModalLabel">Xác nhận xóa cuốn sách</h6>
                     </div>
@@ -352,14 +352,14 @@
                     <input type="hidden" id="deleteCopyId" name="copyId">
                     <div class="modal-body">
                         <p class="mb-1" style="font-size:.9rem;">Bạn có chắc chắn muốn xóa cuốn sách có mã vạch:</p>
-                        <p class="fw-bold mb-3" id="deleteCopyBarcode" style="font-size:1rem; color:var(--primary);">—</p>
+                        <p class="fw-bold mb-3" id="deleteCopyBarcode" style="font-size:1rem; color:var(--bs-danger);">—</p>
                         <div class="rounded-3 p-3" style="background:#FEF2F2;border:1px solid #FECACA;font-size:.82rem;color:#991B1B;">
                             <i class="fa-solid fa-info-circle me-1"></i>
                             Hành động này sẽ ẩn cuốn sách khỏi danh sách hoạt động nhưng <strong>không xóa vĩnh viễn</strong> dữ liệu lịch sử.
                             Cuốn sách đang được mượn <strong>sẽ không thể xóa</strong>.
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer border-0">
                         <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
                         <button type="submit" class="btn btn-danger hover-lift">
                             <i class="fa-solid fa-trash-can me-1"></i> Xác nhận xóa
@@ -376,9 +376,9 @@
             <div class="modal-content border-0 shadow rounded-3">
                 <div class="modal-header">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:40px;height:40px;background:#F1F5F9;flex-shrink:0;">
-                            <i class="fa-solid fa-trash-can" style="color:#64748B;"></i>
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:36px;height:36px;flex-shrink:0;">
+                            <i class="fa-solid fa-box-archive text-secondary"></i>
                         </div>
                         <h6 class="modal-title fw-bold m-0" id="archiveCopyModalLabel">Thùng rác Cuốn sách</h6>
                     </div>
@@ -413,7 +413,7 @@
                                     <c:otherwise>
                                         <c:forEach var="c" items="${deletedCopiesList}">
                                             <tr>
-                                                <td class="ps-3 fw-semibold text-secondary">#${c.copyId}</td>
+                                                 <td class="ps-3 text-muted fw-medium">#${c.copyId}</td>
                                                 <td class="font-monospace fw-bold text-dark">${c.barcode}</td>
                                                 <td class="fw-semibold text-dark">
                                                     <fmt:formatNumber value="${c.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
@@ -422,9 +422,9 @@
                                                 <td class="text-center">
                                                     <form action="${pageContext.request.contextPath}/books?action=restoreCopy" method="post" class="d-inline m-0">
                                                         <input type="hidden" name="copyId" value="${c.copyId}">
-                                                        <button type="submit" class="btn-action hover-lift" title="Khôi phục cuốn sách" style="color: #15803D !important; border-color: #86EFAC !important;">
-                                                            <i class="fa-solid fa-trash-can-arrow-up"></i>
-                                                        </button>
+                                                         <button type="submit" class="btn-action" title="Khôi phục cuốn sách" style="color: var(--success) !important; border-color: var(--success-border) !important;">
+                                                             <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                         </button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -461,12 +461,10 @@
                     <i class="fa-solid fa-circle-xmark"></i>
                 <% } %>
             </span>
-            <span style="font-size:.875rem;font-weight:500;flex:1;">
+            <div class="toast-body small fw-medium m-0">
                 <%= msg %>
-            </span>
-            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            </div>
+            <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
         </div>
         <script>
             function closeToast() {

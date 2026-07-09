@@ -51,13 +51,13 @@
             </div>
 
             <%-- ── FORM CARD ── --%>
-            <div class="form-card bg-white">
+            <div class="card form-card">
 
                 <%-- Header card --%>
-                <div class="form-card-header">
+                <div class="card-header form-card-header text-white d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:44px;height:44px;background:rgba(255,255,255,.15);flex-shrink:0;">
+                             style="width:44px;height:44px;background:rgba(255,255,255,.2);flex-shrink:0;">
                             <i class="fa-solid fa-user-pen text-white fs-5"></i>
                         </div>
                         <div>
@@ -74,10 +74,10 @@
                         </div>
                         <%-- Link xem chi tiết từ form edit --%>
                         <a href="${pageContext.request.contextPath}/readers/detail?id=${reader.readerId}"
-                           class="btn-detail-link ms-auto"
+                           class="btn-detail-link ms-auto text-decoration-none"
                            title="Xem chi tiết độc giả">
-                            <i class="fa-solid fa-arrow-up-right-from-square" style="color:rgba(255,255,255,.6);"></i>
-                            <span style="color:rgba(255,255,255,.6);">Xem chi tiết</span>
+                           <i class="fa-solid fa-arrow-up-right-from-square" style="color:rgba(255,255,255,.6);"></i>
+                           <span style="color:rgba(255,255,255,.6);">Xem chi tiết</span>
                         </a>
                     </div>
                 </div>

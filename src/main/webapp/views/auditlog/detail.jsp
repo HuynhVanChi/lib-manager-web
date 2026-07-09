@@ -57,25 +57,25 @@
                     <i class="fa-solid fa-circle-info text-primary"></i>
                     <span>Thông tin chung nhật ký</span>
                 </div>
-                <div class="meta-grid">
-                    <div class="meta-item">
-                        <span class="meta-label">Người thực hiện</span>
-                        <span class="meta-value">
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">Người thực hiện</span>
+                        <span class="info-value">
                             <c:out value="${log.userFullName != null ? log.userFullName : 'Hệ thống'}"/>
                             <small class="text-muted fw-normal d-block" style="font-size: 0.75rem;">
                                 ID: #${log.userId != null ? log.userId : '—'}
                             </small>
                         </span>
                     </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Thời gian</span>
-                        <span class="meta-value">
+                    <div class="info-row">
+                        <span class="info-label">Thời gian</span>
+                        <span class="info-value">
                             <fmt:formatDate value="${log.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
                         </span>
                     </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Hành động</span>
-                        <span class="mt-1">
+                    <div class="info-row">
+                        <span class="info-label">Hành động</span>
+                        <span class="info-value mt-1">
                             <c:choose>
                                 <c:when test="${log.action == 'INSERT'}">
                                     <span class="badge-status badge-active">INSERT (Thêm mới)</span>
@@ -95,9 +95,9 @@
                             </c:choose>
                         </span>
                     </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Đối tượng tác động</span>
-                        <span class="meta-value">
+                    <div class="info-row">
+                        <span class="info-label">Đối tượng tác động</span>
+                        <span class="info-value">
                             <c:choose>
                                 <c:when test="${log.tableName == 'readers'}">Độc giả</c:when>
                                 <c:when test="${log.tableName == 'books'}">Đầu sách</c:when>
@@ -130,15 +130,15 @@
                             <thead class="table-light">
                                 <tr>
                                     <th style="width:30%;">Trường thông tin</th>
-                                    <th style="width:35%; color:#DC2626;">Dữ liệu cũ (Trước thay đổi)</th>
-                                    <th style="width:35%; color:#15803D;">Dữ liệu mới (Sau thay đổi)</th>
+                                    <th class="text-danger" style="width:35%;">Dữ liệu cũ (Trước thay đổi)</th>
+                                    <th class="text-success" style="width:35%;">Dữ liệu mới (Sau thay đổi)</th>
                                 </tr>
                             </thead>
                             <tbody id="diff-table-body">
                                 <c:choose>
                                     <c:when test="${not empty diffs}">
                                         <c:forEach var="diff" items="${diffs}">
-                                            <tr style="${diff.changed and log.action == 'UPDATE' ? 'background-color: #FEFCE8;' : ''}">
+                                            <tr class="${diff.changed and log.action == 'UPDATE' ? 'table-warning' : ''}">
                                                 <td>
                                                     <div class="fw-semibold text-dark"><c:out value="${diff.friendlyName}"/></div>
                                                     <div class="text-muted" style="font-size:0.75rem; font-family:monospace;"><c:out value="${diff.fieldKey}"/></div>

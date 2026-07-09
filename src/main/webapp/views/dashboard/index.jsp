@@ -28,70 +28,6 @@
             color: var(--text-dark);
         }
 
-        /* Tùy chỉnh màu sắc tĩnh cho các thẻ thống kê stat-card */
-        .stat-total {
-            background: var(--primary-soft);
-            color: var(--primary);
-        }
-        .stat-total .stat-icon {
-            background: rgba(49, 46, 129, 0.12);
-            color: var(--primary);
-        }
-
-        .stat-titles {
-            background: #F5F3FF;
-            color: #6D28D9;
-        }
-        .stat-titles .stat-icon {
-            background: rgba(109, 40, 217, 0.12);
-            color: #6D28D9;
-        }
-
-        .stat-readers {
-            background: #FFF1F2;
-            color: #BE123C;
-        }
-        .stat-readers .stat-icon {
-            background: rgba(190, 18, 60, 0.12);
-            color: #BE123C;
-        }
-
-        .stat-borrows {
-            background: #F0FDFA;
-            color: #0F766E;
-        }
-        .stat-borrows .stat-icon {
-            background: rgba(15, 118, 110, 0.12);
-            color: #0F766E;
-        }
-
-        .stat-borrowing {
-            background: #FEF3C7;
-            color: #D97706;
-        }
-        .stat-borrowing .stat-icon {
-            background: rgba(217, 119, 6, 0.12);
-            color: #D97706;
-        }
-
-        .stat-overdue {
-            background: #FEF2F2;
-            color: #B91C1C;
-        }
-        .stat-overdue .stat-icon {
-            background: rgba(185, 28, 28, 0.12);
-            color: #B91C1C;
-        }
-
-        .stat-in-stock {
-            background: #F0FDF4;
-            color: #15803D;
-        }
-        .stat-in-stock .stat-icon {
-            background: rgba(21, 128, 61, 0.12);
-            color: #15803D;
-        }
-
         /* Thống kê chi tiết & Biểu đồ */
         .chart-card {
             border-radius: var(--radius);
@@ -224,7 +160,7 @@
         .rank-value {
             font-weight: 600;
             font-size: 0.9rem;
-            color: var(--primary-color);
+            color: var(--primary);
             margin-left: 12px;
             flex-shrink: 0;
         }
@@ -247,7 +183,7 @@
                 <!-- Tiêu đề trang & Nút tải lại -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0 text-dark" style="letter-spacing: -0.5px;">Tổng quan Thư viện</h2>
+                        <h1 class="fw-bold m-0 text-dark" style="font-size:1.6rem;">Tổng quan Thư viện</h1>
                         <p class="text-muted mb-0 small">Báo cáo trực quan tình hình mượn trả và tồn kho sách thực tế.</p>
                     </div>
                     <button class="btn btn-save hover-lift fw-medium" id="btn-refresh">
@@ -273,10 +209,10 @@
                 <div class="row g-3 mb-4" id="kpi-grid">
                     <!-- KPI 1: Tổng số sách -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="stat-card stat-total h-100">
+                        <div class="stat-card stat-primary h-100">
                             <div class="d-flex justify-content-between align-items-start w-100 mb-2">
                                 <span class="stat-label">Tổng số cuốn sách</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-cubes"></i>
                                 </div>
                             </div>
@@ -288,10 +224,10 @@
 
                     <!-- KPI 2: Tổng số đầu sách -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="stat-card stat-titles h-100">
+                        <div class="stat-card stat-info h-100">
                             <div class="d-flex justify-content-between align-items-start w-100 mb-2">
                                 <span class="stat-label">Tổng số đầu sách</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-book"></i>
                                 </div>
                             </div>
@@ -303,10 +239,10 @@
 
                     <!-- KPI 3: Tổng số độc giả -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="stat-card stat-readers h-100">
+                        <div class="stat-card stat-primary h-100">
                             <div class="d-flex justify-content-between align-items-start w-100 mb-2">
                                 <span class="stat-label">Tổng số độc giả</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-users"></i>
                                 </div>
                             </div>
@@ -318,10 +254,10 @@
 
                     <!-- KPI 4: Tổng số lượt mượn -->
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="stat-card stat-borrows h-100">
+                        <div class="stat-card stat-success h-100">
                             <div class="d-flex justify-content-between align-items-start w-100 mb-2">
                                 <span class="stat-label">Tổng số lượt mượn</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-clipboard-list"></i>
                                 </div>
                             </div>
@@ -333,10 +269,10 @@
 
                     <!-- KPI 5: Số sách đang mượn -->
                     <div class="col-12 col-md-4 col-lg-4">
-                        <div class="stat-card stat-borrowing h-100">
+                        <div class="stat-card stat-warning h-100">
                             <div class="d-flex justify-content-between align-items-start w-100 mb-2">
                                 <span class="stat-label">Sách đang mượn ngoài</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-book-open"></i>
                                 </div>
                             </div>
@@ -348,10 +284,10 @@
 
                     <!-- KPI 6: Sách quá hạn -->
                     <div class="col-12 col-md-4 col-lg-4">
-                        <div class="stat-card stat-overdue h-100">
+                        <div class="stat-card stat-danger h-100">
                             <div class="d-flex justify-content-between align-items-start w-100 mb-2">
                                 <span class="stat-label">Sách bị quá hạn trả</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-triangle-exclamation"></i>
                                 </div>
                             </div>
@@ -363,10 +299,10 @@
 
                     <!-- KPI 7: Sách còn trong kho -->
                     <div class="col-12 col-md-4 col-lg-4">
-                        <div class="stat-card stat-in-stock h-100">
+                        <div class="stat-card stat-success h-100">
                             <div class="d-flex justify-content-between align-items-start w-100 mb-2">
                                 <span class="stat-label">Sách sẵn sàng trong kho</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-warehouse"></i>
                                 </div>
                             </div>
@@ -385,7 +321,7 @@
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
                     <h5 class="fw-bold text-dark">Chưa có dữ liệu thống kê</h5>
-                    <p class="text-muted small mb-0">Hiện tại hệ thống thư viện chưa ghi nhận bất kỳ lượt mượn trả sách nào. Hãy thực hiện mượn sách để kích hoạt số liệu thống kê tự động.</p>
+                    <p class="text-muted small mb-4">Hiện tại hệ thống thư viện chưa ghi nhận bất kỳ lượt mượn trả sách nào. Hãy thực hiện mượn sách để kích hoạt số liệu thống kê tự động.</p>
                 </div>
 
                 <!-- ======================================================== -->

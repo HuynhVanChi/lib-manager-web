@@ -60,10 +60,10 @@
                 <!-- Thẻ Form chính -->
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-10">
-                        <div class="form-card bg-white">
+                        <div class="card form-card">
                             
                             <%-- Header card --%>
-                            <div class="form-card-header">
+                            <div class="card-header form-card-header text-white d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="rounded-circle d-flex align-items-center justify-content-center"
                                          style="width:44px;height:44px;background:rgba(255,255,255,.2);flex-shrink:0;">
@@ -73,6 +73,7 @@
                                         <h5 class="text-white fw-bold mb-0">Chỉnh sửa thông tin</h5>
                                     </div>
                                 </div>
+                                <span class="header-meta-badge">ID: #${book.bookId}</span>
                             </div>
                             
                             <div class="p-4">
@@ -95,7 +96,7 @@
                                                 </button>
                                                 
                                                 <div id="imagePreviewContainer" class="d-flex flex-column align-items-center justify-content-center w-100 h-100" 
-                                                     style="border: 2px dashed #D1D5DB; border-radius: 8px; cursor: pointer; overflow: hidden; background: #F3F4F6; transition: all 0.2s;">
+                                                     style="border: 2px dashed var(--border); border-radius: 8px; cursor: pointer; overflow: hidden; background: var(--bg-page); transition: all 0.2s;">
                                                     <i class="fa-solid fa-image text-muted fs-1 mb-2 ${not empty book.imagePath ? 'd-none' : ''}" id="placeholderIcon"></i>
                                                     <span class="text-muted small ${not empty book.imagePath ? 'd-none' : ''}" id="placeholderText">Chọn ảnh bìa</span>
                                                     <img id="imagePreview" src="${not empty book.imagePath ? pageContext.request.contextPath.concat('/').concat(book.imagePath) : ''}" 
@@ -277,12 +278,10 @@
             <span class="toast-icon">
                 <i class="fa-solid fa-circle-xmark"></i>
             </span>
-            <span style="font-size:.875rem;font-weight:500;flex:1;">
+            <div class="toast-body small fw-medium m-0">
                 <c:out value="${errorMessage}"/>
-            </span>
-            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            </div>
+            <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
         </div>
         <script>
             function closeToast() {

@@ -75,12 +75,12 @@
                 <div class="d-flex gap-2">
                     <a href="${pageContext.request.contextPath}/accounts?action=edit&userId=<%= account.getUserId() %>"
                        id="btn-edit-account"
-                       class="btn-edit hover-lift text-decoration-none">
+                       class="btn btn-edit hover-lift text-decoration-none">
                         <i class="fa-solid fa-user-pen"></i> Chỉnh sửa
                     </a>
                     <a href="${pageContext.request.contextPath}/accounts"
                        id="btn-back"
-                       class="btn-back hover-lift text-decoration-none">
+                       class="btn btn-back hover-lift text-decoration-none">
                         <i class="fa-solid fa-arrow-left"></i> Quay lại
                     </a>
                 </div>
@@ -91,7 +91,7 @@
             <%-- ════════════════════════════════════════ --%>
             <div class="details-hero">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="details-avatar" style="background: #EEF2FF; color: #312E81; font-weight: 700; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;">
+                    <div class="details-avatar" style="background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;">
                         <%= initials %>
                     </div>
                     <div>
@@ -130,7 +130,7 @@
             <%-- ════════════════════════════════════════ --%>
             <%-- CARD THÔNG TIN CHI TIẾT                 --%>
             <%-- ════════════════════════════════════════ --%>
-            <div class="detail-card bg-white">
+            <div class="card detail-card bg-white">
                 <div class="detail-card-header">
                     <i class="fa-solid fa-id-card text-primary"></i>
                     Thông tin chi tiết tài khoản

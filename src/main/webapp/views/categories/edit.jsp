@@ -179,14 +179,15 @@
 
                 <div class="row">
                     <div class="col-12 col-xl-8">
-                        <div class="form-card bg-white">
+                        <div class="card form-card">
                             
                             <%-- Header Card --%>
-                            <div class="form-card-header">
+                            <div class="card-header form-card-header text-white d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="fa-solid fa-pen-to-square fs-5 text-white"></i>
-                                    <h5 class="text-white fw-bold mb-0" style="font-size:1rem;">Chỉnh sửa thông tin danh mục #${category.categoryId}</h5>
+                                    <h5 class="text-white fw-bold mb-0" style="font-size:1rem;">Chỉnh sửa thông tin danh mục</h5>
                                 </div>
+                                <span class="header-meta-badge">ID: #${category.categoryId}</span>
                             </div>
                             
                             <%-- Form Body --%>
@@ -377,12 +378,10 @@
             <span class="toast-icon">
                 <i class="fa-solid fa-circle-xmark"></i>
             </span>
-            <span style="font-size:.875rem;font-weight:500;flex:1;">
+            <div class="toast-body small fw-medium m-0">
                 <c:out value="${errorMessage}"/>
-            </span>
-            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            </div>
+            <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
         </div>
         <script>
             function closeToast() {

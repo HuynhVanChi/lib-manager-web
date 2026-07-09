@@ -77,7 +77,7 @@
                 <div class="d-flex gap-2">
                     <button type="button"
                             id="btn-open-archive"
-                            class="btn btn-slate hover-lift d-flex align-items-center gap-2"
+                            class="btn btn-slate hover-lift"
                             data-bs-toggle="modal"
                             data-bs-target="#archiveModal">
                         <i class="fa-solid fa-trash-can"></i>
@@ -85,7 +85,7 @@
                     </button>
                     <a href="${pageContext.request.contextPath}/recommend/add"
                        id="btn-add-recommendation"
-                       class="btn btn-save hover-lift d-flex align-items-center gap-2 text-decoration-none">
+                       class="btn btn-save hover-lift text-decoration-none">
                         <i class="fa-solid fa-plus"></i>
                         <span>Thêm đề xuất sách</span>
                     </a>
@@ -127,7 +127,7 @@
                         <c:if test="${not empty keyword or not empty statusFilter}">
                             <a href="${pageContext.request.contextPath}/recommend"
                                id="btn-clear-filter"
-                               class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none ms-2">
+                               class="btn-clear-filter ms-2">
                                 <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
                             </a>
                         </c:if>
@@ -372,16 +372,16 @@
                                 <tbody>
                                     <c:forEach var="del" items="${deletedRecommendations}">
                                         <tr>
-                                            <td><c:out value="${del.recommendationId}"/></td>
+                                             <td class="text-muted fw-medium">#<c:out value="${del.recommendationId}"/></td>
                                             <td><span class="fw-semibold text-dark"><c:out value="${del.readerName}"/></span></td>
                                             <td><c:out value="${del.bookTitle}"/></td>
                                             <td><c:out value="${del.author}"/></td>
                                             <td class="text-end">
                                                 <form method="post" action="${pageContext.request.contextPath}/recommend/restore" class="m-0 d-inline">
                                                     <input type="hidden" name="id" value="${del.recommendationId}"/>
-                                                    <button type="submit" class="btn-action hover-lift" title="Khôi phục đề xuất" style="color: #15803D !important; border-color: #86EFAC !important;">
-                                                        <i class="fa-solid fa-trash-can-arrow-up"></i>
-                                                    </button>
+                                                     <button type="submit" class="btn-action" title="Khôi phục đề xuất" style="color: var(--success) !important; border-color: var(--success-border) !important;">
+                                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                     </button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -431,7 +431,7 @@
                 <button type="button" class="btn btn-cancel hover-lift" data-bs-dismiss="modal">Hủy</button>
                 <form id="approve-form" method="post" action="" class="m-0">
                     <input type="hidden" name="redirectUrl" value="${pageContext.request.contextPath}/recommend">
-                    <button type="submit" class="btn btn-save hover-lift" style="background:#15803D!important;border-color:#15803D!important;">
+                    <button type="submit" class="btn btn-save hover-lift" style="background: var(--success) !important; border-color: var(--success) !important;">
                         <i class="fa-solid fa-circle-check me-1"></i> Xác nhận duyệt
                     </button>
                 </form>

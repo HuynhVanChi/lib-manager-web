@@ -51,7 +51,7 @@
                         <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">Chi tiết danh mục</h1>
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="${pageContext.request.contextPath}/categories" class="btn-back hover-lift">
+                        <a href="${pageContext.request.contextPath}/categories" class="btn btn-back hover-lift">
                             <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
                         </a>
                     </div>
@@ -61,9 +61,9 @@
                     
                     <!-- CỘT TRÁI: THÔNG TIN HỒ SƠ DANH MỤC (4/12) -->
                     <div class="col-12 col-lg-4">
-                        <div class="card card-main bg-white p-4 border-0">
+                        <div class="card detail-card bg-white">
                             
-                            <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="d-flex align-items-center gap-3 mb-3 p-4 pb-0">
                                 <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
                                     <i class="fa-solid fa-tags fs-4"></i>
                                 </div>
@@ -73,9 +73,9 @@
                                 </div>
                             </div>
 
-                            <hr class="text-muted my-3">
+                            <hr class="text-muted my-3 mx-4">
 
-                            <div class="mb-4 small text-secondary">
+                            <div class="mb-4 small text-secondary px-4 pb-4">
                                 <div class="mb-3">
                                     <div class="fw-semibold text-dark mb-1">Mô tả chi tiết:</div>
                                     <p class="text-muted m-0 text-wrap lh-base" style="font-size:0.85rem;">
@@ -92,7 +92,7 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex flex-column gap-2 mt-4">
+                            <div class="d-flex flex-column gap-2 mt-4 px-4 pb-4">
                                 <a href="${pageContext.request.contextPath}/categories?action=edit&id=${category.categoryId}" class="btn btn-primary w-100 hover-lift py-2.5">
                                     <i class="fa-solid fa-pen-to-square me-1"></i> Chỉnh sửa danh mục
                                 </a>
@@ -102,14 +102,12 @@
 
                     <!-- CỘT PHẢI: DANH SÁCH ĐẦU SÁCH THUỘC DANH MỤC (8/12) -->
                     <div class="col-12 col-lg-8">
-                        <div class="form-card bg-white h-100">
+                        <div class="card detail-card bg-white h-100">
                             
                             <%-- Header Card --%>
-                            <div class="form-card-header">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-book fs-5 text-white"></i>
-                                    <h5 class="text-white fw-bold mb-0" style="font-size:1rem;">Danh sách sách thuộc danh mục</h5>
-                                </div>
+                            <div class="detail-card-header">
+                                <i class="fa-solid fa-book text-primary"></i>
+                                Danh sách sách thuộc danh mục
                             </div>
                             
                             <div class="p-0">
@@ -117,16 +115,16 @@
                                     <c:when test="${empty booksList}">
                                         <div class="empty-state p-5">
                                             <div class="icon"><i class="fa-solid fa-folder-open text-muted"></i></div>
-                                            <h5 class="fw-semibold text-dark mb-1">Chưa có đầu sách nào</h5>
-                                            <p class="text-muted small mb-0">Danh mục này hiện chưa được phân loại bất kỳ đầu sách nào trong hệ thống.</p>
+                                            <h5 class="fw-bold text-dark mb-1">Chưa có đầu sách nào</h5>
+                                            <p class="text-muted small mb-4">Danh mục này hiện chưa được phân loại bất kỳ đầu sách nào trong hệ thống.</p>
                                         </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="table-responsive">
-                                            <table class="table-custom m-0">
+                                            <table class="table-custom m-0" style="table-layout: fixed; width: 100%;">
                                                 <thead>
                                                     <tr>
-                                                        <th class="ps-4" style="width: 80px;">#</th>
+                                                        <th class="ps-4" style="width: 80px;">ID</th>
                                                         <th style="width: 70px;">Bìa</th>
                                                         <th>Tên sách & Tác giả</th>
                                                         <th>Nhà xuất bản & Năm</th>
@@ -137,7 +135,7 @@
                                                 <tbody>
                                                     <c:forEach var="b" items="${booksList}" varStatus="loop">
                                                         <tr>
-                                                            <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                            <td class="ps-4 text-muted fw-medium">#${b.bookId}</td>
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${not empty b.imagePath}">
@@ -147,19 +145,19 @@
                                                                              class="shadow-sm">
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <div class="book-cover-placeholder-mini" style="width: 38px; height: 50px; background: #e0e7ff; border-radius: 4px; border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: #312E81; font-size: 0.9rem;">
+                                                                        <div class="book-cover-placeholder-mini" style="width: 38px; height: 50px; background: var(--primary-soft); border-radius: 4px; border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: var(--primary); font-size: 0.9rem;">
                                                                             <i class="fa-solid fa-book"></i>
                                                                         </div>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>
                                                             <td>
-                                                                <span class="fw-bold text-dark d-block">${b.title}</span>
+                                                                <span class="fw-bold text-dark d-block text-truncate" title="${b.title}">${b.title}</span>
                                                                 <span class="text-muted small"><i class="fa-regular fa-user me-1"></i>${b.author}</span>
                                                                 <div class="text-muted" style="font-size: 0.72rem; margin-top: 2px;">ID: #${b.bookId}</div>
                                                             </td>
                                                             <td>
-                                                                <span class="d-block text-dark">${b.publisher}</span>
+                                                                <span class="d-block text-dark text-truncate" title="${b.publisher}">${b.publisher}</span>
                                                                 <span class="text-muted small">${b.publishYear != 0 ? b.publishYear : 'Chưa cập nhật'}</span>
                                                             </td>
                                                             <td>

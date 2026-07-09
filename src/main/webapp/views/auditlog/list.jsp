@@ -77,7 +77,7 @@
                             <option value="book_recommends" ${tableFilter == 'book_recommends' ? 'selected' : ''}>Đề xuất sách (book_recommends)</option>
                         </select>
 
-                        <button type="submit" id="btn-search" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow">
+                        <button type="submit" id="btn-search" class="btn btn-primary hover-glow">
                             <i class="fa-solid fa-filter me-1"></i> Lọc
                         </button>
 
@@ -85,7 +85,7 @@
                         <c:if test="${not empty search or not empty actionFilter or not empty tableFilter}">
                             <a href="${pageContext.request.contextPath}/AuditLogs"
                                id="btn-clear-filter"
-                               class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none">
+                               class="btn-clear-filter ms-2">
                                 <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
                             </a>
                         </c:if>
@@ -115,7 +115,7 @@
                                 <tbody>
                                     <c:forEach var="log" items="${logs}">
                                         <tr id="log-row-${log.logId}">
-                                            <td class="text-muted fw-medium">${log.logId}</td>
+                                            <td class="text-muted fw-medium">#${log.logId}</td>
                                             <td>
                                                 <div class="fw-semibold text-dark">
                                                     <c:out value="${log.userFullName}"/>
@@ -163,7 +163,7 @@
                                                 </small>
                                             </td>
                                             <td>
-                                                <span class="badge bg-light text-dark border fw-medium" style="font-size: 0.8rem; font-family: monospace;">
+                                                <span class="text-dark fw-medium" style="font-family: monospace; font-size: 0.85rem;">
                                                     #${log.recordId}
                                                 </span>
                                             </td>
@@ -187,8 +187,8 @@
                         <c:otherwise>
                             <div class="empty-state">
                                 <div class="icon"><i class="fa-solid fa-receipt"></i></div>
-                                <h5 class="fw-semibold text-dark mb-1">Không tìm thấy nhật ký nào</h5>
-                                <p class="mb-3" style="font-size:.875rem;">
+                                <h5 class="fw-bold text-dark mb-1">Không tìm thấy nhật ký nào</h5>
+                                <p class="text-muted small mb-4">
                                     <c:choose>
                                         <c:when test="${not empty search or not empty actionFilter or not empty tableFilter}">
                                             Không có kết quả phù hợp với bộ lọc hiện tại.

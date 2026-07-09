@@ -75,7 +75,7 @@
                                     </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="book-cover-placeholder mb-4" style="height: 320px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #312E81; font-size: 3rem; box-shadow: inset 0 0 20px rgba(49, 46, 129, 0.1);">
+                                    <div class="book-cover-placeholder mb-4" style="height: 320px; background: linear-gradient(135deg, var(--primary-soft), var(--secondary)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 3rem; box-shadow: inset 0 0 20px rgba(49, 46, 129, 0.1);">
                                         <i class="fa-solid fa-book"></i>
                                     </div>
                                 </c:otherwise>
@@ -125,14 +125,12 @@
 
                     <!-- CỘT PHẢI: DANH SÁCH CUỐN SÁCH (8/12) -->
                     <div class="col-12 col-lg-8">
-                        <div class="form-card bg-white h-100">
+                        <div class="card detail-card bg-white h-100">
                             
                             <%-- Header Card --%>
-                            <div class="form-card-header">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-boxes-stacked fs-5 text-white"></i>
-                                    <h5 class="text-white fw-bold mb-0" style="font-size:1rem;">Danh sách cuốn sách hiện có</h5>
-                                </div>
+                            <div class="detail-card-header">
+                                <i class="fa-solid fa-boxes-stacked text-primary"></i>
+                                Danh sách cuốn sách hiện có
                             </div>
                             
                             <div class="p-0">
@@ -140,8 +138,8 @@
                                     <c:when test="${empty copiesList}">
                                         <div class="empty-state p-5">
                                             <div class="icon"><i class="fa-solid fa-box-open text-muted"></i></div>
-                                            <h5 class="fw-semibold text-dark mb-1">Chưa có cuốn sách nào</h5>
-                                            <p class="text-muted small mb-0">Đầu sách này hiện chưa có cuốn sách vật lý nào trong kho.</p>
+                                            <h5 class="fw-bold text-dark mb-1">Chưa có cuốn sách nào</h5>
+                                            <p class="text-muted small mb-4">Đầu sách này hiện chưa có cuốn sách vật lý nào trong kho.</p>
                                         </div>
                                     </c:when>
                                     <c:otherwise>
@@ -149,7 +147,7 @@
                                             <table class="table-custom m-0">
                                                 <thead>
                                                     <tr>
-                                                        <th class="ps-4" style="width: 80px;">#</th>
+                                                        <th class="ps-4" style="width: 80px;">ID</th>
                                                         <th>Mã vạch & ID</th>
                                                         <th>Giá nhập</th>
                                                         <th>Vị trí kệ sách</th>
@@ -159,7 +157,7 @@
                                                 <tbody>
                                                     <c:forEach var="c" items="${copiesList}" varStatus="loop">
                                                         <tr>
-                                                            <td class="ps-4 text-muted fw-medium">${loop.index + 1}</td>
+                                                            <td class="ps-4 text-muted fw-medium">#${c.copyId}</td>
                                                             <td>
                                                                 <span class="font-monospace fw-bold text-dark">${c.barcode}</span>
                                                                 <div class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">ID: #${c.copyId}</div>
@@ -171,32 +169,32 @@
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${c.status == 'Available'}">
-                                                                        <span class="badge-status badge-success">
+                                                                        <span class="badge-status badge-active">
                                                                             <i class="fa-solid fa-circle-check me-1" style="font-size:.65rem;"></i>Sẵn có
                                                                         </span>
                                                                     </c:when>
                                                                     <c:when test="${c.status == 'Borrowed'}">
-                                                                        <span class="badge-status badge-info">
+                                                                        <span class="badge-status badge-info-custom">
                                                                             <i class="fa-solid fa-book-open me-1" style="font-size:.65rem;"></i>Đang mượn
                                                                         </span>
                                                                     </c:when>
                                                                     <c:when test="${c.status == 'Damaged'}">
-                                                                        <span class="badge-status badge-warning">
+                                                                        <span class="badge-status badge-suspended">
                                                                             <i class="fa-solid fa-triangle-exclamation me-1" style="font-size:.65rem;"></i>Bị hỏng
                                                                         </span>
                                                                     </c:when>
                                                                     <c:when test="${c.status == 'Lost'}">
-                                                                        <span class="badge-status badge-danger">
+                                                                        <span class="badge-status badge-danger-custom">
                                                                             <i class="fa-solid fa-circle-question me-1" style="font-size:.65rem;"></i>Bị mất
                                                                         </span>
                                                                     </c:when>
                                                                     <c:when test="${c.status == 'Decommissioned'}">
-                                                                        <span class="badge-status badge-secondary">
+                                                                        <span class="badge-status badge-expired">
                                                                             <i class="fa-solid fa-box-archive me-1" style="font-size:.65rem;"></i>Thanh lý
                                                                         </span>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <span class="badge-status badge-secondary">${c.status}</span>
+                                                                        <span class="badge-status badge-expired">${c.status}</span>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>

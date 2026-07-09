@@ -23,12 +23,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB;
-        }
-        .badge-soft-purple {
-            background-color: rgba(167, 139, 250, 0.15);
-            color: #6d28d9;
-            font-weight: 500;
+            background-color: var(--bg-page);
         }
     </style>
 </head>
@@ -60,7 +55,7 @@
                     <div class="d-flex gap-2">
                         <button type="button"
                                 id="btn-open-archive"
-                                class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                                class="btn btn-slate hover-lift"
                                 data-bs-toggle="modal"
                                 data-bs-target="#archiveModal">
                             <i class="fa-solid fa-trash-can"></i>
@@ -68,7 +63,7 @@
                         </button>
                         <a href="${pageContext.request.contextPath}/categories?action=add"
                            id="btn-add-category"
-                           class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
+                           class="btn btn-primary hover-lift">
                             <i class="fa-solid fa-plus"></i>
                             <span>Thêm danh mục</span>
                         </a>
@@ -95,7 +90,7 @@
                             </div>
 
                             <%-- Nút Lọc tĩnh --%>
-                            <button type="submit" id="btn-search" class="btn btn-primary px-3 py-2 rounded-3 fw-medium shadow-sm hover-glow">
+                            <button type="submit" id="btn-search" class="btn btn-primary hover-glow">
                                 <i class="fa-solid fa-filter me-1"></i> Lọc
                             </button>
 
@@ -103,7 +98,7 @@
                             <c:if test="${not empty searchQuery}">
                                 <a href="${pageContext.request.contextPath}/categories${isTrashView ? '?trash=true' : ''}"
                                    id="btn-clear-filter"
-                                   class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none ms-2">
+                                   class="btn-clear-filter ms-2">
                                     <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
                                 </a>
                             </c:if>
@@ -169,8 +164,8 @@
                             <c:otherwise>
                                 <div class="empty-state">
                                     <div class="icon"><i class="fa-solid fa-tags"></i></div>
-                                    <h5 class="fw-semibold text-dark mb-1">Không tìm thấy danh mục nào</h5>
-                                    <p class="mb-3" style="font-size:.875rem;">
+                                    <h5 class="fw-bold text-dark mb-1">Không tìm thấy danh mục nào</h5>
+                                    <p class="text-muted small mb-4">
                                         <c:choose>
                                             <c:when test="${not empty searchQuery}">
                                                 Không có danh mục nào phù hợp với từ khóa tìm kiếm.
@@ -200,9 +195,9 @@
             <div class="modal-content border-0 shadow rounded-3">
                 <div class="modal-header">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:40px;height:40px;background:#FEE2E2;flex-shrink:0;">
-                            <i class="fa-solid fa-triangle-exclamation" style="color:#DC2626;"></i>
+                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:36px;height:36px;flex-shrink:0;">
+                            <i class="fa-solid fa-triangle-exclamation text-danger"></i>
                         </div>
                         <h6 class="modal-title fw-bold m-0" id="deleteCategoryModalLabel">Xác nhận xóa danh mục</h6>
                     </div>
@@ -232,7 +227,7 @@
     <!-- Modal: Thùng rác danh mục -->
     <div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
+            <div class="modal-content border-0 shadow rounded-3">
                 <div class="modal-header d-flex align-items-center">
                     <div class="d-flex align-items-center gap-2">
                         <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center" 
@@ -250,7 +245,7 @@
                                 <table class="table-custom m-0">
                                     <thead style="position: sticky; top: 0; z-index: 10;">
                                         <tr>
-                                            <th class="ps-4" style="width: 80px;">Mã</th>
+                                            <th class="ps-4" style="width: 80px;">ID</th>
                                             <th>Tên danh mục</th>
                                             <th>Mô tả chi tiết</th>
                                             <th class="text-center" style="width: 140px;">Hành động</th>
@@ -259,13 +254,13 @@
                                     <tbody>
                                         <c:forEach var="delCat" items="${deletedCategories}">
                                             <tr>
-                                                <td class="ps-4 fw-semibold text-secondary">#<c:out value="${delCat.categoryId}"/></td>
+                                                <td class="ps-4 text-muted fw-medium">#<c:out value="${delCat.categoryId}"/></td>
                                                 <td><span class="badge-status badge-theme-${delCat.colorTheme} px-3 py-1.5 fs-7"><c:out value="${delCat.name}"/></span></td>
                                                 <td class="text-muted"><c:out value="${delCat.description != null ? delCat.description : '—'}"/></td>
                                                 <td class="text-center">
                                                     <form method="post" action="${pageContext.request.contextPath}/categories?action=restore" class="m-0 d-inline">
                                                         <input type="hidden" name="categoryId" value="${delCat.categoryId}"/>
-                                                        <button type="submit" class="btn-action hover-lift" title="Khôi phục danh mục" style="color: #15803D !important; border-color: #86EFAC !important;">
+                                                        <button type="submit" class="btn-action" title="Khôi phục danh mục" style="color: var(--success) !important; border-color: var(--success-border) !important;">
                                                             <i class="fa-solid fa-trash-can-arrow-up"></i>
                                                         </button>
                                                     </form>
@@ -311,12 +306,10 @@
                     <i class="fa-solid fa-circle-xmark"></i>
                 <% } %>
             </span>
-            <span style="font-size:.875rem;font-weight:500;flex:1;">
+            <div class="toast-body small fw-medium m-0">
                 <%= msg %>
-            </span>
-            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            </div>
+            <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
         </div>
         <script>
             function closeToast() {

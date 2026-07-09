@@ -134,7 +134,7 @@
                     <div class="stat-card stat-primary h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Tổng lần mượn</span>
-                            <div class="stat-icon m-0"><i class="fa-solid fa-book-open"></i></div>
+                            <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
                         </div>
                         <div class="stat-value">${stats.totalBorrows}</div>
                     </div>
@@ -143,7 +143,7 @@
                     <div class="stat-card stat-success h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Đang mượn</span>
-                            <div class="stat-icon m-0"><i class="fa-solid fa-book-bookmark"></i></div>
+                            <div class="stat-icon"><i class="fa-solid fa-book-bookmark"></i></div>
                         </div>
                         <div class="stat-value">${stats.activeBorrows}</div>
                     </div>
@@ -152,7 +152,7 @@
                     <div class="stat-card stat-danger h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Quá hạn</span>
-                            <div class="stat-icon m-0"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
                         </div>
                         <div class="stat-value">${stats.overdueBorrows}</div>
                     </div>
@@ -161,7 +161,7 @@
                     <div class="stat-card stat-warning h-100">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="stat-label">Phí phạt chưa trả</span>
-                            <div class="stat-icon m-0"><i class="fa-solid fa-coins"></i></div>
+                            <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
                         </div>
                         <div class="stat-value">
                             <fmt:formatNumber value="${stats.unpaidFines}" type="number" maxFractionDigits="0"/>đ
@@ -173,7 +173,7 @@
             <%-- ════════════════════════════════════════ --%>
             <%-- CARD THÔNG TIN CHI TIẾT                 --%>
             <%-- ════════════════════════════════════════ --%>
-            <div class="detail-card bg-white">
+            <div class="card detail-card bg-white">
                 <div class="detail-card-header">
                     <i class="fa-solid fa-id-card text-primary"></i>
                     Thông tin chi tiết
@@ -240,7 +240,7 @@
             <%-- ════════════════════════════════════════ --%>
             <%-- CARD LỊCH SỬ MƯỢN SÁCH                 --%>
             <%-- ════════════════════════════════════════ --%>
-            <div class="detail-card bg-white">
+            <div class="card detail-card bg-white">
                 <div class="detail-card-header">
                     <i class="fa-solid fa-clock-rotate-left text-primary"></i>
                     Lịch sử mượn sách
@@ -258,7 +258,7 @@
                                 <table class="table-custom">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th style="width: 80px;">ID</th>
                                             <th>Tên sách</th>
                                             <th>Mã vạch</th>
                                             <th>Ngày mượn</th>
@@ -270,7 +270,7 @@
                                     <tbody>
                                         <c:forEach var="h" items="${borrowHistory}" varStatus="loop">
                                             <tr>
-                                                <td class="text-muted fw-medium">${loop.index + 1}</td>
+                                                <td class="text-muted fw-medium">#${h.borrowDetailId}</td>
                                                 <td>
                                                     <span class="fw-semibold" style="font-size:.875rem;">
                                                         <c:out value="${h.bookTitle}"/>
@@ -339,10 +339,8 @@
                         <c:otherwise>
                             <div class="empty-state">
                                 <div class="icon"><i class="fa-solid fa-book-open"></i></div>
-                                <p class="fw-semibold mb-1" style="font-size:.9rem;color:var(--text-dark);">
-                                    Chưa có lịch sử mượn sách
-                                </p>
-                                <p style="font-size:.82rem;">Độc giả này chưa thực hiện lần mượn sách nào.</p>
+                                <h5 class="fw-bold text-dark">Chưa có lịch sử mượn sách</h5>
+                                <p class="text-muted small mb-4">Độc giả này chưa thực hiện lần mượn sách nào.</p>
                             </div>
                         </c:otherwise>
                     </c:choose>

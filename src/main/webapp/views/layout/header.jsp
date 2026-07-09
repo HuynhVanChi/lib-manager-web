@@ -79,7 +79,7 @@
            onmouseover="this.style.opacity='0.85'" 
            onmouseout="this.style.opacity='1'">
             <div class="text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm fw-bold" 
-                 style="width: 45px; height: 45px; margin-right: 12px; flex-shrink: 0; background-color: #2e3894; font-size: 1.2rem; user-select: none;">
+                 style="width: 45px; height: 45px; margin-right: 12px; flex-shrink: 0; background-color: var(--primary); font-size: 1.2rem; user-select: none;">
                 <%= firstLetter %>
             </div>
             <div class="d-flex flex-column lh-sm" style="flex-shrink: 0;">

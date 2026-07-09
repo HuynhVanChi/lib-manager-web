@@ -27,19 +27,6 @@
             background-color: #F9FAFB;
         }
         
-        /* ── Stat cards colors ── */
-        .stat-total-books { background: var(--primary-soft); color: var(--primary); }
-        .stat-total-books .stat-icon { background: rgba(49,46,129,.12); color: var(--primary); }
-
-        .stat-total-copies { background: #EEF2FF; color: #4338CA; }
-        .stat-total-copies .stat-icon { background: rgba(67,56,202,.12); color: #4338CA; }
-
-        .stat-available-copies { background: #F0FDF4; color: #15803D; }
-        .stat-available-copies .stat-icon { background: rgba(21,128,61,.12); color: #15803D; }
-
-        .stat-damaged-copies { background: #FEF2F2; color: #DC2626; }
-        .stat-damaged-copies .stat-icon { background: rgba(220,38,38,.12); color: #DC2626; }
-        
         .badge-soft-purple {
             background-color: rgba(167, 139, 250, 0.15);
             color: #6d28d9;
@@ -82,7 +69,7 @@
                     <div class="d-flex gap-2">
                         <button type="button"
                                 id="btn-open-archive"
-                                class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                                class="btn btn-slate hover-lift"
                                 data-bs-toggle="modal"
                                 data-bs-target="#archiveModal">
                             <i class="fa-solid fa-trash-can"></i>
@@ -90,7 +77,7 @@
                         </button>
                         <a href="${pageContext.request.contextPath}/books?action=add"
                            id="btn-add-book"
-                           class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
+                           class="btn btn-primary hover-lift">
                             <i class="fa-solid fa-plus"></i>
                             <span>Thêm đầu sách</span>
                         </a>
@@ -103,10 +90,10 @@
                 <div class="row g-3 mb-4">
                     <!-- Thẻ 1: Tổng đầu sách -->
                     <div class="col-6 col-lg-3">
-                        <div class="stat-card stat-total-books h-100">
+                        <div class="stat-card stat-primary h-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Tổng đầu sách</span>
-                                <div class="stat-icon m-0"><i class="fa-solid fa-book-bookmark"></i></div>
+                                <div class="stat-icon"><i class="fa-solid fa-book-bookmark"></i></div>
                             </div>
                             <div class="stat-value">${totalBooks}</div>
                         </div>
@@ -114,10 +101,10 @@
 
                     <!-- Thẻ 2: Tổng số cuốn sách -->
                     <div class="col-6 col-lg-3">
-                        <div class="stat-card stat-total-copies h-100">
+                        <div class="stat-card stat-info h-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Tổng số cuốn sách</span>
-                                <div class="stat-icon m-0"><i class="fa-solid fa-copy"></i></div>
+                                <div class="stat-icon"><i class="fa-solid fa-copy"></i></div>
                             </div>
                             <div class="stat-value">${totalCopies}</div>
                         </div>
@@ -125,10 +112,10 @@
 
                     <!-- Thẻ 3: Cuốn sách khả dụng -->
                     <div class="col-6 col-lg-3">
-                        <div class="stat-card stat-available-copies h-100">
+                        <div class="stat-card stat-success h-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Sách khả dụng (trong kho)</span>
-                                <div class="stat-icon m-0"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
                             </div>
                             <div class="stat-value">${availableCopies}</div>
                         </div>
@@ -136,10 +123,10 @@
 
                     <!-- Thẻ 4: Sách hỏng/mất -->
                     <div class="col-6 col-lg-3">
-                        <div class="stat-card stat-damaged-copies h-100">
+                        <div class="stat-card stat-danger h-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Sách đang hỏng/Mất</span>
-                                <div class="stat-icon m-0"><i class="fa-solid fa-circle-exclamation"></i></div>
+                                <div class="stat-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
                             </div>
                             <div class="stat-value">${damagedOrLostCopies}</div>
                         </div>
@@ -175,7 +162,7 @@
 
                             <%-- Nút xóa bộ lọc --%>
                             <c:if test="${not empty selectedQuery or not empty selectedCategoryId}">
-                                <a href="${pageContext.request.contextPath}/books?clearFilters=true" class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none ms-2">
+                                <a href="${pageContext.request.contextPath}/books?clearFilters=true" class="btn-clear-filter ms-2">
                                     <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
                                 </a>
                             </c:if>
@@ -233,7 +220,7 @@
                                                 </td>
                                                 <!-- Tiêu đề & Tác giả -->
                                                 <td>
-                                                    <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="fw-bold text-indigo-brand fs-6 text-decoration-none hover-underline" style="cursor: pointer;">
+                                                    <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="fw-bold text-indigo-brand fs-6 text-decoration-none hover-underline text-truncate d-inline-block" style="cursor: pointer; max-width: 280px;" title="${book.title}">
                                                         ${book.title}
                                                     </a>
                                                     <div class="text-muted small mt-0.5"><i class="fa-regular fa-user me-1"></i>${book.author}</div>
@@ -295,8 +282,8 @@
                             <c:otherwise>
                                 <div class="empty-state">
                                     <div class="icon"><i class="fa-solid fa-book"></i></div>
-                                    <h5 class="fw-semibold text-dark mb-1">Không tìm thấy đầu sách nào</h5>
-                                    <p class="mb-3" style="font-size:.875rem;">
+                                    <h5 class="fw-bold text-dark mb-1">Không tìm thấy đầu sách nào</h5>
+                                    <p class="text-muted small mb-4">
                                         <c:choose>
                                             <c:when test="${not empty selectedQuery or not empty selectedCategoryId}">
                                                 Không có kết quả phù hợp với bộ lọc tìm kiếm hiện tại.
@@ -332,9 +319,9 @@
             <div class="modal-content border-0 shadow rounded-3">
                 <div class="modal-header">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:40px;height:40px;background:#FEE2E2;flex-shrink:0;">
-                            <i class="fa-solid fa-triangle-exclamation" style="color:#DC2626;"></i>
+                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:36px;height:36px;flex-shrink:0;">
+                            <i class="fa-solid fa-triangle-exclamation text-danger"></i>
                         </div>
                         <h6 class="modal-title fw-bold m-0" id="deleteBookModalLabel">Xác nhận xóa đầu sách</h6>
                     </div>
@@ -366,9 +353,9 @@
             <div class="modal-content border-0 shadow rounded-3">
                 <div class="modal-header">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:40px;height:40px;background:#F1F5F9;flex-shrink:0;">
-                            <i class="fa-solid fa-trash-can" style="color:#64748B;"></i>
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:36px;height:36px;flex-shrink:0;">
+                            <i class="fa-solid fa-trash-can text-secondary"></i>
                         </div>
                         <h6 class="modal-title fw-bold m-0" id="archiveModalLabel">Thùng rác Đầu sách</h6>
                     </div>
@@ -384,7 +371,7 @@
                         <table class="table table-hover align-middle mb-0" style="font-size:.85rem;">
                             <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                 <tr>
-                                    <th class="ps-3" style="width: 80px;">Mã sách</th>
+                                    <th class="ps-3" style="width: 80px;">ID</th>
                                     <th>Tên đầu sách</th>
                                     <th>Tác giả</th>
                                     <th>Danh mục</th>
@@ -404,7 +391,7 @@
                                     <c:otherwise>
                                         <c:forEach var="b" items="${deletedBooksList}">
                                             <tr>
-                                                <td class="ps-3 fw-semibold text-secondary">#${b.bookId}</td>
+                                                <td class="ps-3 text-muted fw-medium">#${b.bookId}</td>
                                                 <td class="fw-semibold text-dark">${b.title}</td>
                                                 <td>${empty b.author ? '—' : b.author}</td>
                                                 <td><span class="badge-status badge-theme-${b.categoryColorTheme} px-3 py-1.5 fs-7">${b.categoryName}</span></td>
@@ -412,7 +399,7 @@
                                                 <td class="text-center">
                                                     <form action="${pageContext.request.contextPath}/books?action=restore" method="post" class="d-inline m-0">
                                                         <input type="hidden" name="bookId" value="${b.bookId}">
-                                                        <button type="submit" class="btn-action hover-lift" title="Khôi phục đầu sách" style="color: #15803D !important; border-color: #86EFAC !important;">
+                                                        <button type="submit" class="btn-action" title="Khôi phục đầu sách" style="color: var(--success) !important; border-color: var(--success-border) !important;">
                                                             <i class="fa-solid fa-trash-can-arrow-up"></i>
                                                         </button>
                                                     </form>
@@ -457,12 +444,10 @@
                     <i class="fa-solid fa-circle-xmark"></i>
                 <% } %>
             </span>
-            <span style="font-size:.875rem;font-weight:500;flex:1;">
+            <div class="toast-body small fw-medium m-0">
                 <%= msg %>
-            </span>
-            <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            </div>
+            <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
         </div>
         <script>
             function closeToast() {

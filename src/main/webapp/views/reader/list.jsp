@@ -45,7 +45,7 @@
                 <div class="d-flex gap-2">
                     <button type="button"
                             id="btn-open-archive"
-                            class="btn btn-slate d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift"
+                            class="btn btn-slate hover-lift"
                             data-bs-toggle="modal"
                             data-bs-target="#archiveModal">
                         <i class="fa-solid fa-trash-can"></i>
@@ -53,7 +53,7 @@
                     </button>
                     <a href="${pageContext.request.contextPath}/readers/add"
                        id="btn-add-reader"
-                       class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-3 fw-semibold shadow-sm hover-lift">
+                       class="btn btn-primary hover-lift">
                         <i class="fa-solid fa-user-plus"></i>
                         <span>Thêm độc giả</span>
                     </a>
@@ -95,7 +95,7 @@
                         <c:if test="${not empty search or not empty statusFilter}">
                             <a href="${pageContext.request.contextPath}/readers"
                                id="btn-clear-filter"
-                               class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium text-decoration-none">
+                               class="btn-clear-filter ms-2">
                                 <i class="fa-solid fa-xmark me-1"></i> Xóa lọc
                             </a>
                         </c:if>
@@ -341,14 +341,14 @@
                                 <tbody>
                                     <c:forEach var="delReader" items="${deletedReaders}">
                                         <tr>
-                                            <td><c:out value="${delReader.readerId}"/></td>
+                                            <td class="text-muted fw-medium">#<c:out value="${delReader.readerId}"/></td>
                                             <td><span class="fw-semibold text-dark"><c:out value="${delReader.fullName}"/></span></td>
                                             <td><c:out value="${delReader.email}"/></td>
                                             <td><c:out value="${delReader.phone != null ? delReader.phone : '—'}"/></td>
                                             <td class="text-center">
                                                 <form method="post" action="${pageContext.request.contextPath}/readers/restore" class="m-0 d-inline">
                                                     <input type="hidden" name="readerId" value="${delReader.readerId}"/>
-                                                    <button type="submit" class="btn-action hover-lift" title="Khôi phục độc giả" style="color: #15803D !important; border-color: #86EFAC !important;">
+                                                    <button type="submit" class="btn-action" title="Khôi phục độc giả" style="color: var(--success) !important; border-color: var(--success-border) !important;">
                                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
                                                     </button>
                                                 </form>
@@ -385,12 +385,10 @@
                 <c:otherwise><i class="fa-solid fa-circle-xmark"></i></c:otherwise>
             </c:choose>
         </span>
-        <span style="font-size:.875rem;font-weight:500;flex:1;">
+        <div class="toast-body small fw-medium m-0">
             <c:out value="${flashMessage}"/>
-        </span>
-        <button class="toast-close" onclick="closeToast()" aria-label="Đóng">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+        </div>
+        <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
     </div>
 </c:if>
 

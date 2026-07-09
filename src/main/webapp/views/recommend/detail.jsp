@@ -41,7 +41,7 @@
                 <div class="d-flex gap-2">
                     <a href="${pageContext.request.contextPath}/recommend"
                        id="btn-back"
-                       class="btn btn-cancel hover-lift text-decoration-none">
+                       class="btn btn-back hover-lift text-decoration-none">
                         <i class="fa-solid fa-arrow-left me-1"></i> Quay lại danh sách
                     </a>
                 </div>
@@ -110,48 +110,48 @@
                             <i class="fa-solid fa-circle-info text-primary"></i>
                             <span>Thông tin đề xuất chi tiết</span>
                         </div>
-                        <div class="meta-grid">
-                            <div class="meta-item">
-                                <span class="meta-label">Họ và tên độc giả</span>
-                                <span class="meta-value"><c:out value="${recommendation.readerName}"/></span>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">Họ và tên độc giả</span>
+                                <span class="info-value"><c:out value="${recommendation.readerName}"/></span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Số điện thoại độc giả</span>
-                                <span class="meta-value ${empty recommendation.readerPhone ? 'empty' : ''}">
+                            <div class="info-row">
+                                <span class="info-label">Số điện thoại độc giả</span>
+                                <span class="info-value ${empty recommendation.readerPhone ? 'empty' : ''}">
                                     <c:choose>
                                         <c:when test="${not empty recommendation.readerPhone}"><c:out value="${recommendation.readerPhone}"/></c:when>
                                         <c:otherwise>Chưa cập nhật</c:otherwise>
                                     </c:choose>
                                 </span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">ID Độc giả</span>
-                                <span class="meta-value ${empty recommendation.readerCode ? 'empty' : ''}">
+                            <div class="info-row">
+                                <span class="info-label">ID Độc giả</span>
+                                <span class="info-value ${empty recommendation.readerCode ? 'empty' : ''}">
                                     <c:choose>
                                         <c:when test="${not empty recommendation.readerCode}">#<c:out value="${recommendation.readerCode}"/></c:when>
                                         <c:otherwise>Không có</c:otherwise>
                                     </c:choose>
                                 </span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Tên sách đề xuất</span>
-                                <span class="meta-value"><c:out value="${recommendation.bookTitle}"/></span>
+                            <div class="info-row">
+                                <span class="info-label">Tên sách đề xuất</span>
+                                <span class="info-value"><c:out value="${recommendation.bookTitle}"/></span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Tác giả sách</span>
-                                <span class="meta-value"><c:out value="${recommendation.author}"/></span>
+                            <div class="info-row">
+                                <span class="info-label">Tác giả sách</span>
+                                <span class="info-value"><c:out value="${recommendation.author}"/></span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Cán bộ ghi nhận</span>
-                                <span class="meta-value"><c:out value="${recommendation.creatorName}"/> <span class="text-muted small">(ID: NV#${recommendation.createdBy})</span></span>
+                            <div class="info-row">
+                                <span class="info-label">Cán bộ ghi nhận</span>
+                                <span class="info-value"><c:out value="${recommendation.creatorName}"/> <span class="text-muted small">(ID: NV#${recommendation.createdBy})</span></span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Ngày ghi nhận</span>
-                                <span class="meta-value"><fmt:formatDate value="${recommendation.createdAt}" pattern="dd/MM/yyyy HH:mm"/></span>
+                            <div class="info-row">
+                                <span class="info-label">Ngày ghi nhận</span>
+                                <span class="info-value"><fmt:formatDate value="${recommendation.createdAt}" pattern="dd/MM/yyyy HH:mm"/></span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Lý do từ độc giả</span>
-                                <span class="meta-value ${empty recommendation.reason ? 'empty' : ''}">
+                            <div class="info-row">
+                                <span class="info-label">Lý do từ độc giả</span>
+                                <span class="info-value ${empty recommendation.reason ? 'empty' : ''}">
                                     <c:choose>
                                         <c:when test="${not empty recommendation.reason}"><c:out value="${recommendation.reason}"/></c:when>
                                         <c:otherwise>Không ghi nhận lý do</c:otherwise>
@@ -196,7 +196,7 @@
                                             <div class="d-flex gap-2">
                                                 <form action="${pageContext.request.contextPath}/recommend/approve" method="POST" class="w-50">
                                                     <input type="hidden" name="id" value="${recommendation.recommendationId}">
-                                                    <button type="submit" class="btn btn-save hover-lift w-100 py-2.5 fw-medium text-white" style="background-color: #15803D !important; border-color: #15803D !important; font-size: .85rem;">
+                                                    <button type="submit" class="btn btn-save hover-lift w-100 py-2.5 fw-medium text-white" style="background-color: var(--success) !important; border-color: var(--success) !important; font-size: .85rem;">
                                                         <i class="fa-solid fa-check me-1"></i>Duyệt mua
                                                     </button>
                                                 </form>
@@ -246,7 +246,7 @@
 <%-- MODAL XÁC NHẬN XÓA --%>
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content border-0 shadow rounded-3">
             <div class="modal-header d-flex align-items-center">
                 <div class="d-flex align-items-center gap-2">
                     <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">

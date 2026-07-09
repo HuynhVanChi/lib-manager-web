@@ -50,20 +50,18 @@
                 <span class="toast-icon">
                     <i class="fa-solid <%=iconCls%>"></i>
                 </span>
-                <span style="font-size:.875rem;font-weight:500;flex:1;">
+                <div class="toast-body small fw-medium m-0">
                     <%=toastMsg%>
-                </span>
-                <button type="button" class="toast-close" onclick="closeToast()" aria-label="Đóng">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                </div>
+                <button type="button" class="toast-close" onclick="closeToast()">&times;</button>
             </div>
             <% } %>
 
             <%-- ── FORM CARD ── --%>
-            <div class="form-card bg-white">
+            <div class="card form-card">
                 
                 <%-- Header card --%>
-                <div class="form-card-header">
+                <div class="card-header form-card-header text-white d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
                              style="width: 44px; height: 44px; background: rgba(255,255,255,0.2); flex-shrink: 0;">

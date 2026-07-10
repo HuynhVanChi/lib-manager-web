@@ -93,47 +93,47 @@
                 <!-- Thống kê nhanh bản sao của đầu sách này -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
-                        <div class="stat-card stat-card-compact stat-primary">
-                            <div class="stat-content">
-                                <span class="text-muted small fw-medium d-block">Tổng số cuốn sách</span>
-                                <div class="stat-value">${book.totalCopies}</div>
+                        <div class="stat-card stat-primary h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Tổng số cuốn sách</span>
+                                <div class="stat-icon">
+                                    <i class="fa-solid fa-copy"></i>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-copy"></i>
-                            </div>
+                            <div class="stat-value">${book.totalCopies}</div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="stat-card stat-card-compact stat-success">
-                            <div class="stat-content">
-                                <span class="text-muted small fw-medium d-block">Sẵn có (Available)</span>
-                                <div class="stat-value text-success">${book.availableCopies}</div>
+                        <div class="stat-card stat-success h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Sẵn có (Available)</span>
+                                <div class="stat-icon">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-circle-check"></i>
-                            </div>
+                            <div class="stat-value">${book.availableCopies}</div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="stat-card stat-card-compact stat-warning">
-                            <div class="stat-content">
-                                <span class="text-muted small fw-medium d-block">Đang cho mượn</span>
-                                <div class="stat-value text-warning">${borrowedCount}</div>
+                        <div class="stat-card stat-warning h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Đang cho mượn</span>
+                                <div class="stat-icon">
+                                    <i class="fa-solid fa-book-open"></i>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-book-open"></i>
-                            </div>
+                            <div class="stat-value">${borrowedCount}</div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="stat-card stat-card-compact stat-danger">
-                            <div class="stat-content">
-                                <span class="text-muted small fw-medium d-block">Hỏng / Mất / Hủy</span>
-                                <div class="stat-value text-danger">${damagedCount + lostCount}</div>
+                        <div class="stat-card stat-danger h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stat-label">Hỏng / Mất / Hủy</span>
+                                <div class="stat-icon">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
                             </div>
-                            <div class="stat-icon">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </div>
+                            <div class="stat-value">${damagedCount + lostCount}</div>
                         </div>
                     </div>
                 </div>

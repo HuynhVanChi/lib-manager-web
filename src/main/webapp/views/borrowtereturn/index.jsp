@@ -19,19 +19,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Tùy chỉnh màu sắc thẻ thống kê nhanh theo nghiệp vụ */
-        .stat-borrow-total   { background: var(--primary-soft); color: var(--primary); }
-        .stat-borrow-total   .stat-icon { background: rgba(49,46,129,.12); color: var(--primary); }
-        
-        .stat-borrowing      { background: #FFF7ED; color: #C2410C; }
-        .stat-borrowing      .stat-icon { background: rgba(194,65,12,.12); color: #C2410C; }
-        
-        .stat-fine-unpaid    { background: #FEF2F2; color: #DC2626; }
-        .stat-fine-unpaid    .stat-icon { background: rgba(220,38,38,.12); color: #DC2626; }
-        
-        .stat-fine-paid      { background: #F0FDF4; color: #15803D; }
-        .stat-fine-paid      .stat-icon { background: rgba(21,128,61,.12); color: #15803D; }
-
         /* Ghi đè CSS bổ sung cho tab bootstrap */
         .nav-tabs .nav-link {
             color: var(--text-muted);
@@ -145,10 +132,10 @@
                 <!-- Thống kê nhanh ở trên cùng -->
                 <div class="row g-3 mb-4">
                     <div class="col-12 col-sm-6 col-md-3">
-                        <div class="stat-card stat-borrow-total h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                        <div class="stat-card stat-primary h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Tổng lượt mượn</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-hand-holding-hand"></i>
                                 </div>
                             </div>
@@ -156,10 +143,10 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-3">
-                        <div class="stat-card stat-borrowing h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                        <div class="stat-card stat-warning h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Đang mượn</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-hourglass-half"></i>
                                 </div>
                             </div>
@@ -175,10 +162,10 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-3">
-                        <div class="stat-card stat-fine-unpaid h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                        <div class="stat-card stat-danger h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Chờ đóng phạt</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-triangle-exclamation"></i>
                                 </div>
                             </div>
@@ -194,10 +181,10 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-3">
-                        <div class="stat-card stat-fine-paid h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                        <div class="stat-card stat-success h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Đã thu phạt</span>
-                                <div class="stat-icon m-0">
+                                <div class="stat-icon">
                                     <i class="fa-solid fa-receipt"></i>
                                 </div>
                             </div>

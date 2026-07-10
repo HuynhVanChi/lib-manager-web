@@ -210,7 +210,7 @@
                     <!-- KPI 1: Tổng số sách -->
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="stat-card stat-primary h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Tổng số cuốn sách</span>
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-cubes"></i>
@@ -225,7 +225,7 @@
                     <!-- KPI 2: Tổng số đầu sách -->
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="stat-card stat-info h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Tổng số đầu sách</span>
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-book"></i>
@@ -240,7 +240,7 @@
                     <!-- KPI 3: Tổng số độc giả -->
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="stat-card stat-primary h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Tổng số độc giả</span>
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-users"></i>
@@ -255,7 +255,7 @@
                     <!-- KPI 4: Tổng số lượt mượn -->
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="stat-card stat-success h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Tổng số lượt mượn</span>
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-clipboard-list"></i>
@@ -270,7 +270,7 @@
                     <!-- KPI 5: Số sách đang mượn -->
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="stat-card stat-warning h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Sách đang mượn ngoài</span>
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-book-open"></i>
@@ -285,7 +285,7 @@
                     <!-- KPI 6: Sách quá hạn -->
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="stat-card stat-danger h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Sách bị quá hạn trả</span>
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -300,7 +300,7 @@
                     <!-- KPI 7: Sách còn trong kho -->
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="stat-card stat-success h-100">
-                            <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="stat-label">Sách sẵn sàng trong kho</span>
                                 <div class="stat-icon">
                                     <i class="fa-solid fa-warehouse"></i>

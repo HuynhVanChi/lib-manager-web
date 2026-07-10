@@ -35,18 +35,18 @@ INSERT INTO books (book_id, category_id, title, author, publisher, publish_year,
 -- Sách công nghệ thông tin
 (1, 1, 'Lập trình Java Web căn bản', 'Nguyễn Văn B', 'NXB Giáo Dục', 2024, 79000, 'assets/images/books/book_jwd.png', NULL, NULL),
 (2, 1, 'Cấu trúc dữ liệu và Giải thuật', 'Trần Minh C', 'NXB Khoa Học', 2023, 95000, 'assets/images/books/book_dsa.png', NULL, NULL),
-(3, 1, 'Life 3.0: Loài người trong kỷ nguyên Trí tuệ Nhân tạo', 'Max Tegmark', 'NXB Thế Giới', 2020, 189000, 'src/main/webapp/assets/images/books/life30.jpg', NULL, NULL),
+(3, 1, 'Life 3.0: Loài người trong kỷ nguyên Trí tuệ Nhân tạo', 'Max Tegmark', 'NXB Thế Giới', 2020, 189000, 'assets/images/books/life30.jpg', NULL, NULL),
 -- Sách văn học
 (4, 2, 'Số đỏ', 'Vũ Trọng Phụng', 'NXB Văn Học', 2020, 55000, 'assets/images/books/book_sdo.png', NULL, NULL),
-(5, 2, 'Tắt đèn', 'Ngô Tất Tố', 'NXB Văn Học', 2019, 48000, 'src/main/webapp/assets/images/books/TatDen.jpg', NULL, NULL),
+(5, 2, 'Tắt đèn', 'Ngô Tất Tố', 'NXB Văn Học', 2019, 48000, 'assets/images/books/TatDen.jpg', NULL, NULL),
 -- Sách kinh tế
 (6, 3, 'Nghĩ giàu và Làm giàu', 'Napoleon Hill', 'NXB Trẻ', 2021, 110000, 'assets/images/books/book_think_rich.png', NULL, NULL),
 -- Sách kỹ năng sống
-(7, 4, 'Đắc Nhân Tâm', 'Dale Carnegie', 'NXB Tổng Hợp', 2022, 86000, 'src/main/webapp/assets/images/books/Ebook-Dac-nhan-tam.jpg', NULL, NULL),
+(7, 4, 'Đắc Nhân Tâm', 'Dale Carnegie', 'NXB Tổng Hợp', 2022, 86000, 'assets/images/books/Ebook-Dac-nhan-tam.jpg', NULL, NULL),
 -- Sách khoa học (Chưa có bản sao nào - Để test trường hợp đặc biệt)
-(8, 5, 'Lược sử thời gian', 'Stephen Hawking', 'NXB Trẻ', 2018, 135000, 'src/main/webapp/assets/images/books/luocsuthoigian.webp', NULL, NULL),
+(8, 5, 'Lược sử thời gian', 'Stephen Hawking', 'NXB Trẻ', 2018, 135000, 'assets/images/books/luocsuthoigian.webp', NULL, NULL),
 -- Sách bị xóa mềm (Nằm trong thùng rác)
-(9, 1, 'Lập trình Turbo Pascal', 'Quách Tuấn Ngọc', 'NXB Giáo Dục', 2002, 35000, 'src/main/webapp/assets/images/books/pascal.jpg', DATE_SUB(NOW(), INTERVAL 1 DAY), 1);
+(9, 1, 'Lập trình Turbo Pascal', 'Quách Tuấn Ngọc', 'NXB Giáo Dục', 2002, 35000, 'assets/images/books/pascal.jpg', DATE_SUB(NOW(), INTERVAL 1 DAY), 1);
 
 -- =========================================================================
 -- 3. BẢN SAO SÁCH VẬT LÝ (book_copies - Đa dạng trạng thái)

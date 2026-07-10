@@ -13,7 +13,7 @@
 
 ## 3. Công nghệ sử dụng
 -   **Backend:** Java JDK 18, Java Servlet Specification 4.0.1, JDBC API.
--   **Frontend:** JSP (JavaServer Pages 2.3.3), JSTL 1.2, HTML5, Vanilla CSS (Premium Custom Design System), Vanilla JavaScript.
+-   **Frontend:** JSP (JavaServer Pages 2.3.3), JSTL 1.2, HTML5, CSS3, JavaScript (ES6+ thuần), Bootstrap 5.3.0, FontAwesome 6.4.0.
 -   **Cơ sở dữ liệu:** MySQL (hỗ trợ Driver `mysql-connector-java` 8.0.28).
 -   **Thư viện hỗ trợ:** Google Gson 2.9.0 (phục vụ tuần tự hóa JSON trong nhật ký hệ thống).
 -   **Quản lý dự án & Build:** Maven.
@@ -22,19 +22,25 @@
 
 ## 4. Các chức năng chính
 Hệ thống được chia nhỏ thành các phân hệ nghiệp vụ rõ ràng, bao gồm:
-1.  **Quản lý Độc giả (Readers Module):** 
+1.  **Bảng điều khiển Thống kê (Dashboard & Analytics):**
+    -   Hiển thị các chỉ số đo lường hiệu suất chính (KPIs) của thư viện (tổng số sách, độc giả, phiếu mượn đang hoạt động, sách quá hạn).
+    -   Biểu đồ trực quan hóa lượng sách được mượn theo thời gian (ngày, tuần, tháng) tích hợp Chart.js.
+    -   Xếp hạng Top 10 sách được mượn nhiều nhất, tác giả được yêu thích nhất và danh mục sách được quan tâm nhất.
+2.  **Quản lý Độc giả (Readers Module) & Cơ chế Thùng rác (Soft Delete):** 
     -   Xem danh sách độc giả với bộ lọc nâng cao, thanh tìm kiếm thông minh thời gian thực.
-    -   Hồ sơ chi tiết độc giả (`Hồ sơ độc giả`) hiển thị thông tin thẻ thành viên và các thẻ thống kê nhanh (Quick Stats) được thiết kế bo góc, đổ bóng nổi khối hiện đại.
+    -   Hồ sơ chi tiết độc giả hiển thị thông tin thẻ thành viên và các thẻ thống kê nhanh (Quick Stats) được thiết kế bo góc, đổ bóng nổi khối hiện đại.
     -   Thêm mới, chỉnh sửa thông tin độc giả (Hỗ trợ xác thực biểu mẫu đầy đủ ở cả Backend và hiển thị lỗi trực quan ở Frontend).
-2.  **Cơ chế Thùng rác & Phục hồi độc giả (Soft Delete & Restore):**
-    -   Độc giả bị xóa sẽ chuyển vào trạng thái "Ẩn/Xóa mềm".
-    -   Phân hệ `Thùng rác` được tích hợp bằng Modal sang trọng cho phép Thủ thư kiểm tra danh sách độc giả đã xóa, khôi phục lại trạng thái hoạt động hoặc xóa vĩnh viễn khỏi CSDL.
-3.  **Nhật ký Hệ thống (Audit Logs Module - Chỉ dành cho Admin):**
+    -   Cơ chế Xóa mềm & Thùng rác (Soft Delete & Restore): Độc giả bị xóa sẽ chuyển vào trạng thái "Ẩn/Xóa mềm" trong Thùng rác, cho phép Thủ thư kiểm tra danh sách đã xóa, khôi phục lại trạng thái hoạt động hoặc xóa vĩnh viễn để bảo toàn tính toàn vẹn dữ liệu.
+3.  **Quản lý Đề xuất Sách (Book Recommendations Module):**
+    -   Cho phép gửi yêu cầu đề xuất mua mới hoặc bổ sung các đầu sách phục vụ độc giả.
+    -   Quy trình xét duyệt đề xuất rõ ràng (Chờ duyệt, Đã duyệt, Từ chối).
+    -   Tích hợp thùng rác đề xuất cho phép phục hồi hoặc xóa vĩnh viễn các bản ghi đề xuất.
+4.  **Quản lý Sách & Danh mục (Books & Categories):** Quản lý danh mục sách, đầu sách và các bản sao sách vật lý trên từng vị trí kệ cụ thể.
+5.  **Quản lý Mượn/Trả sách (Borrow & Return):** Ghi nhận thông tin phiếu mượn, hạn trả, tự động phát hiện sách quá hạn và tính toán phí phạt tương ứng cho từng phiếu mượn.
+6.  **Nhật ký Hệ thống (Audit Logs Module - Chỉ dành cho Admin):**
     -   Lưu lại toàn bộ lịch sử thao tác dữ liệu (các hành động `Thêm`, `Sửa`, `Xóa`, `Khôi phục`).
     -   Lưu vết chi tiết: Ai làm (User ID), tác động lên bảng nào (Table Name), kiểu hành động (Action Type), thời gian thực hiện, và dữ liệu chi tiết trước/sau khi thay đổi dưới dạng JSON.
     -   Hỗ trợ bộ lọc hành động nhanh và tìm kiếm nhật ký.
-4.  **Quản lý Sách & Danh mục (Books & Categories):** Quản lý danh mục sách, đầu sách và các bản sao sách vật lý trên từng vị trí kệ cụ thể.
-5.  **Quản lý Mượn/Trả sách (Borrow & Return):** Ghi nhận thông tin phiếu mượn, hạn trả, phát hiện sách quá hạn và tính toán phí phạt tương ứng cho từng độc giả.
 
 
 ## 5. Hướng dẫn cài đặt và khởi chạy

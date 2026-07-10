@@ -253,7 +253,7 @@
                                                                class="btn-action" title="Xem chi tiết">
                                                                 <i class="fa-solid fa-eye"></i>
                                                             </a>
-                                                            <a href="${pageContext.request.contextPath}/recommend/edit?id=${rec.recommendationId}"
+                                                            <a href="${pageContext.request.contextPath}/recommend/edit?id=${rec.recommendationId}&from=list"
                                                                class="btn-action" title="Chỉnh sửa">
                                                                 <i class="fa-solid fa-pen"></i>
                                                             </a>

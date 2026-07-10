@@ -84,8 +84,10 @@
                             <i class="fa-solid fa-trash-can"></i>
                             <span>Thùng rác</span>
                         </button>
-                        <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" class="btn btn-back hover-lift">
-                            <i class="fa-solid fa-arrow-left"></i> Quay lại chi tiết
+                        <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}" 
+                           id="btn-back-previous"
+                           class="btn btn-back hover-lift">
+                            <i class="fa-solid fa-arrow-left"></i> <span id="btn-back-label">Quay lại chi tiết</span>
                         </a>
                     </div>
                 </div>
@@ -147,8 +149,8 @@
                             <%-- Header Card --%>
                             <div class="detail-card-header">
                                 <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-list-check fs-5 text-white"></i>
-                                    <h5 class="text-white fw-bold mb-0" style="font-size:1rem;">Danh sách cuốn sách hiện tại</h5>
+                                    <i class="fa-solid fa-list-check fs-5 text-primary"></i>
+                                    <h5 class="text-dark fw-bold mb-0" style="font-size:1rem;">Danh sách cuốn sách hiện tại</h5>
                                 </div>
                             </div>
                             
@@ -489,5 +491,29 @@
         const contextPath = "${pageContext.request.contextPath}";
     </script>
     <script src="${pageContext.request.contextPath}/assets/book/copies-jsp.js"></script>
+    <script>
+        // Smart back button: reads 'from' param stored in sessionStorage
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const from = params.get('from');
+            const bookId = '${book.bookId}';
+            const btnBack = document.getElementById('btn-back-previous');
+            const btnLabel = document.getElementById('btn-back-label');
+            if (!btnBack || !btnLabel) return;
+            if (from === 'list') {
+                sessionStorage.setItem('copies_from_' + bookId, 'list');
+            } else if (from === 'detail') {
+                sessionStorage.setItem('copies_from_' + bookId, 'detail');
+            }
+            const stored = sessionStorage.getItem('copies_from_' + bookId) || from;
+            if (stored === 'list') {
+                btnBack.href = contextPath + '/books';
+                btnLabel.textContent = 'Quay lại';
+            } else {
+                btnBack.href = contextPath + '/books?action=detail&id=' + bookId;
+                btnLabel.textContent = 'Quay lại chi tiết';
+            }
+        })();
+    </script>
 </body>
 </html>

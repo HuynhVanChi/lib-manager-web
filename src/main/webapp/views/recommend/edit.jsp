@@ -33,6 +33,21 @@
 
             <%-- ── TIÊU ĐỀ TRANG ── --%>
             <div class="mb-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="${pageContext.request.contextPath}/recommend">
+                                <i class="fa-solid fa-lightbulb me-1"></i>Đề xuất sách
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="${pageContext.request.contextPath}/recommend/detail?id=${recommendation.recommendationId}">
+                                <c:out value="${recommendation.bookTitle}"/>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
+                    </ol>
+                </nav>
                 <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">
                     Chỉnh sửa thông tin đề xuất sách
                 </h1>
@@ -203,5 +218,27 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Smart cancel button based on 'from' param
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get('from');
+        const recId = '${recommendation.recommendationId}';
+        const contextPath = '${pageContext.request.contextPath}';
+        const btnCancel = document.getElementById('btn-cancel');
+        if (!btnCancel) return;
+        if (from === 'list') {
+            sessionStorage.setItem('rec_edit_from_' + recId, 'list');
+        } else if (from === 'detail') {
+            sessionStorage.setItem('rec_edit_from_' + recId, 'detail');
+        }
+        const stored = sessionStorage.getItem('rec_edit_from_' + recId) || from;
+        if (stored === 'list') {
+            btnCancel.href = contextPath + '/recommend';
+        } else {
+            btnCancel.href = contextPath + '/recommend/detail?id=' + recId;
+        }
+    })();
+</script>
 </body>
 </html>

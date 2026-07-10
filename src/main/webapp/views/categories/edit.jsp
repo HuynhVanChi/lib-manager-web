@@ -164,6 +164,11 @@
                                         <i class="fa-solid fa-tags me-1"></i>Quản lý danh mục
                                     </a>
                                 </li>
+                                <li class="breadcrumb-item">
+                                    <a href="${pageContext.request.contextPath}/categories/detail?id=${category.categoryId}">
+                                        <c:out value="${category.name}"/>
+                                    </a>
+                                </li>
                                 <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
                             </ol>
                         </nav>

@@ -44,7 +44,7 @@
                             </li>
                             <li class="breadcrumb-item">
                                 <a href="${pageContext.request.contextPath}/borrow-return/detail?id=${item.borrow_detail_id}">
-                                    Chi tiết #${item.borrow_detail_id}
+                                    Phiếu mượn #${item.borrow_detail_id}
                                 </a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>

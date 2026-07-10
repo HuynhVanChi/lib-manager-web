@@ -47,7 +47,7 @@
                                         <i class="fa-solid fa-book me-1"></i>Quản lý sách
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+                                <li class="breadcrumb-item active" aria-current="page">${book.title}</li>
                             </ol>
                         </nav>
                         <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">Hồ sơ chi tiết đầu sách</h1>
@@ -113,10 +113,10 @@
                             </div>
 
                             <div class="d-flex flex-column gap-2 mt-2">
-                                <a href="${pageContext.request.contextPath}/books?action=edit&id=${book.bookId}" class="btn btn-primary w-100 hover-lift py-2.5">
+                                <a href="${pageContext.request.contextPath}/books?action=edit&id=${book.bookId}&from=detail" class="btn btn-primary w-100 hover-lift py-2.5">
                                     <i class="fa-solid fa-pen-to-square me-1"></i> Chỉnh sửa đầu sách
                                 </a>
-                                <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}" class="btn-back w-100 hover-lift py-2.5">
+                                <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}&from=detail" class="btn-back w-100 hover-lift py-2.5">
                                     <i class="fa-solid fa-boxes-stacked me-1"></i> Quản lý cuốn sách (${book.totalCopies})
                                 </a>
                             </div>

@@ -44,7 +44,7 @@
                                     <i class="fa-solid fa-house-chimney me-1"></i>Mượn trả & Vi phạm
                                 </a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">Chi tiết phiếu mượn #${item.borrow_detail_id}</li>
+                            <li class="breadcrumb-item active" aria-current="page">Phiếu mượn #${item.borrow_detail_id}</li>
                         </ol>
                     </nav>
                     <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">

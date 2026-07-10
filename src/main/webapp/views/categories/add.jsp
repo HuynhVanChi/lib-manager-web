@@ -164,7 +164,7 @@
                                         <i class="fa-solid fa-tags me-1"></i>Quản lý danh mục
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+                                <li class="breadcrumb-item active" aria-current="page">Tạo mới</li>
                             </ol>
                         </nav>
                         <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">Thêm danh mục mới</h1>

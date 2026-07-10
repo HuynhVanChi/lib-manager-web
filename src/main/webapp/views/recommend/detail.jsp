@@ -31,9 +31,21 @@
 
 
 
-            <%-- ── TIÊU ĐỀ + NÚT QUAY LẠI ── --%>
+            <%-- ── TIÊU ĐỀ + BREADCRUMB ── --%>
             <div class="d-flex justify-content-between align-items-start mb-4">
                 <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="${pageContext.request.contextPath}/recommend">
+                                    <i class="fa-solid fa-lightbulb me-1"></i>Đề xuất sách
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <c:out value="${recommendation.bookTitle}"/>
+                            </li>
+                        </ol>
+                    </nav>
                     <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">
                         Chi tiết Đề xuất Sách
                     </h1>
@@ -87,9 +99,6 @@
                     </span>
                     <span class="details-hero-pill">
                         <i class="fa-solid fa-user"></i> Độc giả: <c:out value="${recommendation.readerName}"/>
-                    </span>
-                    <span class="details-hero-pill">
-                        <i class="fa-solid fa-tag"></i> Thể loại: <c:out value="${not empty recommendation.category ? recommendation.category : 'Chưa phân loại'}"/>
                     </span>
                     <span class="details-hero-pill">
                         <i class="fa-regular fa-calendar-plus"></i>
@@ -178,7 +187,7 @@
 
                                     <%-- Nút Sửa & Xóa --%>
                                     <div class="d-flex gap-2 mb-3">
-                                        <a href="${pageContext.request.contextPath}/recommend/edit?id=${recommendation.recommendationId}" 
+                                        <a href="${pageContext.request.contextPath}/recommend/edit?id=${recommendation.recommendationId}&from=detail" 
                                            class="btn btn-edit hover-lift w-50 py-2 text-center text-decoration-none" style="font-size: .85rem;">
                                             <i class="fa-regular fa-pen-to-square me-1"></i>Chỉnh sửa
                                         </a>

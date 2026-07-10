@@ -45,7 +45,7 @@
                                         <i class="fa-solid fa-tags me-1"></i>Quản lý danh mục
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+                                <li class="breadcrumb-item active" aria-current="page"><c:out value="${category.name}"/></li>
                             </ol>
                         </nav>
                         <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">Chi tiết danh mục</h1>

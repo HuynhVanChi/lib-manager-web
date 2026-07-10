@@ -45,6 +45,11 @@
                                         <i class="fa-solid fa-book me-1"></i>Quản lý sách
                                     </a>
                                 </li>
+                                <li class="breadcrumb-item">
+                                    <a href="${pageContext.request.contextPath}/books?action=detail&id=${book.bookId}">
+                                        ${book.title}
+                                    </a>
+                                </li>
                                 <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
                             </ol>
                         </nav>
@@ -300,5 +305,29 @@
             })();
         </script>
     </c:if>
+    <script>
+        // Smart back button for book edit
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const from = params.get('from');
+            const bookId = '${book.bookId}';
+            const contextPath = '${pageContext.request.contextPath}';
+            const btnBack = document.getElementById('btn-back');
+            if (!btnBack) return;
+            if (from === 'list') {
+                sessionStorage.setItem('book_edit_from_' + bookId, 'list');
+            } else if (from === 'detail') {
+                sessionStorage.setItem('book_edit_from_' + bookId, 'detail');
+            }
+            const stored = sessionStorage.getItem('book_edit_from_' + bookId) || from;
+            if (stored === 'list') {
+                btnBack.href = contextPath + '/books';
+                btnBack.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Quay lại';
+            } else {
+                btnBack.href = contextPath + '/books?action=detail&id=' + bookId;
+                btnBack.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Quay lại chi tiết';
+            }
+        })();
+    </script>
 </body>
 </html>

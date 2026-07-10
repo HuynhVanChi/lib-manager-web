@@ -256,7 +256,7 @@
                                                 <td>
                                                     <div class="d-flex gap-1 justify-content-center">
                                                         <%-- Quản lý cuốn sách --%>
-                                                        <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}" class="btn-action" title="Quản lý cuốn sách">
+                                                        <a href="${pageContext.request.contextPath}/books?action=copies&id=${book.bookId}&from=list" class="btn-action" title="Quản lý cuốn sách">
                                                             <i class="fa-solid fa-list-check"></i>
                                                         </a>
                                                         <%-- Xem chi tiết --%>
@@ -264,7 +264,7 @@
                                                             <i class="fa-solid fa-eye"></i>
                                                         </a>
                                                         <%-- Sửa --%>
-                                                        <a href="${pageContext.request.contextPath}/books?action=edit&id=${book.bookId}" class="btn-action" title="Sửa">
+                                                        <a href="${pageContext.request.contextPath}/books?action=edit&id=${book.bookId}&from=list" class="btn-action" title="Sửa">
                                                             <i class="fa-solid fa-pen"></i>
                                                         </a>
                                                         <%-- Xóa --%>

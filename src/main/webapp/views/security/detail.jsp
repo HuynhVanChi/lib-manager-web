@@ -64,7 +64,7 @@
                                     <i class="fa-solid fa-user-tie me-1"></i>Nhân sự
                                 </a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+                            <li class="breadcrumb-item active" aria-current="page"><c:out value="${account.fullName}"/></li>
                         </ol>
                     </nav>
                     <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">

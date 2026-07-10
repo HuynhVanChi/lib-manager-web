@@ -45,7 +45,7 @@
                                         <i class="fa-solid fa-book me-1"></i>Quản lý sách
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+                                <li class="breadcrumb-item active" aria-current="page">Tạo mới</li>
                             </ol>
                         </nav>
                         <h1 class="fw-bold mt-1 mb-0 text-dark" style="font-size:1.5rem;">Thêm đầu sách mới</h1>

@@ -68,21 +68,20 @@
             <i class="fa-solid fa-lightbulb" style="width: 32px; font-size: 1.15rem;"></i> Đề xuất sách
         </a>
 
+        <% 
+            security.TaiKhoan currentUser = (session != null)
+                    ? (security.TaiKhoan) session.getAttribute("currentUser") : null;
+            String userRole = (currentUser != null) ? currentUser.getRole() : null;
+            if ("Admin".equals(userRole)) {
+        %>
         <a href="${pageContext.request.contextPath}/accounts" 
            class="nav-link d-flex align-items-center mb-1 rounded py-2 px-3 menu-link <%= (checkURI.contains("account") || checkURI.contains("staff") || checkURI.contains("user")) ? "active" : "" %>">
             <i class="fa-solid fa-user-tie" style="width: 32px; font-size: 1.15rem;"></i> Nhân sự
         </a>
 
-        <% 
-            String userRole = (session != null) ? (String) session.getAttribute("role") : null;
-            if (userRole == null) {
-                userRole = "Admin"; // Fallback để test local
-            }
-            if ("Admin".equals(userRole)) {
-        %>
         <a href="${pageContext.request.contextPath}/AuditLogs" 
            class="nav-link d-flex align-items-center mb-1 rounded py-2 px-3 menu-link <%= checkURI.contains("audit") ? "active" : "" %>">
-            <i class="fa-solid fa-clock-rotate-left" style="width: 32px; font-size: 1.15rem;"></i> Audit Logs
+            <i class="fa-solid fa-clock-rotate-left" style="width: 32px; font-size: 1.15rem;"></i> Nhật ký hệ thống
         </a>
         <% } %>
 
